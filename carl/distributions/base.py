@@ -32,6 +32,7 @@ def check_parameter(name, value):
             elif isinstance(var, T.TensorConstant):
                 constants.add(var)
             elif isinstance(var, T.TensorVariable):
+                # XXX require a name
                 observeds.add(var)
     else:
         value = theano.shared(value, name=name)

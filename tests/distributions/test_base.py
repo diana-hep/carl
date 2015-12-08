@@ -57,13 +57,23 @@ def test_mixin_parameters():
     assert_true(mu in p.constants_)
     assert_true(sigma in p.constants_)
 
+    # Compose parameters with observed variables
+    a = theano.shared(1.0)
+    b = theano.shared(0.0)
+    y = T.dvector(name="y")
+    p = Normal(mu=a * y + b)
+    assert_equal(len(p.parameters_), 3)
+    assert_true(a in p.parameters_)
+    assert_true(b in p.parameters_)
+    assert_equal(len(p.observeds_), 2)
+    assert_true(y in p.observeds_)
+
 
 def test_mixin_sklearn_params():
     # get_params
     p = Normal(mu=0.0, sigma=1.0)
     params = p.get_params()
     assert_equal(len(params), 3)
-    print(params)
     assert_true("random_state" in params)
     assert_true("mu" in params)
     assert_true("sigma" in params)
