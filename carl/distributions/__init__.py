@@ -4,7 +4,11 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-"""Distributions."""
+"""Distributions.
+
+Note: This module is only meant to be a minimally working prototype. It
+      is not meant to be a full fledged replacement of RooFit or alikes.
+"""
 
 from .base import DistributionMixin
 from .normal import Normal

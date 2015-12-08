@@ -13,14 +13,19 @@ import theano.tensor as T
 from carl.distributions import Normal
 
 
-def test_normal():
+def check_normal(mu, sigma):
     rng = check_random_state(1)
 
-    p_carl = Normal(mu=0.0, sigma=1.0)
-    p_scipy = st.norm(loc=0.0, scale=1.0)
-    X = rng.rand(10, 1)
+    p_carl = Normal(mu=mu, sigma=sigma)
+    p_scipy = st.norm(loc=mu, scale=sigma)
+    X = rng.rand(50, 1)
 
     assert_array_almost_equal(p_carl.pdf(X).ravel(),
                               p_scipy.pdf(X.ravel()))
     assert_array_almost_equal(p_carl.cdf(X).ravel(),
                               p_scipy.cdf(X.ravel()))
+
+
+def test_normal():
+    for mu, sigma in [(0., 1.), (1., 1.), (0., 2.)]:
+        yield check_normal, mu, sigma

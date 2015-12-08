@@ -19,13 +19,13 @@ class Normal(DistributionMixin):
                                      mu=mu, sigma=sigma)
 
         # pdf
-        self.pdf_ = 1. / np.sqrt(2. * np.pi) * T.exp(-(self.X - self.mu) ** 2 /
-                                                     (2. * self.sigma ** 2))
+        self.pdf_ = 1. / (self.sigma * np.sqrt(2. * np.pi)) * \
+                    T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))
         self.pdf = theano.function([self.X], self.pdf_,
                                    allow_input_downcast=True)
 
         # cdf
-        self.cdf_ = 0.5 * (1 + T.erf((self.X - self.mu) /
-                                     (self.sigma * np.sqrt(2.))))
+        self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
+                                      (self.sigma * np.sqrt(2.))))
         self.cdf = theano.function([self.X], self.cdf_,
                                    allow_input_downcast=True)
