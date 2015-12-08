@@ -21,6 +21,7 @@ class Normal(DistributionMixin):
         # pdf
         self.pdf_ = 1. / (self.sigma * np.sqrt(2. * np.pi)) * \
                     T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))
+        # XXX: inputs should be all observed_
         self.pdf = theano.function([self.X], self.pdf_,
                                    allow_input_downcast=True)
 

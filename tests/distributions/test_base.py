@@ -22,14 +22,14 @@ def test_mixin_parameters():
     p = Normal(mu=0.0, sigma=1.0)
     assert_true(isinstance(p, DistributionMixin))
     assert_equal(len(p.parameters_), 2)
-    assert_true("mu" in p.parameters_)
-    assert_true("sigma" in p.parameters_)
+    assert_true(p.mu in p.parameters_)
+    assert_true(p.sigma in p.parameters_)
     assert_true(isinstance(p.mu, SharedVariable))
     assert_true(isinstance(p.sigma, SharedVariable))
     assert_equal(p.mu.get_value(), 0.0)
     assert_equal(p.sigma.get_value(), 1.0)
-    assert_equal(len(p.observed_), 1)
-    assert_true("X" in p.observed_)
+    assert_equal(len(p.observeds_), 1)
+    assert_true(p.X in p.observeds_)
     assert_true(isinstance(p.X, TensorVariable))
 
     # Check external parameters
@@ -40,29 +40,22 @@ def test_mixin_parameters():
     assert_equal(sigma, p.sigma)
 
     # Check composed expressions as parameters
-    a = theano.shared(0.0) + 1.0
+    a = theano.shared(0.0)
     b = theano.shared(-1.0)
-    mu = a + b
+    mu = a + b - 1.0
     sigma = T.abs_(a * b)
     p = Normal(mu=mu, sigma=sigma)
+    assert_true(a in p.parameters_)
+    assert_true(b in p.parameters_)
 
     # Check with constants
     mu = T.constant(0.0)
-    sigma = T.constant(0.0)
+    sigma = T.constant(1.0)
     p = Normal(mu=mu, sigma=sigma)
-
-
-def test_mixin_invalid_parameters():
-    # If external, they need to be bound
-    mu = T.dscalar()
-    sigma = T.dscalar()
-    assert_raises(ValueError, Normal, mu=mu, sigma=sigma)
-
-    # Even if they are composed
-    a = T.dscalar()
-    b = theano.shared(0.0)
-    mu = a + b
-    assert_raises(ValueError, Normal, mu=mu)
+    assert_equal(len(p.parameters_), 0)
+    assert_equal(len(p.constants_), 2)
+    assert_true(mu in p.constants_)
+    assert_true(sigma in p.constants_)
 
 
 def test_mixin_sklearn_params():
@@ -70,6 +63,7 @@ def test_mixin_sklearn_params():
     p = Normal(mu=0.0, sigma=1.0)
     params = p.get_params()
     assert_equal(len(params), 3)
+    print(params)
     assert_true("random_state" in params)
     assert_true("mu" in params)
     assert_true("sigma" in params)

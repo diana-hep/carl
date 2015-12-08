@@ -9,32 +9,35 @@ from sklearn.utils import check_random_state
 
 import theano
 import theano.tensor as T
-from theano import Constant
-from theano import Variable
 from theano.gof import graph
 from theano.tensor.sharedvar import SharedVariable
 
 # ???: define the bounds of the parameters
 
 def check_parameter(name, value):
-    # Accept expressions only if they depend on bound variables
-    if isinstance(value, Variable):
+    parameters = set()
+    constants = set()
+    observeds = set()
+
+    if isinstance(value, SharedVariable):
+        parameters.add(value)
+    elif isinstance(value, T.TensorConstant):
+        constants.add(value)
+    elif isinstance(value, T.TensorVariable):
         inputs = graph.inputs([value])
+
         for var in inputs:
-            if (not isinstance(var, SharedVariable) and
-                not isinstance(var, Constant)):
-                raise ValueError("Variable {} is free, or depends on a "
-                                 "free variable.".format(value))
-
-    # Accept constants
-    elif isinstance(value, Constant):
-        pass
-
-    # Accept raw values, and store them in a shared variable
+            if isinstance(var, SharedVariable):
+                parameters.add(var)
+            elif isinstance(var, T.TensorConstant):
+                constants.add(var)
+            elif isinstance(var, T.TensorVariable):
+                observeds.add(var)
     else:
         value = theano.shared(value, name=name)
+        parameters.add(value)
 
-    return value
+    return value, parameters, constants, observeds
 
 
 class DistributionMixin(BaseEstimator):
@@ -43,21 +46,24 @@ class DistributionMixin(BaseEstimator):
         self.random_state = random_state
 
         # Validate parameters of the distribution
-        self.parameters_ = {}
+        self.parameters_ = set()        # base parameters
+        self.constants_ = set()         # base constants
+        self.observeds_ = set()         # base observeds
+
         for name, value in parameters.items():
-            setattr(self, name, check_parameter(name, value))
-            self.parameters_[name] = getattr(self, name)
+            v, p, c, o = check_parameter(name, value)
+            setattr(self, name, v)
+
+            for p_i in p:
+                self.parameters_.add(p_i)
+            for c_i in c:
+                self.constants_.add(c_i)
+            for o_i in o:
+                self.observeds_.add(o_i)
 
         # Default observed variable is a scalar
         self.X = T.dmatrix(name="X")
-        self.observed_ = {"X": self.X}
-
-    # Distribution interface
-    def rvs(n_samples):
-        raise NotImplementedError
-
-    def pdf(self, X):
-        raise NotImplementedError
+        self.observeds_.add(self.X)
 
     # Scikit-Learn estimator interface
     def fit(self, X, y=None):
@@ -71,7 +77,9 @@ class DistributionMixin(BaseEstimator):
 
     def set_params(self, **params):
         for name, value in params.items():
-            if name in self.parameters_:
-                getattr(self, name).set_value(value)
+            var = getattr(self, name, None)
+
+            if var is not None:
+                var.set_value(value)
             else:
                 super(DistributionMixin, self).set_params(**{name: value})
