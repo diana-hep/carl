@@ -69,7 +69,8 @@ class DistributionMixin(BaseEstimator):
         self.observeds_.add(self.X)
 
     def make_(self, expression, name):
-        # XXX: check name is not used
+        if hasattr(self, name):
+            raise ValueError("Attribute {} already exists!")
 
         func = theano.function(
             [theano.Param(v, name=v.name) for v in self.observeds_],

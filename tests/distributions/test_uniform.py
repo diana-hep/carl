@@ -26,6 +26,8 @@ def check_uniform(low, high):
                               p_scipy.pdf(X.ravel()))
     assert_array_almost_equal(p_carl.cdf(X).ravel(),
                               p_scipy.cdf(X.ravel()))
+    assert_array_almost_equal(-np.log(p_carl.pdf(X)),
+                              p_carl.nnlf(X))
 
 
 def test_uniform():

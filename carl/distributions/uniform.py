@@ -24,6 +24,12 @@ class Uniform(DistributionMixin):
                              0., 1. / (self.high - self.low))
         self.make_(self.pdf_, "pdf")
 
+        # -log pdf
+        self.nnlf_ = T.switch(T.or_(T.lt(self.X, self.low),
+                                   T.ge(self.X, self.high)),
+                              np.inf, T.log(self.high - self.low))
+        self.make_(self.nnlf_, "nnlf")
+
         # cdf
         self.cdf_ = T.switch(T.lt(self.X, self.low), 0.,
                              T.switch(T.lt(self.X, self.high),

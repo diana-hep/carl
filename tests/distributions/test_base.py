@@ -66,7 +66,7 @@ def test_mixin_composition():
     # Compose parameters with observed variables
     a = theano.shared(1.0)
     b = theano.shared(0.0)
-    y = T.dvector(name="y")
+    y = T.dmatrix(name="y")
     p = Normal(mu=a * y + b)
     assert_equal(len(p.parameters_), 3)
     assert_true(a in p.parameters_)
