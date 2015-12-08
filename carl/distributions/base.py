@@ -28,23 +28,16 @@ class DistributionMixin(BaseEstimator):
 
         # Default observed variable is a scalar
         self.X = T.dmatrix(name="X")
-        self.observed_ = {}
-        self.observed_["X"] = self.X
+        self.observed_ = {"X": self.X}
 
-    # distribution methods
+    # Distribution interface
     def rvs(n_samples):
         raise NotImplementedError
 
     def pdf(self, X):
         raise NotImplementedError
 
-    def cdf(self, X):
-        raise NotImplementedError
-
-    def nnlf(self, X):
-        raise NotImplementedError
-
-    # sklearn methods
+    # Scikit-Learn estimator interface
     def fit(self, X, y=None):
         raise NotImplementedError
 

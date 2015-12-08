@@ -10,15 +10,15 @@ from sklearn.utils import check_random_state
 import theano
 import theano.tensor as T
 
-from carl.distributions import Normal
+from carl.distributions import Uniform
 
 
-def test_normal():
+def test_uniform():
     rng = check_random_state(1)
 
-    p_carl = Normal(mu=0.0, sigma=1.0)
-    p_scipy = st.norm(loc=0.0, scale=1.0)
-    X = rng.rand(10, 1)
+    p_carl = Uniform(low=0.0, high=1.0)
+    p_scipy = st.uniform(loc=0.0, scale=1.0)
+    X =  3 * rng.rand(10, 1) - 1
 
     assert_array_almost_equal(p_carl.pdf(X).ravel(),
                               p_scipy.pdf(X.ravel()))

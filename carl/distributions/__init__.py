@@ -8,5 +8,6 @@
 
 from .base import DistributionMixin
 from .normal import Normal
+from .uniform import Uniform
 
-__all__ = ("DistributionMixin", "Normal")
+__all__ = ("DistributionMixin", "Normal", "Uniform")
