@@ -11,6 +11,7 @@ from sklearn.base import BaseEstimator
 from sklearn.utils import check_random_state
 
 from theano.gof import graph
+from theano.tensor.shared_randomstreams import RandomStreams
 from theano.tensor.sharedvar import SharedVariable
 
 # ???: define the bounds of the parameters
@@ -41,6 +42,13 @@ def check_parameter(name, value):
         parameters.add(value)
 
     return value, parameters, constants, observeds
+
+
+def check_random_state(random_state):
+    if isinstance(random_state, RandomStreams):
+        return random_state
+    else:
+        return RandomStreams(seed=random_state)
 
 
 class DistributionMixin(BaseEstimator):

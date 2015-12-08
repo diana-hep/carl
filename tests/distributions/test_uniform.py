@@ -9,7 +9,10 @@ import scipy.stats as st
 import theano
 import theano.tensor as T
 
+from nose.tools import assert_true
 from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_equal
+from numpy.testing import assert_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Uniform
@@ -33,3 +36,19 @@ def check_uniform(low, high):
 def test_uniform():
     for low, high in [(0., 1.), (0., 2.), (1., 5.), (-1., -0.5)]:
         yield check_uniform, low, high
+
+
+def test_rvs():
+    p = Uniform(low=-10, high=10, random_state=0)
+    samples = p.rvs(100)
+    assert_equal(samples.shape, (100, 1))
+    assert_true(np.all(samples < 10))
+    assert_true(np.all(samples > -10))
+
+    q = Uniform(low=-10, high=10, random_state=0)
+    samples2 = q.rvs(100)
+    assert_array_equal(samples, samples2)
+
+    q = Uniform(low=-10, high=10, random_state=1)
+    samples2 = q.rvs(100)
+    assert_true(np.all(samples != samples2))
