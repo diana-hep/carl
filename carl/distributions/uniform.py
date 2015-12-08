@@ -5,9 +5,9 @@
 # more details.
 
 import numpy as np
-
 import theano
 import theano.tensor as T
+
 from theano.gof import graph
 
 from . import DistributionMixin
@@ -22,15 +22,11 @@ class Uniform(DistributionMixin):
         self.pdf_ = T.switch(T.or_(T.lt(self.X, self.low),
                                    T.ge(self.X, self.high)),
                              0., 1. / (self.high - self.low))
-        self.pdf = theano.function([theano.Param(v, name=v.name)
-                                       for v in self.observeds_],
-                                   self.pdf_, allow_input_downcast=True)
+        self.make_(self.pdf_, "pdf")
 
         # cdf
         self.cdf_ = T.switch(T.lt(self.X, self.low), 0.,
                              T.switch(T.lt(self.X, self.high),
                                       (self.X - self.low) / (self.high - self.low),
                                       1))
-        self.cdf = theano.function([theano.Param(v, name=v.name)
-                                       for v in self.observeds_],
-                                   self.cdf_, allow_input_downcast=True)
+        self.make_(self.cdf_, "cdf")

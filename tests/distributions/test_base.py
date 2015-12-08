@@ -4,20 +4,20 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-from carl.distributions import DistributionMixin
-from carl.distributions import Normal
-
 import numpy as np
-from numpy.testing import assert_equal, assert_raises
-from nose.tools import assert_true
-
 import theano
 import theano.tensor as T
+
+from nose.tools import assert_true
+from numpy.testing import assert_equal, assert_raises
 from theano.tensor import TensorVariable
 from theano.tensor.sharedvar import SharedVariable
 
+from carl.distributions import DistributionMixin
+from carl.distributions import Normal
 
-def test_mixin_parameters():
+
+def test_mixin_base():
     # Check raw parameters
     p = Normal(mu=0.0, sigma=1.0)
     assert_true(isinstance(p, DistributionMixin))
@@ -32,6 +32,8 @@ def test_mixin_parameters():
     assert_true(p.X in p.observeds_)
     assert_true(isinstance(p.X, TensorVariable))
 
+
+def test_mixin_external():
     # Check external parameters
     mu = theano.shared(0.0)
     sigma = theano.shared(1.0)
@@ -39,15 +41,8 @@ def test_mixin_parameters():
     assert_equal(mu, p.mu)
     assert_equal(sigma, p.sigma)
 
-    # Check composed expressions as parameters
-    a = theano.shared(0.0)
-    b = theano.shared(-1.0)
-    mu = a + b - 1.0
-    sigma = T.abs_(a * b)
-    p = Normal(mu=mu, sigma=sigma)
-    assert_true(a in p.parameters_)
-    assert_true(b in p.parameters_)
 
+def test_mixin_constants():
     # Check with constants
     mu = T.constant(0.0)
     sigma = T.constant(1.0)
@@ -57,6 +52,17 @@ def test_mixin_parameters():
     assert_true(mu in p.constants_)
     assert_true(sigma in p.constants_)
 
+
+def test_mixin_composition():
+    # Check composed expressions as parameters
+    a = theano.shared(0.0)
+    b = theano.shared(-1.0)
+    mu = a + b - 1.0
+    sigma = T.abs_(a * b)
+    p = Normal(mu=mu, sigma=sigma)
+    assert_true(a in p.parameters_)
+    assert_true(b in p.parameters_)
+
     # Compose parameters with observed variables
     a = theano.shared(1.0)
     b = theano.shared(0.0)
@@ -65,8 +71,11 @@ def test_mixin_parameters():
     assert_equal(len(p.parameters_), 3)
     assert_true(a in p.parameters_)
     assert_true(b in p.parameters_)
+    assert_true(p.sigma in p.parameters_)
+    assert_true(p.mu not in p.parameters_)
     assert_equal(len(p.observeds_), 2)
     assert_true(y in p.observeds_)
+    assert_true(p.X in p.observeds_)
 
 
 def test_mixin_sklearn_params():

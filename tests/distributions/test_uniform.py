@@ -4,11 +4,13 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-from numpy.testing import assert_array_almost_equal
+import numpy as np
 import scipy.stats as st
-from sklearn.utils import check_random_state
 import theano
 import theano.tensor as T
+
+from numpy.testing import assert_array_almost_equal
+from sklearn.utils import check_random_state
 
 from carl.distributions import Uniform
 

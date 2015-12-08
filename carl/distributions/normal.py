@@ -5,9 +5,9 @@
 # more details.
 
 import numpy as np
-
 import theano
 import theano.tensor as T
+
 from theano.gof import graph
 
 from . import DistributionMixin
@@ -21,13 +21,14 @@ class Normal(DistributionMixin):
         # pdf
         self.pdf_ = 1. / (self.sigma * np.sqrt(2. * np.pi)) * \
                     T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))
-        self.pdf = theano.function([theano.Param(v, name=v.name)
-                                       for v in self.observeds_],
-                                   self.pdf_, allow_input_downcast=True)
+        self.make_(self.pdf_, "pdf")
+
+        # -log pdf
+        self.nnlf_ = T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) + \
+                     (self.X - self.mu) ** 2 / (2. * self.sigma ** 2)
+        self.make_(self.nnlf_, "nnlf")
 
         # cdf
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
                                       (self.sigma * np.sqrt(2.))))
-        self.cdf = theano.function([theano.Param(v, name=v.name)
-                                       for v in self.observeds_],
-                                   self.cdf_, allow_input_downcast=True)
+        self.make_(self.cdf_, "cdf")

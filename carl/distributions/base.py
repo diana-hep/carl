@@ -4,11 +4,12 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
+import theano
+import theano.tensor as T
+
 from sklearn.base import BaseEstimator
 from sklearn.utils import check_random_state
 
-import theano
-import theano.tensor as T
 from theano.gof import graph
 from theano.tensor.sharedvar import SharedVariable
 
@@ -32,7 +33,8 @@ def check_parameter(name, value):
             elif isinstance(var, T.TensorConstant):
                 constants.add(var)
             elif isinstance(var, T.TensorVariable):
-                # XXX require a name
+                if not var.name:
+                    raise ValueError("Observed variables must be named.")
                 observeds.add(var)
     else:
         value = theano.shared(value, name=name)
@@ -66,13 +68,17 @@ class DistributionMixin(BaseEstimator):
         self.X = T.dmatrix(name="X")
         self.observeds_.add(self.X)
 
+    def make_(self, expression, name):
+        # XXX: check name is not used
+
+        func = theano.function(
+            [theano.Param(v, name=v.name) for v in self.observeds_],
+            expression, allow_input_downcast=True
+        )
+
+        setattr(self, name, func)
+
     # Scikit-Learn estimator interface
-    def fit(self, X, y=None):
-        raise NotImplementedError
-
-    def score(self, X):
-        raise NotImplementedError
-
     def get_params(self, deep=True):
         return super(DistributionMixin, self).get_params(deep=deep)
 
@@ -84,3 +90,9 @@ class DistributionMixin(BaseEstimator):
                 var.set_value(value)
             else:
                 super(DistributionMixin, self).set_params(**{name: value})
+
+    def fit(self, X, y=None):
+        raise NotImplementedError
+
+    def score(self, X):
+        raise NotImplementedError
