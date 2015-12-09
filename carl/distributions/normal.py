@@ -44,7 +44,7 @@ class Normal(DistributionMixin):
                                 for v in self.observeds_ if v is not self.X],
                                rvs_)
 
-        def rvs(n_samples):
-            return func(n_samples)
+        def rvs(n_samples, **kwargs):
+            return func(n_samples, **kwargs)
 
         setattr(self, "rvs", rvs)

@@ -8,8 +8,10 @@ import numpy as np
 import theano
 import theano.tensor as T
 
+from nose.tools import assert_equal
+from nose.tools import assert_in
 from nose.tools import assert_true
-from numpy.testing import assert_equal, assert_raises
+from numpy.testing import assert_raises
 from theano.tensor import TensorVariable
 from theano.tensor.sharedvar import SharedVariable
 
@@ -22,14 +24,14 @@ def test_mixin_base():
     p = Normal(mu=0.0, sigma=1.0)
     assert_true(isinstance(p, DistributionMixin))
     assert_equal(len(p.parameters_), 2)
-    assert_true(p.mu in p.parameters_)
-    assert_true(p.sigma in p.parameters_)
+    assert_in(p.mu, p.parameters_)
+    assert_in(p.sigma, p.parameters_)
     assert_true(isinstance(p.mu, SharedVariable))
     assert_true(isinstance(p.sigma, SharedVariable))
     assert_equal(p.mu.get_value(), 0.0)
     assert_equal(p.sigma.get_value(), 1.0)
     assert_equal(len(p.observeds_), 1)
-    assert_true(p.X in p.observeds_)
+    assert_in(p.X, p.observeds_)
     assert_true(isinstance(p.X, TensorVariable))
 
 
@@ -49,8 +51,8 @@ def test_mixin_constants():
     p = Normal(mu=mu, sigma=sigma)
     assert_equal(len(p.parameters_), 0)
     assert_equal(len(p.constants_), 2)
-    assert_true(mu in p.constants_)
-    assert_true(sigma in p.constants_)
+    assert_in(mu, p.constants_)
+    assert_in(sigma, p.constants_)
 
 
 def test_mixin_composition():
@@ -60,8 +62,8 @@ def test_mixin_composition():
     mu = a + b - 1.0
     sigma = T.abs_(a * b)
     p = Normal(mu=mu, sigma=sigma)
-    assert_true(a in p.parameters_)
-    assert_true(b in p.parameters_)
+    assert_in(a, p.parameters_)
+    assert_in(b, p.parameters_)
 
     # Compose parameters with observed variables
     a = theano.shared(1.0)
@@ -69,13 +71,13 @@ def test_mixin_composition():
     y = T.dmatrix(name="y")
     p = Normal(mu=a * y + b)
     assert_equal(len(p.parameters_), 3)
-    assert_true(a in p.parameters_)
-    assert_true(b in p.parameters_)
-    assert_true(p.sigma in p.parameters_)
+    assert_in(a, p.parameters_)
+    assert_in(b, p.parameters_)
+    assert_in(p.sigma, p.parameters_)
     assert_true(p.mu not in p.parameters_)
     assert_equal(len(p.observeds_), 2)
-    assert_true(y in p.observeds_)
-    assert_true(p.X in p.observeds_)
+    assert_in(y, p.observeds_)
+    assert_in(p.X, p.observeds_)
 
 
 def test_mixin_sklearn_params():

@@ -52,6 +52,8 @@ def check_random_state(random_state):
 
 
 class DistributionMixin(BaseEstimator):
+    X = T.dmatrix(name="X")  # Input expression is shared by all distributions
+
     def __init__(self, random_state=None, **parameters):
         # Settings
         self.random_state = random_state
@@ -60,6 +62,8 @@ class DistributionMixin(BaseEstimator):
         self.parameters_ = set()        # base parameters
         self.constants_ = set()         # base constants
         self.observeds_ = set()         # base observeds
+
+        # XXX: check that no two variables in observeds_ have the same name
 
         for name, value in parameters.items():
             v, p, c, o = check_parameter(name, value)
@@ -73,7 +77,6 @@ class DistributionMixin(BaseEstimator):
                 self.observeds_.add(o_i)
 
         # Default observed variable is a scalar
-        self.X = T.dmatrix(name="X")
         self.observeds_.add(self.X)
 
     def make_(self, expression, name):

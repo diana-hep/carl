@@ -47,7 +47,7 @@ class Uniform(DistributionMixin):
                                rng.uniform(size=(n_samples, 1),
                                            low=self.low, high=self.high))
 
-        def rvs(n_samples):
-            return func(n_samples)
+        def rvs(n_samples, **kwargs):
+            return func(n_samples, **kwargs)
 
         setattr(self, "rvs", rvs)
