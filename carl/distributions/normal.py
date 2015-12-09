@@ -11,6 +11,7 @@ import theano.tensor as T
 from theano.gof import graph
 
 from . import DistributionMixin
+from .base import check_random_state
 
 
 class Normal(DistributionMixin):
@@ -32,3 +33,18 @@ class Normal(DistributionMixin):
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
                                       (self.sigma * np.sqrt(2.))))
         self.make_(self.cdf_, "cdf")
+
+        # rvs
+        n_samples = T.iscalar()
+        rng = check_random_state(self.random_state)
+        u = rng.uniform(size=(n_samples, 1), low=0., high=1.)
+        rvs_ = self.mu + self.sigma * np.sqrt(2.) * T.erfinv(2 * u - 1)
+        func = theano.function([n_samples] +
+                               [theano.Param(v, name=v.name)
+                                for v in self.observeds_ if v is not self.X],
+                               rvs_)
+
+        def rvs(n_samples):
+            return func(n_samples)
+
+        setattr(self, "rvs", rvs)

@@ -9,6 +9,7 @@ import scipy.stats as st
 import theano
 import theano.tensor as T
 
+from nose.tools import assert_less_equal
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
@@ -33,3 +34,16 @@ def check_normal(mu, sigma):
 def test_normal():
     for mu, sigma in [(0., 1.), (1., 1.), (0., 2.)]:
         yield check_normal, mu, sigma
+
+
+def check_rvs(mu, sigma, random_state):
+    p = Normal(mu=mu, sigma=sigma, random_state=random_state)
+    samples = p.rvs(1000)
+    assert_less_equal(np.abs(np.mean(samples) - mu), 0.05)
+    assert_less_equal(np.abs(np.std(samples) - sigma), 0.05)
+
+
+def test_rvs():
+    for mu, sigma, random_state in [(0, 1, 0), (1, 1, 1),
+                                    (2, 2, 3), (-1, 0.5, 4)]:
+        yield check_rvs, mu, sigma, random_state

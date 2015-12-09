@@ -41,7 +41,9 @@ class Uniform(DistributionMixin):
         # rvs
         n_samples = T.iscalar()
         rng = check_random_state(self.random_state)
-        func = theano.function([n_samples],
+        func = theano.function([n_samples] +
+                               [theano.Param(v, name=v.name)
+                                for v in self.observeds_ if v is not self.X],
                                rng.uniform(size=(n_samples, 1),
                                            low=self.low, high=self.high))
 
