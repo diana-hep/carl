@@ -95,10 +95,15 @@ class DistributionMixin(BaseEstimator):
         for name, value in params.items():
             var = getattr(self, name, None)
 
-            if var is not None:
+            if isinstance(var, SharedVariable):  # FIXME this is broken
                 var.set_value(value)
+            elif isinstance(var, T.TensorVariable):
+                raise ValueError("Only shared variables can be updated.")
             else:
                 super(DistributionMixin, self).set_params(**{name: value})
+
+        # XXX: shall we also replacement of variables and
+        #      recompile all expressions instead?
 
     def fit(self, X, y=None):
         raise NotImplementedError
