@@ -60,3 +60,9 @@ class Mixture(DistributionMixin):
         for i in range(1, len(self.components)):
             self.pdf_ = self.pdf_ + self.weights[i] * self.components[i].pdf_
         self.make_(self.pdf_, "pdf")
+
+        # cdf
+        self.cdf_ = self.weights[0] * self.components[0].cdf_
+        for i in range(1, len(self.components)):
+            self.cdf_ = self.cdf_ + self.weights[i] * self.components[i].cdf_
+        self.make_(self.cdf_, "cdf")

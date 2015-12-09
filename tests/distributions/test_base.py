@@ -4,6 +4,7 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
+import inspect
 import numpy as np
 import theano
 import theano.tensor as T
@@ -78,6 +79,13 @@ def test_mixin_composition():
     assert_equal(len(p.observeds_), 2)
     assert_in(y, p.observeds_)
     assert_in(p.X, p.observeds_)
+
+    # Check signatures
+    data_X = np.random.rand(10, 1)
+    data_y = np.random.rand(10, 1)
+    p.pdf(X=data_X, y=data_y)
+    p.cdf(X=data_X, y=data_y)
+    p.rvs(n_samples=10, y=data_y)
 
 
 def test_mixin_sklearn_params():
