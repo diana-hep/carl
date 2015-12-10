@@ -47,7 +47,7 @@ class Mixture(DistributionMixin):
                 for o_i in c:
                     self.observeds_.add(o_i)
 
-            else:
+            else:  # XXX enforce normalization if all weights are provided?
                 w_last = 1.
 
                 for w_i in self.weights:
