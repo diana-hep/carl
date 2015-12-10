@@ -61,8 +61,38 @@ class Mixture(DistributionMixin):
             self.pdf_ = self.pdf_ + self.weights[i] * self.components[i].pdf_
         self.make_(self.pdf_, "pdf")
 
+        # -log pdf
+        self.nnlf_ = self.weights[0] * self.components[0].pdf_
+        for i in range(1, len(self.components)):
+            self.nnlf_ = self.nnlf_ + self.weights[i] * self.components[i].nnlf_
+        self.nnlf_ = -T.log(self.nnlf_)
+        self.make_(self.nnlf_, "nnlf")
+
         # cdf
         self.cdf_ = self.weights[0] * self.components[0].cdf_
         for i in range(1, len(self.components)):
             self.cdf_ = self.cdf_ + self.weights[i] * self.components[i].cdf_
         self.make_(self.cdf_, "cdf")
+
+        # rvs
+        n_samples = T.iscalar()
+        rng = check_random_state(self.random_state)
+        u = rng.multinomial(size=(n_samples,), pvals=self.weights)
+        func = theano.function([n_samples] +
+                               [theano.Param(v, name=v.name)
+                                for v in self.observeds_ if v is not self.X],
+                               u)
+
+        def rvs(n_samples, **kwargs):
+            out = np.zeros((n_samples, 1))
+            indices = func(n_samples, **kwargs)
+
+            for j in range(len(self.components)):
+                mask = np.where(indices[:, j])[0]
+                if len(mask) > 0:
+                    out[mask, :] = self.components[j].rvs(n_samples=len(mask),
+                                                          **kwargs)
+
+            return out
+
+        setattr(self, "rvs", rvs)

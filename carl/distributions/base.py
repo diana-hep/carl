@@ -109,7 +109,9 @@ class DistributionMixin(BaseEstimator):
         #      recompile all expressions instead?
 
     def fit(self, X, y=None):
+        # XXX: todo
         raise NotImplementedError
 
     def score(self, X):
+        # XXX: todo
         raise NotImplementedError
