@@ -12,7 +12,8 @@ Note: This module is only meant to be a minimally working prototype. It
 
 from .base import DistributionMixin
 from .normal import Normal
+from .exponential import Exponential
 from .uniform import Uniform
 from .mixture import Mixture
 
-__all__ = ("DistributionMixin", "Normal", "Uniform", "Mixture")
+__all__ = ("DistributionMixin", "Normal", "Exponential", "Uniform", "Mixture")

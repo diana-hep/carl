@@ -53,7 +53,6 @@ def check_fit(mu, sigma):
     p = Normal()
     X = st.norm(loc=mu, scale=sigma).rvs(5000, random_state=0).reshape(-1, 1)
     p.fit(X)
-    print(p.mu.get_value(), p.sigma.get_value())
     assert_less_equal(np.abs(p.mu.get_value() - mu), 0.1)
     assert_less_equal(np.abs(p.sigma.get_value() - sigma), 0.1)
 

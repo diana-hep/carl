@@ -13,6 +13,7 @@ from theano.gof import graph
 from . import DistributionMixin
 from .base import check_random_state
 from .base import check_parameter
+from .base import bound
 
 
 class Mixture(DistributionMixin):
@@ -66,8 +67,11 @@ class Mixture(DistributionMixin):
         # -log pdf
         self.nnlf_ = self.weights[0] * self.components[0].pdf_
         for i in range(1, len(self.components)):
-            self.nnlf_ = self.nnlf_ + self.weights[i] * self.components[i].nnlf_
+            self.nnlf_ = self.nnlf_ + self.weights[i] * self.components[i].pdf_
         self.nnlf_ = -T.log(self.nnlf_)
+        self.nnlf_ = bound(self.nnlf_, np.inf,
+                           *([w >= 0 for w in self.weights] +
+                             [w <= 1.0 for w in self.weights]))
         self.make_(self.nnlf_, "nnlf")
 
         # cdf
