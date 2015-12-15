@@ -13,6 +13,7 @@ from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Normal
+from carl.distributions import Exponential
 from carl.distributions import Mixture
 
 
@@ -57,3 +58,19 @@ def test_mixture_pdf():
                                              (0.5, None, 0.0, 1.0, 1.0, 2.0),
                                              (0.1, 0.9, 1.0, 2.0, -1.0, 2.0)]:
         yield check_mixture_pdf, w0, w1, mu1, sigma1, mu2, sigma2
+
+
+def test_fit():
+    p1 = Normal(mu=T.constant(0.0), sigma=T.constant(2.0))
+    p2 = Normal(mu=T.constant(3.0), sigma=T.constant(2.0))
+    p3 = Exponential(inv_scale=T.constant(0.5))
+    g = theano.shared(0.5)
+    m = Mixture(components=[p1, p2, p3], weights=[g, g*g])
+
+    X = np.concatenate([st.norm(loc=0.0, scale=2.0).rvs(300, random_state=0),
+                        st.norm(loc=3.0, scale=2.0).rvs(100, random_state=1),
+                        st.expon(scale=1. / 0.5).rvs(500, random_state=2)])
+    X = X.reshape(-1, 1)
+
+    m.fit(X)
+    assert np.abs(g.eval() - 1. / 3.) < 0.05
