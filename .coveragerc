@@ -4,3 +4,5 @@
 
 [run]
 source = carl
+include = */carl/*
+omit = */setup.py

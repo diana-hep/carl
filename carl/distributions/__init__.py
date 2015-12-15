@@ -6,8 +6,9 @@
 
 """Distributions.
 
-Note: This module is only meant to be a minimally working prototype. It
-      is not meant to be a full fledged replacement of RooFit or alikes.
+Note: This module is only meant to be a minimally working prototype for
+      composing and fitting distributions. It is not meant to be a full fledged
+      replacement of RooFit or alikes.
 """
 
 from .base import DistributionMixin

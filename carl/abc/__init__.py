@@ -4,4 +4,4 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-"""Approximate Bayesian Compution (ABC)."""
+"""Approximate Bayesian Computation (ABC)."""

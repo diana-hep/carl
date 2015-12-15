@@ -27,6 +27,12 @@ class PyTest(TestCommand):
         config.read("pytest.ini")
         self.pytest_args = config.get("pytest", "addopts").split(" ")
 
+    def finalize_options(self):
+        """Finalize options."""
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
@@ -52,7 +58,7 @@ _install_requires = [
 ]
 
 _tests_require = [
-    "pytest>=2.6.1",
+    "pytest",
     "pytest-cache>=1.0",
     "pytest-cov>=1.8.0",
     "pytest-pep8>=1.0.6",
