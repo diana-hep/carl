@@ -36,6 +36,10 @@ def test_mixture_api():
     assert m.X == p1.X
     assert m.X == p2.X
 
+    m = Mixture(components=[p1, p2])
+    assert m.weights[0].eval() == 0.5
+    assert m.weights[1].eval() == 0.5
+
 
 def check_mixture_pdf(w0, w1, mu1, sigma1, mu2, sigma2):
     rng = check_random_state(1)
@@ -58,6 +62,14 @@ def test_mixture_pdf():
                                              (0.5, None, 0.0, 1.0, 1.0, 2.0),
                                              (0.1, 0.9, 1.0, 2.0, -1.0, 2.0)]:
         yield check_mixture_pdf, w0, w1, mu1, sigma1, mu2, sigma2
+
+
+def test_rvs():
+    p1 = Normal(mu=0.0, sigma=T.constant(1.0))
+    p2 = Normal(mu=2.0, sigma=2.0)
+    m = Mixture(components=[p1, p2], weights=[0.25])
+    X = m.rvs(2000)
+    assert (np.mean(X) - (0.25 * p1.mu.eval() + 0.75 * p2.mu.eval())) < 0.1
 
 
 def test_fit():
