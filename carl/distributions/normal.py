@@ -12,12 +12,13 @@ from theano.gof import graph
 
 from . import DistributionMixin
 from .base import check_random_state
+from .base import bound
 
 
 class Normal(DistributionMixin):
     def __init__(self, random_state=None, mu=0.0, sigma=1.0):
-        super(Normal, self).__init__(random_state=random_state,
-                                     mu=mu, sigma=sigma)
+        super(Normal, self).__init__(mu=mu, sigma=sigma,
+                                     random_state=random_state, optimizer=None)
 
         # pdf
         self.pdf_ = 1. / (self.sigma * np.sqrt(2. * np.pi)) * \
@@ -25,8 +26,9 @@ class Normal(DistributionMixin):
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) + \
-                     (self.X - self.mu) ** 2 / (2. * self.sigma ** 2)
+        self.nnlf_ = bound(T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
+                           (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
+                           np.inf, self.sigma > 0)
         self.make_(self.nnlf_, "nnlf")
 
         # cdf

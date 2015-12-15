@@ -32,7 +32,7 @@ def check_normal(mu, sigma):
 
 
 def test_normal():
-    for mu, sigma in [(0., 1.), (1., 1.), (0., 2.)]:
+    for mu, sigma in [(0., 1.), (-1., 1.5), (3., 2.)]:
         yield check_normal, mu, sigma
 
 
@@ -47,3 +47,17 @@ def test_rvs():
     for mu, sigma, random_state in [(0, 1, 0), (1, 1, 1),
                                     (2, 2, 3), (-1, 0.5, 4)]:
         yield check_rvs, mu, sigma, random_state
+
+
+def check_fit(mu, sigma):
+    p = Normal()
+    X = st.norm(loc=mu, scale=sigma).rvs(5000, random_state=0).reshape(-1, 1)
+    p.fit(X)
+    print(p.mu.get_value(), p.sigma.get_value())
+    assert_less_equal(np.abs(p.mu.get_value() - mu), 0.1)
+    assert_less_equal(np.abs(p.sigma.get_value() - sigma), 0.1)
+
+
+def test_fit():
+    for mu, sigma in [(0., 1.), (-1., 1.5), (3., 2.)]:
+        yield check_fit, mu, sigma

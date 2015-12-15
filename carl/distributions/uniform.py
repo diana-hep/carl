@@ -16,8 +16,8 @@ from .base import check_random_state
 
 class Uniform(DistributionMixin):
     def __init__(self, random_state=None, low=0.0, high=1.0):
-        super(Uniform, self).__init__(random_state=random_state,
-                                      low=low, high=high)
+        super(Uniform, self).__init__(low=low, high=high,
+                                      random_state=random_state, optimizer=None)
 
         # pdf
         self.pdf_ = T.switch(T.or_(T.lt(self.X, self.low),

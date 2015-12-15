@@ -16,8 +16,10 @@ from .base import check_parameter
 
 
 class Mixture(DistributionMixin):
-    def __init__(self, components, random_state=None, weights=None):
-        super(Mixture, self).__init__(random_state=random_state)
+    def __init__(self, components, weights=None,
+                       random_state=None, optimizer=None):
+        super(Mixture, self).__init__(random_state=random_state,
+                                      optimizer=optimizer)
 
         self.components = components
         self.weights = []

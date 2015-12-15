@@ -23,7 +23,7 @@ def check_uniform(low, high):
 
     p_carl = Uniform(low=low, high=high)
     p_scipy = st.uniform(loc=low, scale=high - low)
-    X =  3 * rng.rand(50, 1) - 1
+    X = 3 * rng.rand(50, 1) - 1
 
     assert_array_almost_equal(p_carl.pdf(X).ravel(),
                               p_scipy.pdf(X.ravel()))
