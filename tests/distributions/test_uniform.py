@@ -9,7 +9,6 @@ import scipy.stats as st
 import theano
 import theano.tensor as T
 
-from nose.tools import assert_true
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_equal
@@ -42,8 +41,8 @@ def test_rvs():
     p = Uniform(low=-10, high=10, random_state=0)
     samples = p.rvs(100)
     assert_equal(samples.shape, (100, 1))
-    assert_true(np.all(samples < 10))
-    assert_true(np.all(samples > -10))
+    assert np.all(samples < 10)
+    assert np.all(samples > -10)
 
     q = Uniform(low=-10, high=10, random_state=0)
     samples2 = q.rvs(100)
@@ -51,4 +50,4 @@ def test_rvs():
 
     q = Uniform(low=-10, high=10, random_state=1)
     samples2 = q.rvs(100)
-    assert_true(np.all(samples != samples2))
+    assert np.all(samples != samples2)

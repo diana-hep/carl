@@ -9,7 +9,6 @@ import scipy.stats as st
 import theano
 import theano.tensor as T
 
-from nose.tools import assert_less_equal
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
@@ -39,7 +38,7 @@ def test_exponential():
 def check_rvs(inv_scale, random_state):
     p = Exponential(inv_scale=inv_scale, random_state=random_state)
     samples = p.rvs(1000)
-    assert_less_equal(np.abs(np.mean(samples) - 1. / inv_scale), 0.05)
+    assert np.abs(np.mean(samples) - 1. / inv_scale) <= 0.05
 
 
 def test_rvs():
@@ -50,10 +49,10 @@ def test_rvs():
 
 def check_fit(inv_scale):
     p = Exponential()
-    X = st.expon(scale = 1. / inv_scale).rvs(5000,
-                                             random_state=0).reshape(-1, 1)
+    X = st.expon(scale=1. / inv_scale).rvs(5000,
+                                           random_state=0).reshape(-1, 1)
     p.fit(X)
-    assert_less_equal(np.abs(p.inv_scale.get_value() - inv_scale), 0.1)
+    assert np.abs(p.inv_scale.get_value() - inv_scale) <= 0.1
 
 
 def test_fit():
