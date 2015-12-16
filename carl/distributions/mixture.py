@@ -31,6 +31,10 @@ class Mixture(DistributionMixin):
         if len(weights) == len(components) - 1:
             weights.append(None)
 
+        if len(weights) != len(components):
+            raise ValueError("Mixture components and weights must be in "
+                             "equal number.")
+
         for i, (component, weight) in enumerate(zip(components, weights)):
             for p_i in component.parameters_:
                 self.parameters_.add(p_i)
@@ -46,8 +50,8 @@ class Mixture(DistributionMixin):
                 for p_i in p:
                     self.parameters_.add(p_i)
                 for c_i in c:
-                    self.constants._add(c_i)
-                for o_i in c:
+                    self.constants_.add(c_i)
+                for o_i in o:
                     self.observeds_.add(o_i)
 
             else:  # XXX enforce normalization if all weights are provided?
@@ -56,7 +60,7 @@ class Mixture(DistributionMixin):
                 for w_i in self.weights:
                     w_last = w_last - w_i
 
-                self.weights.append(w_last)
+                self.weights.append(w_last) 
 
         # pdf
         self.pdf_ = self.weights[0] * self.components[0].pdf_

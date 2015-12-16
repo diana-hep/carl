@@ -51,9 +51,11 @@ def test_rvs():
 def check_fit(mu, sigma):
     p = Normal()
     X = st.norm(loc=mu, scale=sigma).rvs(5000, random_state=0).reshape(-1, 1)
+    s0 = p.score(X)
     p.fit(X)
     assert np.abs(p.mu.get_value() - mu) <= 0.1
     assert np.abs(p.sigma.get_value() - sigma) <= 0.1
+    assert p.score(X) <= s0
 
 
 def test_fit():

@@ -9,6 +9,7 @@ import scipy.stats as st
 import theano
 import theano.tensor as T
 
+from numpy.testing import assert_raises
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
@@ -39,6 +40,13 @@ def test_mixture_api():
     m = Mixture(components=[p1, p2])
     assert m.weights[0].eval() == 0.5
     assert m.weights[1].eval() == 0.5
+
+    y = T.dscalar(name="y")
+    w1 = T.constant(0.25)
+    w2 = y * 2
+    m = Mixture(components=[p1, p2], weights=[w1, w2])
+
+    assert_raises(ValueError, Mixture, components=[p1, p1, p1], weights=[1.0])
 
 
 def check_mixture_pdf(w0, w1, mu1, sigma1, mu2, sigma2):
@@ -83,6 +91,8 @@ def test_fit():
                         st.norm(loc=3.0, scale=2.0).rvs(100, random_state=1),
                         st.expon(scale=1. / 0.5).rvs(500, random_state=2)])
     X = X.reshape(-1, 1)
+    s0 = m.score(X)
 
     m.fit(X)
     assert np.abs(g.eval() - 1. / 3.) < 0.05
+    assert m.score(X) <= s0

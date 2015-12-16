@@ -112,7 +112,8 @@ class DistributionMixin(BaseEstimator):
 
             if isinstance(var, SharedVariable):
                 var.set_value(value)
-            elif isinstance(var, T.TensorVariable):
+            elif (isinstance(var, T.TensorVariable) or
+                  isinstance(var, T.TensorConstant)):
                 raise ValueError("Only shared variables can be updated.")
             else:
                 super(DistributionMixin, self).set_params(**{name: value})

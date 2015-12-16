@@ -84,6 +84,12 @@ def test_mixin_composition():
     p.cdf(X=data_X, y=data_y)
     p.rvs(n_samples=10, y=data_y)
 
+    # Check error
+    a = theano.shared(1.0)
+    b = theano.shared(0.0)
+    y = T.dmatrix()  # y must be named
+    assert_raises(ValueError, Normal, mu=a * y + b)
+
 
 def test_mixin_sklearn_params():
     # get_params
@@ -107,3 +113,7 @@ def test_mixin_sklearn_params():
     new_mu = p.get_params()["mu"]
     assert old_mu is new_mu
     assert new_mu.get_value() == 42.0
+
+    # check errors
+    p = Normal(mu=T.constant(0.0), sigma=1.0)
+    assert_raises(ValueError, p.set_params, mu=1.0)
