@@ -22,9 +22,9 @@ def check_normal(mu, sigma):
     p_scipy = st.norm(loc=mu, scale=sigma)
     X = rng.rand(50, 1)
 
-    assert_array_almost_equal(p_carl.pdf(X).ravel(),
+    assert_array_almost_equal(p_carl.pdf(X),
                               p_scipy.pdf(X.ravel()))
-    assert_array_almost_equal(p_carl.cdf(X).ravel(),
+    assert_array_almost_equal(p_carl.cdf(X),
                               p_scipy.cdf(X.ravel()))
     assert_array_almost_equal(-np.log(p_carl.pdf(X)),
                               p_carl.nnlf(X))

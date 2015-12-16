@@ -21,19 +21,22 @@ class Normal(DistributionMixin):
                                      random_state=random_state, optimizer=None)
 
         # pdf
-        self.pdf_ = 1. / (self.sigma * np.sqrt(2. * np.pi)) * \
-                    T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))
+        self.pdf_ = (
+            (1. / np.sqrt(2. * np.pi)) / self.sigma *
+            T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))).ravel()
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = bound(T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
-                           (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
-                           np.inf, self.sigma > 0)
+        self.nnlf_ = bound(
+            T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
+                (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
+            np.inf,
+            self.sigma > 0).ravel()
         self.make_(self.nnlf_, "nnlf")
 
         # cdf
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
-                                      (self.sigma * np.sqrt(2.))))
+                                      (self.sigma * np.sqrt(2.)))).ravel()
         self.make_(self.cdf_, "cdf")
 
         # rvs

@@ -22,18 +22,21 @@ class Exponential(DistributionMixin):
                                           optimizer=None)
 
         # pdf
-        self.pdf_ = T.switch(T.lt(self.X, 0.0),
-                             0.0,
-                             self.inv_scale * T.exp(-self.inv_scale * self.X))
+        self.pdf_ = T.switch(
+            T.lt(self.X, 0.0),
+            0.0,
+            self.inv_scale * T.exp(-self.inv_scale * self.X)).ravel()
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = bound(-T.log(self.inv_scale) + self.inv_scale * self.X,
-                           np.inf, self.inv_scale > 0.0)
+        self.nnlf_ = bound(
+            -T.log(self.inv_scale) + self.inv_scale * self.X,
+            np.inf,
+            self.inv_scale > 0.0).ravel()
         self.make_(self.nnlf_, "nnlf")
 
         # cdf
-        self.cdf_ = 1 - T.exp(-self.inv_scale * self.X)
+        self.cdf_ = (1 - T.exp(-self.inv_scale * self.X)).ravel()
         self.make_(self.cdf_, "cdf")
 
         # rvs
