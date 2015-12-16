@@ -16,5 +16,11 @@ from .normal import Normal
 from .exponential import Exponential
 from .uniform import Uniform
 from .mixture import Mixture
+from .kde import KernelDensity
 
-__all__ = ("DistributionMixin", "Normal", "Exponential", "Uniform", "Mixture")
+__all__ = ("DistributionMixin",
+           "Normal",
+           "Exponential",
+           "Uniform",
+           "Mixture", 
+           "KernelDensity")
