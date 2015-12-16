@@ -11,10 +11,9 @@ import theano.tensor as T
 from scipy.optimize import minimize
 
 from sklearn.base import BaseEstimator
-from sklearn.utils import check_random_state as check_random_state_sklearn
+from sklearn.utils import check_random_state
 
 from theano.gof import graph
-from theano.tensor.shared_randomstreams import RandomStreams
 from theano.tensor.sharedvar import SharedVariable
 
 # ???: define the bounds of the parameters
@@ -45,15 +44,6 @@ def check_parameter(name, value):
         parameters.add(value)
 
     return value, parameters, constants, observeds
-
-
-def check_random_state_theano(random_state):
-    if isinstance(random_state, RandomStreams):
-        return random_state
-    elif isinstance(random_state, np.random.RandomState):
-        random_state = random_state.randint(np.iinfo(np.int32).max)
-
-    return RandomStreams(seed=random_state)
 
 
 def bound(expression, out, *predicates):
@@ -111,7 +101,7 @@ class DistributionMixin(BaseEstimator):
         setattr(self, name, func)
 
     def rvs(self, n_samples, **kwargs):
-        rng = check_random_state_sklearn(self.random_state)
+        rng = check_random_state(self.random_state)
         p = rng.rand(n_samples, 1)
         return self.ppf(p, **kwargs)
 

@@ -9,11 +9,20 @@ import theano
 import theano.tensor as T
 
 from theano.gof import graph
+from theano.tensor.shared_randomstreams import RandomStreams
 
 from . import DistributionMixin
-from .base import check_random_state_theano
 from .base import check_parameter
 from .base import bound
+
+
+def check_random_state(random_state):
+    if isinstance(random_state, RandomStreams):
+        return random_state
+    elif isinstance(random_state, np.random.RandomState):
+        random_state = random_state.randint(np.iinfo(np.int32).max)
+
+    return RandomStreams(seed=random_state)
 
 
 class Mixture(DistributionMixin):
@@ -86,7 +95,7 @@ class Mixture(DistributionMixin):
 
         # randc
         n_samples = T.iscalar()
-        rng = check_random_state_theano(self.random_state)
+        rng = check_random_state(self.random_state)
         self.randc_ = rng.multinomial(size=(n_samples,), pvals=self.weights)
         self.make_(self.randc_, "randc", args=[n_samples])
 
