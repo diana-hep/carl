@@ -11,7 +11,7 @@ import theano.tensor as T
 from theano.gof import graph
 
 from . import DistributionMixin
-from .base import check_random_state
+from .base import check_random_state_theano
 from .base import check_parameter
 from .base import bound
 
@@ -60,7 +60,7 @@ class Mixture(DistributionMixin):
                 for w_i in self.weights:
                     w_last = w_last - w_i
 
-                self.weights.append(w_last) 
+                self.weights.append(w_last)
 
         # pdf
         self.pdf_ = self.weights[0] * self.components[0].pdf_
@@ -84,25 +84,20 @@ class Mixture(DistributionMixin):
             self.cdf_ = self.cdf_ + self.weights[i] * self.components[i].cdf_
         self.make_(self.cdf_, "cdf")
 
-        # rvs
+        # randc
         n_samples = T.iscalar()
-        rng = check_random_state(self.random_state)
-        u = rng.multinomial(size=(n_samples,), pvals=self.weights)
-        func = theano.function([n_samples] +
-                               [theano.Param(v, name=v.name)
-                                for v in self.observeds_ if v is not self.X],
-                               u)
+        rng = check_random_state_theano(self.random_state)
+        self.randc_ = rng.multinomial(size=(n_samples,), pvals=self.weights)
+        self.make_(self.randc_, "randc", args=[n_samples])
 
-        def rvs(n_samples, **kwargs):
-            out = np.zeros((n_samples, 1))
-            indices = func(n_samples, **kwargs)
+    def rvs(self, n_samples, **kwargs):
+        indices = self.randc(n_samples, **kwargs)
+        out = np.zeros((n_samples, 1))
 
-            for j in range(len(self.components)):
-                mask = np.where(indices[:, j])[0]
-                if len(mask) > 0:
-                    out[mask, :] = self.components[j].rvs(n_samples=len(mask),
-                                                          **kwargs)
+        for j in range(len(self.components)):
+            mask = np.where(indices[:, j])[0]
+            if len(mask) > 0:
+                out[mask, :] = self.components[j].rvs(n_samples=len(mask),
+                                                      **kwargs)
 
-            return out
-
-        setattr(self, "rvs", rvs)
+        return out

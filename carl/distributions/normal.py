@@ -11,7 +11,6 @@ import theano.tensor as T
 from theano.gof import graph
 
 from . import DistributionMixin
-from .base import check_random_state
 from .base import bound
 
 
@@ -31,7 +30,7 @@ class Normal(DistributionMixin):
             T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
                 (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
             np.inf,
-            self.sigma > 0).ravel()
+            self.sigma > 0.).ravel()
         self.make_(self.nnlf_, "nnlf")
 
         # cdf
@@ -39,17 +38,7 @@ class Normal(DistributionMixin):
                                       (self.sigma * np.sqrt(2.)))).ravel()
         self.make_(self.cdf_, "cdf")
 
-        # rvs
-        n_samples = T.iscalar()
-        rng = check_random_state(self.random_state)
-        u = rng.uniform(size=(n_samples, 1), low=0., high=1.)
-        rvs_ = self.mu + self.sigma * np.sqrt(2.) * T.erfinv(2 * u - 1)
-        func = theano.function([n_samples] +
-                               [theano.Param(v, name=v.name)
-                                for v in self.observeds_ if v is not self.X],
-                               rvs_)
-
-        def rvs(n_samples, **kwargs):
-            return func(n_samples, **kwargs)
-
-        setattr(self, "rvs", rvs)
+        # ppf
+        self.ppf_ = (self.mu + \
+                     np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
+        self.make_(self.ppf_, "ppf", args=[self.p])

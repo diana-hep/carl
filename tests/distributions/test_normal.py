@@ -37,7 +37,7 @@ def test_normal():
 
 def check_rvs(mu, sigma, random_state):
     p = Normal(mu=mu, sigma=sigma, random_state=random_state)
-    samples = p.rvs(1000)
+    samples = p.rvs(10000)
     assert np.abs(np.mean(samples) - mu) <= 0.05
     assert np.abs(np.std(samples) - sigma) <= 0.05
 

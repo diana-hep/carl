@@ -11,7 +11,6 @@ import theano.tensor as T
 from theano.gof import graph
 
 from . import DistributionMixin
-from .base import check_random_state
 
 
 class Uniform(DistributionMixin):
@@ -43,16 +42,6 @@ class Uniform(DistributionMixin):
                 1.)).ravel()
         self.make_(self.cdf_, "cdf")
 
-        # rvs
-        n_samples = T.iscalar()
-        rng = check_random_state(self.random_state)
-        func = theano.function([n_samples] +
-                               [theano.Param(v, name=v.name)
-                                for v in self.observeds_ if v is not self.X],
-                               rng.uniform(size=(n_samples, 1),
-                                           low=self.low, high=self.high))
-
-        def rvs(n_samples, **kwargs):
-            return func(n_samples, **kwargs)
-
-        setattr(self, "rvs", rvs)
+        # ppf
+        self.ppf_ = (self.p - self.low) / (self.high - self.low)
+        self.make_(self.ppf_, "ppf", args=[self.p])

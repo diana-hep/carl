@@ -11,7 +11,7 @@ import theano.tensor as T
 from scipy.optimize import minimize
 
 from sklearn.base import BaseEstimator
-from sklearn.utils import check_random_state
+from sklearn.utils import check_random_state as check_random_state_sklearn
 
 from theano.gof import graph
 from theano.tensor.shared_randomstreams import RandomStreams
@@ -47,11 +47,13 @@ def check_parameter(name, value):
     return value, parameters, constants, observeds
 
 
-def check_random_state(random_state):
+def check_random_state_theano(random_state):
     if isinstance(random_state, RandomStreams):
         return random_state
-    else:
-        return RandomStreams(seed=random_state)
+    elif isinstance(random_state, np.random.RandomState):
+        random_state = random_state.randint(np.iinfo(np.int32).max)
+
+    return RandomStreams(seed=random_state)
 
 
 def bound(expression, out, *predicates):
@@ -63,7 +65,9 @@ def bound(expression, out, *predicates):
 
 
 class DistributionMixin(BaseEstimator):
+    # Mixin interface
     X = T.dmatrix(name="X")  # Input expression is shared by all distributions
+    p = T.dmatrix(name="p")
 
     def __init__(self, random_state=None, optimizer=None, **parameters):
         # Settings
@@ -88,19 +92,28 @@ class DistributionMixin(BaseEstimator):
             for o_i in o:
                 self.observeds_.add(o_i)
 
-        # Default observed variable is a scalar
-        self.observeds_.add(self.X)
-
-    def make_(self, expression, name):
+    def make_(self, expression, name, args=None, kwargs=None):
         if hasattr(self, name):
             raise ValueError("Attribute {} already exists!")
 
+        if args is None:
+            args = [self.X]
+
+        if kwargs is None:
+            kwargs = self.observeds_
+
         func = theano.function(
-            [theano.Param(v, name=v.name) for v in self.observeds_],
-            expression, allow_input_downcast=True
+            args + [theano.Param(v, name=v.name) for v in kwargs],
+            expression,
+            allow_input_downcast=True
         )
 
         setattr(self, name, func)
+
+    def rvs(self, n_samples, **kwargs):
+        rng = check_random_state_sklearn(self.random_state)
+        p = rng.rand(n_samples, 1)
+        return self.ppf(p, **kwargs)
 
     # Scikit-Learn estimator interface
     def get_params(self, deep=True):

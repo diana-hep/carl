@@ -28,7 +28,7 @@ def test_mixture_api():
 
     assert len(m.parameters_) == 4
     assert len(m.constants_) == 1
-    assert len(m.observeds_) == 1
+    assert len(m.observeds_) == 0
 
     assert p1.mu in m.parameters_
     assert p1.sigma in m.constants_

@@ -28,8 +28,7 @@ def test_mixin_base():
     assert isinstance(p.sigma, SharedVariable)
     assert p.mu.get_value() == 0.0
     assert p.sigma.get_value() == 1.0
-    assert len(p.observeds_) == 1
-    assert p.X in p.observeds_
+    assert len(p.observeds_) == 0
     assert isinstance(p.X, TensorVariable)
 
 
@@ -73,16 +72,15 @@ def test_mixin_composition():
     assert b in p.parameters_
     assert p.sigma in p.parameters_
     assert p.mu not in p.parameters_
-    assert len(p.observeds_) == 2
+    assert len(p.observeds_) == 1
     assert y in p.observeds_
-    assert p.X in p.observeds_
 
     # Check signatures
     data_X = np.random.rand(10, 1)
     data_y = np.random.rand(10, 1)
     p.pdf(X=data_X, y=data_y)
     p.cdf(X=data_X, y=data_y)
-    p.rvs(n_samples=10, y=data_y)
+    p.rvs(10, y=data_y)
 
     # Check error
     a = theano.shared(1.0)
