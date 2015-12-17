@@ -8,17 +8,21 @@ import numpy as np
 import scipy.stats as st
 import theano
 import theano.tensor as T
+import types
 
 from numpy.testing import assert_raises
+from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Normal
 from carl.distributions import Exponential
+from carl.distributions import Histogram
 from carl.distributions import Mixture
 
 
 def test_mixture_api():
+    # Check basic API
     p1 = Normal(mu=0.0, sigma=T.constant(1.0))
     p2 = Normal(mu=1.0, sigma=2.0)
     m = Mixture(components=[p1, p2], weights=[0.25])
@@ -38,15 +42,18 @@ def test_mixture_api():
     assert m.X == p2.X
 
     m = Mixture(components=[p1, p2])
-    assert m.weights[0].eval() == 0.5
-    assert m.weights[1].eval() == 0.5
+    w = m.compute_weights()
+    assert_array_equal(w, [0.5, 0.5])
 
     y = T.dscalar(name="y")
     w1 = T.constant(0.25)
     w2 = y * 2
     m = Mixture(components=[p1, p2], weights=[w1, w2])
+    assert y in m.observeds_
 
-    assert_raises(ValueError, Mixture, components=[p1, p1, p1], weights=[1.0])
+    # Check errors
+    assert_raises(ValueError, Mixture,
+                  components=[p1, p1, p1], weights=[1.0])
 
 
 def check_mixture_pdf(w0, w1, mu1, sigma1, mu2, sigma2):
@@ -96,3 +103,32 @@ def test_fit():
     m.fit(X)
     assert np.abs(g.eval() - 1. / 3.) < 0.05
     assert m.score(X) <= s0
+
+
+def test_likelihood_free_mixture():
+    p1 = Normal(random_state=1)
+    p2 = Normal(mu=2.0, random_state=1)
+    h1 = Histogram(bins=50).fit(p1.rvs(10000))
+    h2 = Histogram(bins=50).fit(p2.rvs(10000))
+    m1 = Mixture(components=[p1, p2])
+    m2 = Mixture(components=[h1, h2])
+
+    # Check whether pdf, nnlf and cdf have been overriden
+    assert isinstance(m1.pdf, theano.compile.function_module.Function)
+    assert isinstance(m1.nnlf, theano.compile.function_module.Function)
+    assert isinstance(m1.cdf, theano.compile.function_module.Function)
+    assert isinstance(m2.pdf, types.MethodType)
+    assert isinstance(m2.nnlf, types.MethodType)
+    assert isinstance(m2.cdf, types.MethodType)
+
+    # Compare pdfs
+    rng = check_random_state(1)
+    X = rng.rand(100, 1) * 10 - 5
+    assert np.mean(np.abs(m1.pdf(X) - m2.pdf(X))) < 0.05
+
+    # Test sampling
+    X = m2.rvs(10)
+    assert X.shape == (10, 1)
+
+    # Check errors
+    assert_raises(NotImplementedError, m2.fit, X)
