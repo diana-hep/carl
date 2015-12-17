@@ -21,6 +21,7 @@ from .mixture import Mixture
 
 from .histogram import Histogram
 from .kde import KernelDensity
+from .sampler import Sampler
 
 __all__ = ("DistributionMixin",
            "TheanoDistribution"
@@ -29,4 +30,5 @@ __all__ = ("DistributionMixin",
            "Uniform",
            "Mixture",
            "Histogram",
-           "KernelDensity")
+           "KernelDensity",
+           "Sampler")
