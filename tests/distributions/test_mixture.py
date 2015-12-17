@@ -83,7 +83,7 @@ def test_rvs():
 def test_fit():
     p1 = Normal(mu=T.constant(0.0), sigma=T.constant(2.0))
     p2 = Normal(mu=T.constant(3.0), sigma=T.constant(2.0))
-    p3 = Exponential(inv_scale=T.constant(0.5))
+    p3 = Exponential(inverse_scale=T.constant(0.5))
     g = theano.shared(0.5)
     m = Mixture(components=[p1, p2, p3], weights=[g, g*g])
 
