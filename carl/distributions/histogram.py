@@ -7,16 +7,17 @@
 import numpy as np
 
 from itertools import product
-
-from sklearn.base import BaseEstimator
 from sklearn.utils import check_random_state
 
+from .base import LikelihoodFreeMixin
 
-class Histogram(BaseEstimator):
+
+class Histogram(LikelihoodFreeMixin):
     def __init__(self, bins=10, range=None, random_state=None):
+        super(Histogram, self).__init__(random_state=random_state)
+
         self.bins = bins
         self.range = range
-        self.random_state = random_state
 
     def pdf(self, X):
         indices = []

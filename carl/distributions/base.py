@@ -164,3 +164,8 @@ class DistributionMixin(BaseEstimator):
 
     def score(self, X, **kwargs):
         return self.nnlf(X, **kwargs).sum()
+
+
+class LikelihoodFreeMixin(BaseEstimator):
+    def __init__(self, random_state=None):
+        self.random_state = random_state

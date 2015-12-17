@@ -12,14 +12,18 @@ Note: This module is only meant to be a minimally working prototype for
 """
 
 from .base import DistributionMixin
+from .base import LikelihoodFreeMixin
+
 from .normal import Normal
 from .exponential import Exponential
 from .uniform import Uniform
 from .mixture import Mixture
+
 from .histogram import Histogram
 from .kde import KernelDensity
 
 __all__ = ("DistributionMixin",
+           "LikelihoodFreeMixin"
            "Normal",
            "Exponential",
            "Uniform",

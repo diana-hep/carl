@@ -50,7 +50,7 @@ def test_rvs():
 def check_fit(inverse_scale):
     p = Exponential()
     X = st.expon(scale=1. / inverse_scale).rvs(5000,
-                                           random_state=0).reshape(-1, 1)
+                                               random_state=0).reshape(-1, 1)
     p.fit(X)
     assert np.abs(p.inverse_scale.get_value() - inverse_scale) <= 0.1
 

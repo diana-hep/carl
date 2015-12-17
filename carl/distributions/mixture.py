@@ -12,8 +12,12 @@ from theano.gof import graph
 from theano.tensor.shared_randomstreams import RandomStreams
 
 from . import DistributionMixin
+from . import LikelihoodFreeMixin
 from .base import check_parameter
 from .base import bound
+
+
+# XXX: disable some of the Mixture methods if components are not DistributionMixin
 
 
 def check_random_state(random_state):

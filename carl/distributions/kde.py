@@ -6,16 +6,19 @@
 
 import numpy as np
 
-from sklearn.base import BaseEstimator
 from sklearn.neighbors import KernelDensity as _KernelDensity
 from sklearn.utils import check_random_state
 
+from .base import LikelihoodFreeMixin
 
-class KernelDensity(BaseEstimator):
+
+class KernelDensity(LikelihoodFreeMixin):
     def __init__(self, bandwidth=1.0, algorithm="auto",
                  kernel="gaussian", metric="euclidean", atol=0, rtol=0,
                  breadth_first=True, leaf_size=40, metric_params=None,
                  random_state=None):
+        super(KernelDensity, self).__init__(random_state=random_state)
+
         self.algorithm = algorithm
         self.bandwidth = bandwidth
         self.kernel = kernel
@@ -25,7 +28,6 @@ class KernelDensity(BaseEstimator):
         self.breadth_first = breadth_first
         self.leaf_size = leaf_size
         self.metric_params = metric_params
-        self.random_state = random_state
 
     def pdf(self, X):
         return np.exp(self.kde_.score_samples(X))
