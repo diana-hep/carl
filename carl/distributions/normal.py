@@ -10,11 +10,11 @@ import theano.tensor as T
 
 from theano.gof import graph
 
-from . import DistributionMixin
+from . import TheanoDistribution
 from .base import bound
 
 
-class Normal(DistributionMixin):
+class Normal(TheanoDistribution):
     def __init__(self, random_state=None, mu=0.0, sigma=1.0):
         super(Normal, self).__init__(mu=mu, sigma=sigma,
                                      random_state=random_state, optimizer=None)

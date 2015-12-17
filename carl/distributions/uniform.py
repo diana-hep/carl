@@ -10,10 +10,10 @@ import theano.tensor as T
 
 from theano.gof import graph
 
-from . import DistributionMixin
+from . import TheanoDistribution
 
 
-class Uniform(DistributionMixin):
+class Uniform(TheanoDistribution):
     def __init__(self, random_state=None, low=0.0, high=1.0):
         super(Uniform, self).__init__(low=low, high=high,
                                       random_state=random_state, optimizer=None)

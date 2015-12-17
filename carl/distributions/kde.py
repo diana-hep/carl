@@ -9,10 +9,10 @@ import numpy as np
 from sklearn.neighbors import KernelDensity as _KernelDensity
 from sklearn.utils import check_random_state
 
-from .base import LikelihoodFreeMixin
+from .base import DistributionMixin
 
 
-class KernelDensity(LikelihoodFreeMixin):
+class KernelDensity(DistributionMixin):
     def __init__(self, bandwidth=1.0, algorithm="auto",
                  kernel="gaussian", metric="euclidean", atol=0, rtol=0,
                  breadth_first=True, leaf_size=40, metric_params=None,
@@ -29,20 +29,17 @@ class KernelDensity(LikelihoodFreeMixin):
         self.leaf_size = leaf_size
         self.metric_params = metric_params
 
-    def pdf(self, X):
+    def pdf(self, X, **kwargs):
         return np.exp(self.kde_.score_samples(X))
 
-    def nnlf(self, X):
+    def nnlf(self, X, **kwargs):
         return -self.kde_.score_samples(X)
 
-    def cdf(self, X):
-        raise NotImplementedError
-
-    def rvs(self, n_samples):
+    def rvs(self, n_samples, **kwargs):
         rng = check_random_state(self.random_state)
         return self.kde_.sample(n_samples=n_samples, random_state=rng)
 
-    def fit(self, X, y=None):
+    def fit(self, X, y=None, **kwargs):
         self.kde_ = _KernelDensity(bandwidth=self.bandwidth,
                                    algorithm=self.algorithm,
                                    kernel=self.kernel,
@@ -55,5 +52,5 @@ class KernelDensity(LikelihoodFreeMixin):
         self.kde_.fit(X, y=y)
         return self
 
-    def score(self, X, y=None):
+    def score(self, X, y=None, **kwargs):
         return self.kde_.score(X, y=y)

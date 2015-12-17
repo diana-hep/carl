@@ -56,12 +56,36 @@ def bound(expression, out, *predicates):
 
 class DistributionMixin(BaseEstimator):
     # Mixin interface
+    def __init__(self, random_state=None):
+        self.random_state = random_state
+
+    def pdf(self, X, **kwargs):
+        raise NotImplementedError
+
+    def nnlf(self, X, **kwargs):
+        raise NotImplementedError
+
+    def cdf(self, X, **kwargs):
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        raise NotImplementedError
+
+    def fit(self, X, y=None, **kwargs):
+        return self
+
+    def score(self, X, **kwargs):
+        return NotImplementedError
+
+
+class TheanoDistribution(DistributionMixin):
+    # Mixin interface
     X = T.dmatrix(name="X")  # Input expression is shared by all distributions
     p = T.dmatrix(name="p")
 
     def __init__(self, random_state=None, optimizer=None, **parameters):
         # Settings
-        self.random_state = random_state
+        super(TheanoDistribution, self).__init__(random_state=random_state)
         self.optimizer = optimizer
 
         # Validate parameters of the distribution
@@ -83,9 +107,6 @@ class DistributionMixin(BaseEstimator):
                 self.observeds_.add(o_i)
 
     def make_(self, expression, name, args=None, kwargs=None):
-        if hasattr(self, name):
-            raise ValueError("Attribute {} already exists!")
-
         if args is None:
             args = [self.X]
 
@@ -124,7 +145,7 @@ class DistributionMixin(BaseEstimator):
         # XXX: shall we also allow replacement of variables and
         #      recompile all expressions instead?
 
-    def fit(self, X, **kwargs):
+    def fit(self, X, y=None, **kwargs):
         shared_to_symbols = []
         for v in self.parameters_:
             w = T.TensorVariable(v.type)
@@ -164,8 +185,3 @@ class DistributionMixin(BaseEstimator):
 
     def score(self, X, **kwargs):
         return self.nnlf(X, **kwargs).sum()
-
-
-class LikelihoodFreeMixin(BaseEstimator):
-    def __init__(self, random_state=None):
-        self.random_state = random_state

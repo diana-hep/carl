@@ -10,11 +10,11 @@ import theano.tensor as T
 
 from theano.gof import graph
 
-from . import DistributionMixin
+from . import TheanoDistribution
 from .base import bound
 
 
-class Exponential(DistributionMixin):
+class Exponential(TheanoDistribution):
     def __init__(self, random_state=None, inverse_scale=1.0):
         super(Exponential, self).__init__(inverse_scale=inverse_scale,
                                           random_state=random_state,

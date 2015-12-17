@@ -9,17 +9,17 @@ import numpy as np
 from itertools import product
 from sklearn.utils import check_random_state
 
-from .base import LikelihoodFreeMixin
+from .base import DistributionMixin
 
 
-class Histogram(LikelihoodFreeMixin):
+class Histogram(DistributionMixin):
     def __init__(self, bins=10, range=None, random_state=None):
         super(Histogram, self).__init__(random_state=random_state)
 
         self.bins = bins
         self.range = range
 
-    def pdf(self, X):
+    def pdf(self, X, **kwargs):
         indices = []
 
         for j in range(X.shape[1]):
@@ -29,13 +29,10 @@ class Histogram(LikelihoodFreeMixin):
 
         return self.histogram_[indices]
 
-    def nnlf(self, X):
-        return -np.log(self.pdf(X))
+    def nnlf(self, X, **kwargs):
+        return -np.log(self.pdf(X, **kwargs))
 
-    def cdf(self, X):
-        raise NotImplementedError
-
-    def rvs(self, n_samples):
+    def rvs(self, n_samples, **kwargs):
         rng = check_random_state(self.random_state)
 
         # Draw random bins with respect to their densities
@@ -57,7 +54,7 @@ class Histogram(LikelihoodFreeMixin):
 
         return low + u * (high - low)
 
-    def fit(self, X, y=None, sample_weight=None):
+    def fit(self, X, y=None, sample_weight=None, **kwargs):
         # Compute histogram and edges
         h, e = np.histogramdd(X, bins=self.bins, range=self.range,
                               weights=sample_weight, normed=True)
@@ -74,5 +71,5 @@ class Histogram(LikelihoodFreeMixin):
 
         return self
 
-    def score(self, X, y=None):
+    def score(self, X, y=None, **kwargs):
         return self.nnlf(X)

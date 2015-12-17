@@ -8,11 +8,11 @@ import numpy as np
 import theano
 import theano.tensor as T
 
+from sklearn.utils import check_random_state
 from theano.gof import graph
-from theano.tensor.shared_randomstreams import RandomStreams
 
 from . import DistributionMixin
-from . import LikelihoodFreeMixin
+from . import TheanoDistribution
 from .base import check_parameter
 from .base import bound
 
@@ -20,16 +20,7 @@ from .base import bound
 # XXX: disable some of the Mixture methods if components are not DistributionMixin
 
 
-def check_random_state(random_state):
-    if isinstance(random_state, RandomStreams):
-        return random_state
-    elif isinstance(random_state, np.random.RandomState):
-        random_state = random_state.randint(np.iinfo(np.int32).max)
-
-    return RandomStreams(seed=random_state)
-
-
-class Mixture(DistributionMixin):
+class Mixture(TheanoDistribution):
     def __init__(self, components, weights=None,
                        random_state=None, optimizer=None):
         super(Mixture, self).__init__(random_state=random_state,
@@ -38,6 +29,7 @@ class Mixture(DistributionMixin):
         self.components = components
         self.weights = []
 
+        # Check component and weights
         if weights is None:
             weights = [1. / len(components)] * (len(components) - 1)
 
@@ -49,14 +41,17 @@ class Mixture(DistributionMixin):
                              "equal number.")
 
         for i, (component, weight) in enumerate(zip(components, weights)):
-            for p_i in component.parameters_:
-                self.parameters_.add(p_i)
-            for c_i in component.constants_:
-                self.constants_.add(c_i)
-            for o_i in component.observeds_:
-                self.observeds_.add(o_i)
+            # Add component parameters, constants and observeds
+            if isinstance(component, TheanoDistribution):
+                for p_i in component.parameters_:
+                    self.parameters_.add(p_i)
+                for c_i in component.constants_:
+                    self.constants_.add(c_i)
+                for o_i in component.observeds_:
+                    self.observeds_.add(o_i)
 
-            if weight is not None:  # XXX better placeholder for last/missing weight?
+            # Validate weights
+            if weight is not None:  # XXX better placeholder for missing weight?
                 v, p, c, o = check_parameter("w_{}".format(i), weight)
                 self.weights.append(v)
 
@@ -75,36 +70,60 @@ class Mixture(DistributionMixin):
 
                 self.weights.append(w_last)
 
-        # pdf
-        self.pdf_ = self.weights[0] * self.components[0].pdf_
-        for i in range(1, len(self.components)):
-            self.pdf_ = self.pdf_ + self.weights[i] * self.components[i].pdf_
-        self.make_(self.pdf_, "pdf")
+        # Derive and overide pdf, nnlf and cdf analytically if possible
+        if all([hasattr(c, "pdf_") for c in self.components]):
+            # pdf
+            self.pdf_ = self.weights[0] * self.components[0].pdf_
+            for i in range(1, len(self.components)):
+                self.pdf_ += self.weights[i] * self.components[i].pdf_
+            self.make_(self.pdf_, "pdf")
 
-        # -log pdf
-        self.nnlf_ = self.weights[0] * self.components[0].pdf_
-        for i in range(1, len(self.components)):
-            self.nnlf_ = self.nnlf_ + self.weights[i] * self.components[i].pdf_
-        self.nnlf_ = -T.log(self.nnlf_)
-        self.nnlf_ = bound(self.nnlf_, np.inf,
-                           *([w >= 0 for w in self.weights] +
-                             [w <= 1.0 for w in self.weights]))
-        self.make_(self.nnlf_, "nnlf")
+            # -log pdf
+            self.nnlf_ = self.weights[0] * self.components[0].pdf_
+            for i in range(1, len(self.components)):
+                self.nnlf_ += self.weights[i] * self.components[i].pdf_
+            self.nnlf_ = -T.log(self.nnlf_)
+            self.nnlf_ = bound(self.nnlf_, np.inf,
+                               *([w >= 0 for w in self.weights] +
+                                 [w <= 1.0 for w in self.weights]))
+            self.make_(self.nnlf_, "nnlf")
 
-        # cdf
-        self.cdf_ = self.weights[0] * self.components[0].cdf_
-        for i in range(1, len(self.components)):
-            self.cdf_ = self.cdf_ + self.weights[i] * self.components[i].cdf_
-        self.make_(self.cdf_, "cdf")
+        if all([hasattr(c, "cdf_") for c in self.components]):
+            # cdf
+            self.cdf_ = self.weights[0] * self.components[0].cdf_
+            for i in range(1, len(self.components)):
+                self.cdf_ += self.weights[i] * self.components[i].cdf_
+            self.make_(self.cdf_, "cdf")
 
-        # randc
-        n_samples = T.iscalar()
-        rng = check_random_state(self.random_state)
-        self.randc_ = rng.multinomial(size=(n_samples,), pvals=self.weights)
-        self.make_(self.randc_, "randc", args=[n_samples])
+        # Weight evaluation function
+        self.make_(T.stack(*self.weights), "compute_weights", args=[])
+
+    def pdf(self, X, **kwargs):
+        weights = self.compute_weights(**kwargs)
+        p = weights[0] * self.components[0].pdf(X, **kwargs)
+
+        for i in range(1, len(self.components)):
+            p += weights[i] * self.components[i].pdf(X, **kwargs)
+
+        return p
+
+    def nnlf(self, X, **kwargs):
+        return -np.log(self.pdf(X, **kwargs))
+
+    def cdf(self, X, **kwargs):
+        weights = self.compute_weights(**kwargs)
+        c = weights[0] * self.components[0].cdf(X, **kwargs)
+
+        for i in range(1, len(self.components)):
+            c += weights[i] * self.components[i].cdf(X, **kwargs)
+
+        return c
 
     def rvs(self, n_samples, **kwargs):
-        indices = self.randc(n_samples, **kwargs)
+        rng = check_random_state(self.random_state)
+        indices = rng.multinomial(1,
+                                  pvals=self.compute_weights(**kwargs),
+                                  size=n_samples)
         out = np.zeros((n_samples, 1))
 
         for j in range(len(self.components)):
@@ -114,3 +133,9 @@ class Mixture(DistributionMixin):
                                                       **kwargs)
 
         return out
+
+    def fit(self, X, y=None, **kwargs):
+        if all([hasattr(c, "nnlf_") for c in self.components]):
+            return super(Mixture, self).fit(X, y=y, **kwargs)
+        else:
+            raise NotImplementedError

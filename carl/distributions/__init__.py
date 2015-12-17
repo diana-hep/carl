@@ -12,7 +12,7 @@ Note: This module is only meant to be a minimally working prototype for
 """
 
 from .base import DistributionMixin
-from .base import LikelihoodFreeMixin
+from .base import TheanoDistribution
 
 from .normal import Normal
 from .exponential import Exponential
@@ -23,7 +23,7 @@ from .histogram import Histogram
 from .kde import KernelDensity
 
 __all__ = ("DistributionMixin",
-           "LikelihoodFreeMixin"
+           "TheanoDistribution"
            "Normal",
            "Exponential",
            "Uniform",
