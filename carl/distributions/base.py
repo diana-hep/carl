@@ -16,7 +16,7 @@ from sklearn.utils import check_random_state
 from theano.gof import graph
 from theano.tensor.sharedvar import SharedVariable
 
-# ???: define the bounds of the parameters
+# XXX: define the bounds of the parameters
 
 def check_parameter(name, value):
     parameters = set()

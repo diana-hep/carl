@@ -17,9 +17,6 @@ from .base import check_parameter
 from .base import bound
 
 
-# XXX: disable some of the Mixture methods if components are not DistributionMixin
-
-
 class Mixture(TheanoDistribution):
     def __init__(self, components, weights=None,
                        random_state=None, optimizer=None):
@@ -51,7 +48,7 @@ class Mixture(TheanoDistribution):
                     self.observeds_.add(o_i)
 
             # Validate weights
-            if weight is not None:  # XXX better placeholder for missing weight?
+            if weight is not None:  
                 v, p, c, o = check_parameter("w_{}".format(i), weight)
                 self.weights.append(v)
 
@@ -62,7 +59,7 @@ class Mixture(TheanoDistribution):
                 for o_i in o:
                     self.observeds_.add(o_i)
 
-            else:  # XXX enforce normalization if all weights are provided?
+            else:
                 w_last = 1.
 
                 for w_i in self.weights:

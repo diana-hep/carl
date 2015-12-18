@@ -14,7 +14,7 @@ from carl.distributions import KernelDensity
 
 def test_kde():
     # Test API
-    p = Normal()
+    p = Normal(random_state=1)
     X = p.rvs(10000)
     k = KernelDensity(bandwidth=0.15)
     k.fit(X)

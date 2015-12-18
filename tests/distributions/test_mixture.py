@@ -66,6 +66,7 @@ def check_mixture_pdf(w0, w1, mu1, sigma1, mu2, sigma2):
     q2 = st.norm(loc=mu2, scale=sigma2)
 
     X = rng.rand(50, 1)
+
     assert_array_almost_equal(m.pdf(X).ravel(),
                               w0 * q1.pdf(X).ravel() +
                               (w1 if w1 is not None
