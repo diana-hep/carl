@@ -7,6 +7,9 @@
 """Density ratio estimators."""
 
 from .base import DensityRatioMixin
-from .cc import ClassifierDensityRatio
+from .cc import WrapAsClassifier
+from .cc import CalibratedClassifierRatio
 
-__all__ = ("DensityRatioMixin", "CalibratedClassifierRatio")
+__all__ = ("DensityRatioMixin",
+           "WrapAsClassifier",
+           "CalibratedClassifierRatio")

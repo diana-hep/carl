@@ -15,7 +15,7 @@ from carl.distributions import Histogram
 
 def test_histogram():
     X = np.arange(11).reshape(-1, 1)
-    h = Histogram(bins=11)
+    h = Histogram(bins=11, random_state=1)
     h.fit(X)
 
     assert_array_almost_equal(
