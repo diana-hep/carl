@@ -8,6 +8,7 @@ import numpy as np
 
 from sklearn.neighbors import KernelDensity as _KernelDensity
 from sklearn.utils import check_random_state
+from sklearn.utils import check_array
 
 from .base import DistributionMixin
 
@@ -30,9 +31,11 @@ class KernelDensity(DistributionMixin):
         self.metric_params = metric_params
 
     def pdf(self, X, **kwargs):
+        X = check_array(X)
         return np.exp(self.kde_.score_samples(X))
 
     def nnlf(self, X, **kwargs):
+        X = check_array(X)
         return -self.kde_.score_samples(X)
 
     def rvs(self, n_samples, **kwargs):
@@ -40,6 +43,7 @@ class KernelDensity(DistributionMixin):
         return self.kde_.sample(n_samples=n_samples, random_state=rng)
 
     def fit(self, X, y=None, **kwargs):
+        X = check_array(X)
         self.kde_ = _KernelDensity(bandwidth=self.bandwidth,
                                    algorithm=self.algorithm,
                                    kernel=self.kernel,
@@ -53,4 +57,5 @@ class KernelDensity(DistributionMixin):
         return self
 
     def score(self, X, y=None, **kwargs):
-        return self.kde_.score(X, y=y)
+        X = check_array(X)
+        return -self.kde_.score(X, y=y)

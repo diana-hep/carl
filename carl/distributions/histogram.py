@@ -8,6 +8,7 @@ import numpy as np
 
 from itertools import product
 from sklearn.utils import check_random_state
+from sklearn.utils import check_array
 
 from .base import DistributionMixin
 
@@ -20,14 +21,19 @@ class Histogram(DistributionMixin):
         self.range = range
 
     def pdf(self, X, **kwargs):
-        indices = []
+        X = check_array(X)
+        all_indices = []
 
         for j in range(X.shape[1]):
-            indices.append(np.searchsorted(self.edges_[j],
-                                           X[:, j],
-                                           side="right") - 1)
+            indices = np.searchsorted(self.edges_[j],
+                                      X[:, j],
+                                      side="right") - 1
 
-        return self.histogram_[indices]
+            # For the last bin, the upper is inclusive
+            indices[X[:, j] == self.edges_[j][-2]] -= 1
+            all_indices.append(indices)
+
+        return self.histogram_[all_indices]
 
     def nnlf(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
@@ -55,6 +61,12 @@ class Histogram(DistributionMixin):
         return low + u * (high - low)
 
     def fit(self, X, y=None, sample_weight=None, **kwargs):
+        # Checks
+        X = check_array(X)
+
+        if sample_weight is not None and len(sample_weight) != len(X):
+            raise ValueError
+
         # Compute histogram and edges
         h, e = np.histogramdd(X, bins=self.bins, range=self.range,
                               weights=sample_weight, normed=True)
@@ -72,4 +84,4 @@ class Histogram(DistributionMixin):
         return self
 
     def score(self, X, y=None, **kwargs):
-        return self.nnlf(X)
+        return self.nnlf(X).sum()
