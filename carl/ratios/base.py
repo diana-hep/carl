@@ -6,7 +6,8 @@
 
 
 class DensityRatioMixin:
-    def fit(self, X=None, y=None, **kwargs):
+    def fit(self, X=None, y=None, numerator=None,
+            denominator=None, n_samples=None, **kwargs):
         return self
 
     def predict(self, X, log=False, **kwargs):

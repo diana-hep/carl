@@ -64,12 +64,9 @@ class WrapAsClassifier(BaseEstimator, ClassifierMixin):
 
 
 class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
-    def __init__(self, base_estimator, numerator=None, denominator=None,
-                 n_samples=None, calibration=None, cv=None, decompose=False):
+    def __init__(self, base_estimator, calibration="histogram", cv=None,
+                 decompose=False):
         self.base_estimator = base_estimator
-        self.numerator = numerator
-        self.denominator = denominator
-        self.n_samples = n_samples
         self.calibration = calibration
         self.cv = cv
         self.decompose = decompose
@@ -87,14 +84,16 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         return calibrator_num, calibrator_den
 
-    def fit(self, X=None, y=None, **kwargs):
+    def fit(self, X=None, y=None, numerator=None, denominator=None,
+            n_samples=None, **kwargs):
         if X is not None and y is not None:
             pass  # use given X and y
-        elif self.numerator is not None and self.denominator is not None:
-            X = np.vstack((self.numerator.rvs(self.n_samples // 2),
-                           self.denominator.rvs(self.n_samples // 2)))
-            y = np.zeros(self.n_samples, dtype=np.int)
-            y[self.n_samples // 2:] = 1
+        elif (numerator is not None and denominator is not None and
+              n_samples is not None):
+            X = np.vstack((numerator.rvs(n_samples // 2),
+                           denominator.rvs(n_samples // 2)))
+            y = np.zeros(n_samples, dtype=np.int)
+            y[n_samples // 2:] = 1
         else:
             raise ValueError
 
