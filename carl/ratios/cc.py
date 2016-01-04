@@ -101,14 +101,41 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
-        if X is not None and y is not None:
-            pass  # use given X and y
+        if self.decompose:
+            if numerator is None or denominator is None or n_samples is None:
+                raise ValueError
+
+            self.ratios_ = {}
+            self.w_num_ = numerator.compute_weights()
+            self.w_den_ = denominator.compute_weights()
+
+            n_samples_ij = n_samples // (len(numerator.components) *
+                                         len(denominator.components))
+
+            for i, p_i in enumerate(numerator.components):
+                for j, p_j in enumerate(denominator.components):
+                    ratio = CalibratedClassifierRatio(
+                        base_estimator=self.base_estimator,
+                        calibration=self.calibration,
+                        cv=self.cv,
+                        decompose=False)
+                    ratio.fit(numerator=p_j, denominator=p_i,
+                              n_samples=n_samples_ij)
+
+                    self.ratios_[(j, i)] = ratio
+
+            return self
+
         elif (numerator is not None and denominator is not None and
               n_samples is not None):
             X = np.vstack((numerator.rvs(n_samples // 2),
                            denominator.rvs(n_samples // 2)))
             y = np.zeros(n_samples, dtype=np.int)
             y[n_samples // 2:] = 1
+
+        elif X is not None and y is not None:
+            pass  # use given X and y
+
         else:
             raise ValueError
 
@@ -125,19 +152,36 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         return self
 
-    def predict(self, X, log=False, **kwargs):
-        r = np.zeros(len(X))
+    def predict(self, X, log=False, eps=10e-7, **kwargs):
+        if self.decompose:
+            r = np.zeros(len(X))
 
-        for clf, (cal_num, cal_den) in zip(self.classifiers_,
-                                           self.calibrators_):
-            p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
+            for i, w_i in enumerate(self.w_num_):
+                s = np.zeros(len(X))
+
+                for j, w_j in enumerate(self.w_den_):
+                    s += w_j * self.ratios_[(j, i)].predict(X)
+
+                r += w_i / s
 
             if log:
-                r += -cal_num.nnlf(p) + cal_den.nnlf(p)
+                return np.log(r)
             else:
-                r += cal_num.pdf(p) / cal_den.pdf(p)
+                return r
 
-        return r / len(self.classifiers_)
+        else:
+            r = np.zeros(len(X))
+
+            for clf, (cal_num, cal_den) in zip(self.classifiers_,
+                                               self.calibrators_):
+                p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
+
+                if log:
+                    r += -cal_num.nnlf(p) + cal_den.nnlf(p)
+                else:
+                    r += (cal_num.pdf(p) + eps) / (cal_den.pdf(p) + eps)
+
+            return r / len(self.classifiers_)
 
     def score(self, X, y, **kwargs):
         raise NotImplementedError
