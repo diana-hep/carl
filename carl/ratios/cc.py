@@ -19,6 +19,10 @@ from ..distributions import KernelDensity
 from ..distributions import Histogram
 from .base import DensityRatioMixin
 
+# XXX: depending on the calibration algorithm, it might be better to fit
+#      on decision_function rather than on predict_proba
+# XXX: implement decomposition in case of mixtures
+
 
 class WrapAsClassifier(BaseEstimator, ClassifierMixin):
     def __init__(self, regressor):
@@ -70,9 +74,22 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.cv = cv
         self.decompose = decompose
 
+    def _check_calibration(self):
+        if self.calibration == "kde":
+            calibrator_num = KernelDensity()
+            calibrator_den = KernelDensity()
+        elif self.calibration == "histogram":
+            calibrator_num = Histogram(bins=100, range=[(0.0, 1.0)])
+            calibrator_den = Histogram(bins=100, range=[(0.0, 1.0)])
+        else:
+            calibrator_num = clone(self.calibration)
+            calibrator_den = clone(self.calibration)
+
+        return calibrator_num, calibrator_den
+
     def fit(self, X=None, y=None, **kwargs):
         if X is not None and y is not None:
-            pass
+            pass  # use given X and y
         elif self.numerator is not None and self.denominator is not None:
             X = np.vstack((self.numerator.rvs(self.n_samples // 2),
                            self.denominator.rvs(self.n_samples // 2)))
@@ -84,49 +101,56 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.classifiers_ = []
         self.calibrators_ = []
 
+        base_estimator = self.base_estimator
+        if isinstance(base_estimator, RegressorMixin):
+            base_estimator = WrapAsClassifier(base_estimator)
+
         if self.cv == "prefit":
-            classifier = self.base_estimator
+            classifier = base_estimator
+
+            calibrator_num, calibrator_den = self._check_calibration()
+            X_num = classifier.predict_proba(X[y == 0])[:, 0]
+            X_den = classifier.predict_proba(X[y == 1])[:, 0]
+            calibrator_num.fit(X_num.reshape(-1, 1))
+            calibrator_den.fit(X_den.reshape(-1, 1))
+
             self.classifiers_.append(classifier)
-
-            if self.calibration == "kde":
-                calibrator_num = KernelDensity()
-                calibrator_den = KernelDensity()
-            elif self.calibration == "histogram":
-                calibrator_num = Histogram(bins=100, range=[(0.0, 1.0)])
-                calibrator_den = Histogram(bins=100, range=[(0.0, 1.0)])
-            else:
-                calibrator_num = clone(self.calibration)
-                calibrator_den = clone(self.calibration)
-
-            p_num = classifier.predict_proba(X[y == 0])[:, 0].reshape(-1, 1)
-            calibrator_num.fit(p_num)
-
-            p_den = classifier.predict_proba(X[y == 1])[:, 0].reshape(-1, 1)
-            calibrator_den.fit(p_den)
-
             self.calibrators_.append((calibrator_num, calibrator_den))
 
         else:
             cv = check_cv(self.cv, y, classifier=True)
 
-            # XXX: todo
-            # for fold in cv
-            #       train classifier on train fold
-            #       fit calibrator1 on test (num part)
-            #       fit calibrator2 on test (den part)
+            for train, calibrate in cv.split(X, y):
+                classifier = clone(base_estimator)
+                classifier.fit(X[train], y[train])
+
+                calibrator_num, calibrator_den = self._check_calibration()
+                X_cal = X[calibrate]
+                y_cal = y[calibrate]
+                X_num = classifier.predict_proba(X_cal[y_cal == 0])[:, 0]
+                X_den = classifier.predict_proba(X_cal[y_cal == 1])[:, 0]
+                calibrator_num.fit(X_num.reshape(-1, 1))
+                calibrator_den.fit(X_den.reshape(-1, 1))
+
+                self.classifiers_.append(classifier)
+                self.calibrators_.append((calibrator_num, calibrator_den))
 
         return self
 
-    def predict(self, X=None, **kwargs):
+    def predict(self, X, log=False, **kwargs):
         r = np.zeros(len(X))
 
         for classifier, (calibrator_num,
                          calibrator_den) in zip(self.classifiers_,
                                                 self.calibrators_):
             p = classifier.predict_proba(X)[:, 0].reshape(-1, 1)
-            r += -calibrator_num.nnlf(p) + calibrator_den.nnlf(p)
+
+            if log:
+                r += -calibrator_num.nnlf(p) + calibrator_den.nnlf(p)
+            else:
+                r += calibrator_num.pdf(p) / calibrator_den.pdf(p)
 
         return r / len(self.classifiers_)
 
-    def score(self, X=None, y=None, **kwargs):
+    def score(self, X, y, **kwargs):
         raise NotImplementedError

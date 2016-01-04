@@ -28,7 +28,7 @@ class Normal(TheanoDistribution):
         # -log pdf
         self.nnlf_ = bound(
             T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
-                (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
+            (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
             np.inf,
             self.sigma > 0.).ravel()
         self.make_(self.nnlf_, "nnlf")
@@ -39,6 +39,6 @@ class Normal(TheanoDistribution):
         self.make_(self.cdf_, "cdf")
 
         # ppf
-        self.ppf_ = (self.mu + \
+        self.ppf_ = (self.mu +
                      np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
         self.make_(self.ppf_, "ppf", args=[self.p])

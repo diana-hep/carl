@@ -18,6 +18,7 @@ from theano.tensor.sharedvar import SharedVariable
 
 # XXX: define the bounds of the parameters
 
+
 def check_parameter(name, value):
     parameters = set()
     constants = set()
@@ -152,19 +153,15 @@ class TheanoDistribution(DistributionMixin):
             shared_to_symbols.append((v, w))
 
         objective_ = theano.function(
-            [self.X] +
-                [w for _, w in shared_to_symbols] +
-                [theano.Param(v, name=v.name)
-                     for v in self.observeds_],
+            [self.X] + [w for _, w in shared_to_symbols] +
+            [theano.Param(v, name=v.name) for v in self.observeds_],
             T.sum(self.nnlf_),
             givens=shared_to_symbols,
             allow_input_downcast=True)
 
         gradient_ = theano.function(
-            [self.X] +
-                [w for _, w in shared_to_symbols] +
-                [theano.Param(v, name=v.name)
-                     for v in self.observeds_],
+            [self.X] + [w for _, w in shared_to_symbols] +
+            [theano.Param(v, name=v.name) for v in self.observeds_],
             theano.grad(T.sum(self.nnlf_), [v for v, _ in shared_to_symbols]),
             givens=shared_to_symbols,
             allow_input_downcast=True)

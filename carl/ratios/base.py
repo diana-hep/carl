@@ -9,8 +9,8 @@ class DensityRatioMixin:
     def fit(self, X=None, y=None, **kwargs):
         return self
 
-    def predict(self, X=None, **kwargs):
+    def predict(self, X, log=False, **kwargs):
         raise NotImplementedError
 
-    def score(self, X=None, y=None, **kwargs):
+    def score(self, X, y, **kwargs):
         raise NotImplementedError

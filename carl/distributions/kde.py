@@ -27,6 +27,7 @@ class KernelDensity(DistributionMixin):
         return -self.kde_.logpdf(X.T)
 
     def rvs(self, n_samples, **kwargs):
+        # gaussian_kde uses Numpy global random state...
         return self.kde_.resample(n_samples).T
 
     def fit(self, X, y=None, **kwargs):
@@ -36,4 +37,4 @@ class KernelDensity(DistributionMixin):
 
     def score(self, X, y=None, **kwargs):
         X = check_array(X)
-        return -self.kde_.logpdf(X.T).sum()
+        return self.kde_.logpdf(X.T).sum()

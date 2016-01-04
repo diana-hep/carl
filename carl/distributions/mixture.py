@@ -19,7 +19,7 @@ from .base import bound
 
 class Mixture(TheanoDistribution):
     def __init__(self, components, weights=None,
-                       random_state=None, optimizer=None):
+                 random_state=None, optimizer=None):
         super(Mixture, self).__init__(random_state=random_state,
                                       optimizer=optimizer)
 
@@ -48,7 +48,7 @@ class Mixture(TheanoDistribution):
                     self.observeds_.add(o_i)
 
             # Validate weights
-            if weight is not None:  
+            if weight is not None:
                 v, p, c, o = check_parameter("w_{}".format(i), weight)
                 self.weights.append(v)
 
