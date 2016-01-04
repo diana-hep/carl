@@ -101,13 +101,18 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
+        self.identity_ = (numerator is not None) and (numerator is denominator)
+
+        if self.identity_:
+            return self
+
         if self.decompose:
             if numerator is None or denominator is None or n_samples is None:
                 raise ValueError
 
             self.ratios_ = {}
-            self.w_num_ = numerator.compute_weights()
-            self.w_den_ = denominator.compute_weights()
+            self.numerator_ = numerator
+            self.denominator_ = denominator
 
             n_samples_ij = n_samples // (len(numerator.components) *
                                          len(denominator.components))
@@ -117,8 +122,8 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                     ratio = CalibratedClassifierRatio(
                         base_estimator=self.base_estimator,
                         calibration=self.calibration,
-                        cv=self.cv,
-                        decompose=False)
+                        cv=self.cv, decompose=False)
+
                     ratio.fit(numerator=p_j, denominator=p_i,
                               n_samples=n_samples_ij)
 
@@ -152,14 +157,23 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         return self
 
-    def predict(self, X, log=False, eps=10e-7, **kwargs):
-        if self.decompose:
+    def predict(self, X, log=False, **kwargs):
+        if self.identity_:
+            if log:
+                return np.zeros(len(X))
+            else:
+                return np.ones(len(X))
+
+        elif self.decompose:
+            w_num = self.numerator_.compute_weights()
+            w_den = self.denominator_.compute_weights()
+
             r = np.zeros(len(X))
 
-            for i, w_i in enumerate(self.w_num_):
+            for i, w_i in enumerate(w_num):
                 s = np.zeros(len(X))
 
-                for j, w_j in enumerate(self.w_den_):
+                for j, w_j in enumerate(w_den):
                     s += w_j * self.ratios_[(j, i)].predict(X)
 
                 r += w_i / s
@@ -179,7 +193,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                 if log:
                     r += -cal_num.nnlf(p) + cal_den.nnlf(p)
                 else:
-                    r += (cal_num.pdf(p) + eps) / (cal_den.pdf(p) + eps)
+                    r += cal_num.pdf(p) / cal_den.pdf(p)
 
             return r / len(self.classifiers_)
 
