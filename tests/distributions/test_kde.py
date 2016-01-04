@@ -16,7 +16,7 @@ def test_kde():
     # Test API
     p = Normal(random_state=1)
     X = p.rvs(10000)
-    k = KernelDensity(bandwidth=0.15)
+    k = KernelDensity()
     k.fit(X)
 
     reals = np.linspace(-3, 3).reshape(-1, 1)

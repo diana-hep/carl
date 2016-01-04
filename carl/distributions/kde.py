@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from sklearn.neighbors import KernelDensity as _KernelDensity
+from scipy.stats import gaussian_kde
 from sklearn.utils import check_random_state
 from sklearn.utils import check_array
 
@@ -14,48 +14,26 @@ from .base import DistributionMixin
 
 
 class KernelDensity(DistributionMixin):
-    def __init__(self, bandwidth=1.0, algorithm="auto",
-                 kernel="gaussian", metric="euclidean", atol=0, rtol=0,
-                 breadth_first=True, leaf_size=40, metric_params=None,
-                 random_state=None):
+    def __init__(self, bandwidth=None, random_state=None):
         super(KernelDensity, self).__init__(random_state=random_state)
-
-        self.algorithm = algorithm
         self.bandwidth = bandwidth
-        self.kernel = kernel
-        self.metric = metric
-        self.atol = atol
-        self.rtol = rtol
-        self.breadth_first = breadth_first
-        self.leaf_size = leaf_size
-        self.metric_params = metric_params
 
     def pdf(self, X, **kwargs):
         X = check_array(X)
-        return np.exp(self.kde_.score_samples(X))
+        return self.kde_.pdf(X.T)
 
     def nnlf(self, X, **kwargs):
         X = check_array(X)
-        return -self.kde_.score_samples(X)
+        return -self.kde_.logpdf(X.T)
 
     def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
-        return self.kde_.sample(n_samples=n_samples, random_state=rng)
+        return self.kde_.resample(n_samples).T
 
     def fit(self, X, y=None, **kwargs):
-        X = check_array(X)
-        self.kde_ = _KernelDensity(bandwidth=self.bandwidth,
-                                   algorithm=self.algorithm,
-                                   kernel=self.kernel,
-                                   metric=self.metric,
-                                   atol=self.atol,
-                                   rtol=self.rtol,
-                                   breadth_first=self.breadth_first,
-                                   leaf_size=self.leaf_size,
-                                   metric_params=self.metric_params)
-        self.kde_.fit(X, y=y)
+        X = check_array(X).T
+        self.kde_ = gaussian_kde(X, bw_method=self.bandwidth)
         return self
 
     def score(self, X, y=None, **kwargs):
         X = check_array(X)
-        return -self.kde_.score(X, y=y)
+        return -self.kde_.logpdf(X.T).sum()

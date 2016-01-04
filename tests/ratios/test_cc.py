@@ -12,7 +12,7 @@ from numpy.testing import assert_raises
 from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeRegressor
 
-from carl.ratios import WrapAsClassifier
+from carl.ratios.cc import WrapAsClassifier
 
 
 def test_wrap_as_classifier():
