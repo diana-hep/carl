@@ -22,6 +22,7 @@ from .base import DensityRatioMixin
 # XXX: depending on the calibration algorithm, it might be better to fit
 #      on decision_function rather than on predict_proba
 # XXX: implement decomposition in case of mixtures
+# XXX: write own check_cv so that it can take a float
 
 
 class WrapAsClassifier(BaseEstimator, ClassifierMixin):
@@ -71,18 +72,32 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.cv = cv
         self.decompose = decompose
 
-    def _check_calibration(self):
-        if self.calibration == "kde":
-            calibrator_num = KernelDensity()
-            calibrator_den = KernelDensity()
-        elif self.calibration == "histogram":
-            calibrator_num = Histogram(bins=100, range=[(0.0, 1.0)])
-            calibrator_den = Histogram(bins=100, range=[(0.0, 1.0)])
-        else:
-            calibrator_num = clone(self.calibration)
-            calibrator_den = clone(self.calibration)
+    def _fit_X_y(self, X_clf, y_clf, X_cal, y_cal):
+        clf = clone(self.base_estimator)
 
-        return calibrator_num, calibrator_den
+        if isinstance(clf, RegressorMixin):
+            clf = WrapAsClassifier(clf)
+
+        clf.fit(X_clf, y_clf)
+
+        if self.calibration == "kde":
+            cal_num = KernelDensity()
+            cal_den = KernelDensity()
+
+        elif self.calibration == "histogram":
+            cal_num = Histogram(bins=100, range=[(0.0, 1.0)])
+            cal_den = Histogram(bins=100, range=[(0.0, 1.0)])
+
+        else:
+            cal_num = clone(self.calibration)
+            cal_den = clone(self.calibration)
+
+        X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
+        X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
+        cal_num.fit(X_num.reshape(-1, 1))
+        cal_den.fit(X_den.reshape(-1, 1))
+
+        return clf, cal_num, cal_den
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
@@ -100,54 +115,27 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.classifiers_ = []
         self.calibrators_ = []
 
-        base_estimator = self.base_estimator
-        if isinstance(base_estimator, RegressorMixin):
-            base_estimator = WrapAsClassifier(base_estimator)
+        cv = check_cv(self.cv, y, classifier=True)
 
-        if self.cv == "prefit":
-            classifier = base_estimator
-
-            calibrator_num, calibrator_den = self._check_calibration()
-            X_num = classifier.predict_proba(X[y == 0])[:, 0]
-            X_den = classifier.predict_proba(X[y == 1])[:, 0]
-            calibrator_num.fit(X_num.reshape(-1, 1))
-            calibrator_den.fit(X_den.reshape(-1, 1))
-
-            self.classifiers_.append(classifier)
-            self.calibrators_.append((calibrator_num, calibrator_den))
-
-        else:
-            cv = check_cv(self.cv, y, classifier=True)
-
-            for train, calibrate in cv.split(X, y):
-                classifier = clone(base_estimator)
-                classifier.fit(X[train], y[train])
-
-                calibrator_num, calibrator_den = self._check_calibration()
-                X_cal = X[calibrate]
-                y_cal = y[calibrate]
-                X_num = classifier.predict_proba(X_cal[y_cal == 0])[:, 0]
-                X_den = classifier.predict_proba(X_cal[y_cal == 1])[:, 0]
-                calibrator_num.fit(X_num.reshape(-1, 1))
-                calibrator_den.fit(X_den.reshape(-1, 1))
-
-                self.classifiers_.append(classifier)
-                self.calibrators_.append((calibrator_num, calibrator_den))
+        for train, calibrate in cv.split(X, y):
+            clf, cal_num, cal_den = self._fit_X_y(X[train], y[train],
+                                                  X[calibrate], y[calibrate])
+            self.classifiers_.append(clf)
+            self.calibrators_.append((cal_num, cal_den))
 
         return self
 
     def predict(self, X, log=False, **kwargs):
         r = np.zeros(len(X))
 
-        for classifier, (calibrator_num,
-                         calibrator_den) in zip(self.classifiers_,
-                                                self.calibrators_):
-            p = classifier.predict_proba(X)[:, 0].reshape(-1, 1)
+        for clf, (cal_num, cal_den) in zip(self.classifiers_,
+                                           self.calibrators_):
+            p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
 
             if log:
-                r += -calibrator_num.nnlf(p) + calibrator_den.nnlf(p)
+                r += -cal_num.nnlf(p) + cal_den.nnlf(p)
             else:
-                r += calibrator_num.pdf(p) / calibrator_den.pdf(p)
+                r += cal_num.pdf(p) / cal_den.pdf(p)
 
         return r / len(self.classifiers_)
 
