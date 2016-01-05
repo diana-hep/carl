@@ -15,20 +15,15 @@ from ..distributions import KernelDensity
 from ..distributions import Histogram
 from ..utils import as_classifier
 from .base import DensityRatioMixin
-from .base import InverseRatio
 
-# XXX: depending on the calibration algorithm, it might be better to fit
-#      on decision_function rather than on predict_proba
 # XXX: write own check_cv so that it can take a float
 
 
 class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
-    def __init__(self, base_estimator, calibration="histogram", cv=None,
-                 decompose=False):
+    def __init__(self, base_estimator, calibration="histogram", cv=None):
         self.base_estimator = base_estimator
         self.calibration = calibration
         self.cv = cv
-        self.decompose = decompose
 
     def _fit_X_y(self, X_clf, y_clf, X_cal, y_cal):
         clf = clone(self.base_estimator)
@@ -64,39 +59,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         if self.identity_:
             return self
 
-        if self.decompose:
-            if numerator is None or denominator is None or n_samples is None:
-                raise ValueError
-
-            self.ratios_ = {}
-            self.ratios_map_ = {}
-            self.numerator_ = numerator
-            self.denominator_ = denominator
-
-            n_samples_ij = n_samples // (len(numerator.components) *
-                                         len(denominator.components))
-
-            for i, p_i in enumerate(numerator.components):
-                for j, p_j in enumerate(denominator.components):
-                    if (p_i, p_j) in self.ratios_map_:
-                        ratio = InverseRatio(
-                            self.ratios_[self.ratios_map_[(p_i, p_j)]])
-
-                    else:
-                        ratio = CalibratedClassifierRatio(
-                            base_estimator=self.base_estimator,
-                            calibration=self.calibration,
-                            cv=self.cv, decompose=False)
-
-                        ratio.fit(numerator=p_j, denominator=p_i,
-                                  n_samples=n_samples_ij)
-
-                    self.ratios_[(j, i)] = ratio
-                    self.ratios_map_[(p_j, p_i)] = (j, i)
-
-            return self
-
-        elif (numerator is not None and denominator is not None and
+        if (numerator is not None and denominator is not None and
               n_samples is not None):
             X = np.vstack((numerator.rvs(n_samples // 2),
                            denominator.rvs(n_samples // 2)))
@@ -104,7 +67,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
             y[n_samples // 2:] = 1
 
         elif X is not None and y is not None:
-            pass  # use given X and y
+            pass  # Use given X and y
 
         else:
             raise ValueError
@@ -128,25 +91,6 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                 return np.zeros(len(X))
             else:
                 return np.ones(len(X))
-
-        elif self.decompose:
-            w_num = self.numerator_.compute_weights()
-            w_den = self.denominator_.compute_weights()
-
-            r = np.zeros(len(X))
-
-            for i, w_i in enumerate(w_num):
-                s = np.zeros(len(X))
-
-                for j, w_j in enumerate(w_den):
-                    s += w_j * self.ratios_[(j, i)].predict(X)
-
-                r += w_i / s
-
-            if log:
-                return np.log(r)
-            else:
-                return r
 
         else:
             r = np.zeros(len(X))

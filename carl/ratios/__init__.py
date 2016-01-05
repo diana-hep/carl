@@ -8,8 +8,10 @@
 
 from .base import DensityRatioMixin
 from .base import InverseRatio
+from .base import DecomposedRatio
 from .cc import CalibratedClassifierRatio
 
 __all__ = ("DensityRatioMixin",
            "InverseRatio",
+           "DecomposedRatio",
            "CalibratedClassifierRatio")
