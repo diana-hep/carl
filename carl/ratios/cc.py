@@ -31,24 +31,28 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         clf.fit(X_clf, y_clf)
 
-        if self.calibration == "kde":
-            cal_num = KernelDensity()
-            cal_den = KernelDensity()
-
-        elif self.calibration == "histogram":
-            cal_num = Histogram(bins=100, range=[(0.0, 1.0)])
-            cal_den = Histogram(bins=100, range=[(0.0, 1.0)])
+        if self.calibration is None:
+            return clf, None, None
 
         else:
-            cal_num = clone(self.calibration)
-            cal_den = clone(self.calibration)
+            if self.calibration == "kde":
+                cal_num = KernelDensity()
+                cal_den = KernelDensity()
 
-        X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
-        X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
-        cal_num.fit(X_num.reshape(-1, 1))
-        cal_den.fit(X_den.reshape(-1, 1))
+            elif self.calibration == "histogram":
+                cal_num = Histogram(bins=100, range=[(0.0, 1.0)])
+                cal_den = Histogram(bins=100, range=[(0.0, 1.0)])
 
-        return clf, cal_num, cal_den
+            else:
+                cal_num = clone(self.calibration)
+                cal_den = clone(self.calibration)
+
+            X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
+            X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
+            cal_num.fit(X_num.reshape(-1, 1))
+            cal_den.fit(X_den.reshape(-1, 1))
+
+            return clf, cal_num, cal_den
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
@@ -98,9 +102,15 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                                                self.calibrators_):
                 p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
 
-                if log:
-                    r += -cal_num.nnlf(p, **kwargs) + cal_den.nnlf(p, **kwargs)
+                if self.calibration is None:
+                    r += np.divide(p.ravel(), 1. - p.ravel())
+
                 else:
-                    r += cal_num.pdf(p, **kwargs) / cal_den.pdf(p, **kwargs)
+                    if log:
+                        r += (-cal_num.nnlf(p, **kwargs) +
+                              cal_den.nnlf(p, **kwargs))
+                    else:
+                        r += (cal_num.pdf(p, **kwargs) /
+                              cal_den.pdf(p, **kwargs))
 
             return r / len(self.classifiers_)
