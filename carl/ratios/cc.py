@@ -7,61 +7,19 @@
 import numpy as np
 
 from sklearn.base import BaseEstimator
-from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
 from sklearn.base import clone
 from sklearn.model_selection import check_cv
-from sklearn.utils import check_array
-from sklearn.utils import check_X_y
-from sklearn.preprocessing import LabelEncoder
 
 from ..distributions import KernelDensity
 from ..distributions import Histogram
+from ..utils import as_classifier
 from .base import DensityRatioMixin
+from .base import InverseRatio
 
 # XXX: depending on the calibration algorithm, it might be better to fit
 #      on decision_function rather than on predict_proba
-# XXX: implement decomposition in case of mixtures
 # XXX: write own check_cv so that it can take a float
-
-
-class WrapAsClassifier(BaseEstimator, ClassifierMixin):
-    def __init__(self, regressor):
-        self.regressor = regressor
-
-    def fit(self, X, y):
-        # Check inputs
-        X, y = check_X_y(X, y)
-
-        # Convert y
-        label_encoder = LabelEncoder()
-        y = label_encoder.fit_transform(y).astype(np.float)
-
-        if len(label_encoder.classes_) != 2:
-            raise ValueError
-
-        self.classes_ = label_encoder.classes_
-
-        # Fit regressor
-        self.regressor_ = clone(self.regressor).fit(X, y)
-
-        return self
-
-    def predict(self, X):
-        return np.where(self.predict_proba(X)[:, 1] >= 0.5,
-                        self.classes_[1],
-                        self.classes_[0])
-
-    def predict_proba(self, X):
-        X = check_array(X)
-
-        p = self.regressor_.predict(X)
-        p = np.clip(p, 0., 1.)
-        probas = np.zeros((len(X), 2))
-        probas[:, 0] = 1. - p
-        probas[:, 1] = p
-
-        return probas
 
 
 class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
@@ -76,7 +34,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         clf = clone(self.base_estimator)
 
         if isinstance(clf, RegressorMixin):
-            clf = WrapAsClassifier(clf)
+            clf = as_classifier(clf)
 
         clf.fit(X_clf, y_clf)
 
@@ -111,6 +69,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                 raise ValueError
 
             self.ratios_ = {}
+            self.ratios_map_ = {}
             self.numerator_ = numerator
             self.denominator_ = denominator
 
@@ -119,15 +78,21 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
             for i, p_i in enumerate(numerator.components):
                 for j, p_j in enumerate(denominator.components):
-                    ratio = CalibratedClassifierRatio(
-                        base_estimator=self.base_estimator,
-                        calibration=self.calibration,
-                        cv=self.cv, decompose=False)
+                    if (p_i, p_j) in self.ratios_map_:
+                        ratio = InverseRatio(
+                            self.ratios_[self.ratios_map_[(p_i, p_j)]])
 
-                    ratio.fit(numerator=p_j, denominator=p_i,
-                              n_samples=n_samples_ij)
+                    else:
+                        ratio = CalibratedClassifierRatio(
+                            base_estimator=self.base_estimator,
+                            calibration=self.calibration,
+                            cv=self.cv, decompose=False)
+
+                        ratio.fit(numerator=p_j, denominator=p_i,
+                                  n_samples=n_samples_ij)
 
                     self.ratios_[(j, i)] = ratio
+                    self.ratios_map_[(p_j, p_i)] = (j, i)
 
             return self
 
