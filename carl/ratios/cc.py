@@ -62,7 +62,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         if (numerator is not None and denominator is not None and
               n_samples is not None):
             X = np.vstack((numerator.rvs(n_samples // 2),
-                           denominator.rvs(n_samples // 2)))
+                           denominator.rvs(n_samples - n_samples // 2)))
             y = np.zeros(n_samples, dtype=np.int)
             y[n_samples // 2:] = 1
 
