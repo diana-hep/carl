@@ -31,7 +31,7 @@ conda update --yes conda
 # provided versions
 conda create -n testenv --yes python=$PYTHON_VERSION pip \
     numpy=$NUMPY_VERSION scipy=$SCIPY_VERSION scikit-learn=$SKLEARN_VERSION \
-    pytest pytest-pep8 pytest-cache nose coverage theano
+    pytest pytest-pep8 nose coverage theano
 source activate testenv
 
 pip install coveralls pep257 pytest-cov six

@@ -8,6 +8,7 @@ import numpy as np
 
 from sklearn.base import BaseEstimator
 from sklearn.base import clone
+from sklearn.metrics import mean_squared_error
 
 
 class DensityRatioMixin:
@@ -19,7 +20,7 @@ class DensityRatioMixin:
         raise NotImplementedError
 
     def score(self, X, y, **kwargs):
-        raise NotImplementedError
+        return -mean_squared_error(y, self.predict(X, **kwargs))
 
 
 class InverseRatio(DensityRatioMixin, BaseEstimator):
@@ -35,9 +36,6 @@ class InverseRatio(DensityRatioMixin, BaseEstimator):
             return -self.base_ratio.predict(X, log=True, **kwargs)
         else:
             return 1. / self.base_ratio.predict(X, log=False, **kwargs)
-
-    def score(self, X, y, **kwargs):
-        raise NotImplementedError
 
 
 class DecomposedRatio(DensityRatioMixin, BaseEstimator):
@@ -103,6 +101,3 @@ class DecomposedRatio(DensityRatioMixin, BaseEstimator):
                 return np.log(r)
             else:
                 return r
-
-    def score(self, X, y, **kwargs):
-        raise NotImplementedError

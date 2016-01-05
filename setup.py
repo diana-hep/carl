@@ -60,7 +60,6 @@ _install_requires = [
 
 _tests_require = [
     "pytest",
-    "pytest-cache>=1.0",
     "pytest-cov>=1.8.0",
     "pytest-pep8>=1.0.6",
     "coverage"

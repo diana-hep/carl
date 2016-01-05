@@ -59,8 +59,9 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         if (numerator is not None and denominator is not None and
                 n_samples is not None):
-            X = np.vstack((numerator.rvs(n_samples // 2),
-                           denominator.rvs(n_samples - n_samples // 2)))
+            X = np.vstack(
+                (numerator.rvs(n_samples // 2, **kwargs),
+                 denominator.rvs(n_samples - (n_samples // 2), **kwargs)))
             y = np.zeros(n_samples, dtype=np.int)
             y[n_samples // 2:] = 1
 
@@ -98,11 +99,8 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                 p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
 
                 if log:
-                    r += -cal_num.nnlf(p) + cal_den.nnlf(p)
+                    r += -cal_num.nnlf(p, **kwargs) + cal_den.nnlf(p, **kwargs)
                 else:
-                    r += cal_num.pdf(p) / cal_den.pdf(p)
+                    r += cal_num.pdf(p, **kwargs) / cal_den.pdf(p, **kwargs)
 
             return r / len(self.classifiers_)
-
-    def score(self, X, y, **kwargs):
-        raise NotImplementedError
