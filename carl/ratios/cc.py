@@ -9,14 +9,12 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.base import clone
-from sklearn.model_selection import check_cv
 
 from ..distributions import KernelDensity
 from ..distributions import Histogram
 from ..utils import as_classifier
+from ..utils import check_cv
 from .base import DensityRatioMixin
-
-# XXX: write own check_cv so that it can take a float
 
 
 class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
@@ -60,7 +58,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
             return self
 
         if (numerator is not None and denominator is not None and
-              n_samples is not None):
+                n_samples is not None):
             X = np.vstack((numerator.rvs(n_samples // 2),
                            denominator.rvs(n_samples - n_samples // 2)))
             y = np.zeros(n_samples, dtype=np.int)
@@ -75,7 +73,7 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.classifiers_ = []
         self.calibrators_ = []
 
-        cv = check_cv(self.cv, y, classifier=True)
+        cv = check_cv(self.cv, X=X, y=y, classifier=True)
 
         for train, calibrate in cv.split(X, y):
             clf, cal_num, cal_den = self._fit_X_y(X[train], y[train],

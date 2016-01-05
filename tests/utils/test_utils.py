@@ -12,14 +12,14 @@ from numpy.testing import assert_raises
 from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeRegressor
 
-from carl.ratios.cc import WrapAsClassifier
+from carl.utils import as_classifier
 
 
-def test_wrap_as_classifier():
+def test_as_classifier():
     X, y = make_moons(n_samples=100, random_state=1)
     y = 2 * y - 1  # use -1/+1 labels
 
-    clf = WrapAsClassifier(DecisionTreeRegressor())
+    clf = as_classifier(DecisionTreeRegressor())
     clf.fit(X, y)
     probas = clf.predict_proba(X)
     predictions = clf.predict(X)
@@ -28,5 +28,5 @@ def test_wrap_as_classifier():
     assert_array_equal(predictions, y)
 
     y[-1] = 2
-    clf = WrapAsClassifier(DecisionTreeRegressor())
+    clf = as_classifier(DecisionTreeRegressor())
     assert_raises(ValueError, clf.fit, X, y)

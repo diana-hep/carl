@@ -55,6 +55,7 @@ _install_requires = [
     "scipy>=0.16",
     "scikit-learn>=0.17",
     "theano>=0.7",
+    "six"
 ]
 
 _tests_require = [
