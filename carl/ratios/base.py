@@ -60,6 +60,10 @@ class DecomposedRatio(DensityRatioMixin, BaseEstimator):
         n_samples_ij = n_samples // (len(numerator.components) *
                                      len(denominator.components))
 
+        # XXX in case of identities or inverses, samples are thrown away!
+        #     we should first check whether these cases exist, and then
+        #     assign n_samples to each sub-ratio
+
         for i, p_i in enumerate(numerator.components):
             for j, p_j in enumerate(denominator.components):
                 if (p_i, p_j) in self.ratios_map_:

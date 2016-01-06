@@ -55,8 +55,21 @@ def test_decomposed_ratio():
     ratio.fit(numerator=p0, denominator=p1, n_samples=10000)
 
     reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)
+    assert ratio.score(reals, p0.pdf(reals) / p1.pdf(reals)) > -0.1
+    assert np.mean(np.abs(np.log(ratio.predict(reals)) -
+                          ratio.predict(reals, log=True))) < 0.01
 
-    assert np.mean(np.abs(p0.pdf(reals) / p1.pdf(reals) -
-                          ratio.predict(reals))) < 0.1
-    assert np.mean(np.abs(-p0.nnlf(reals) + p1.nnlf(reals) -
-                          ratio.predict(reals, log=True))) < 0.1
+
+def test_decomposed_ratio_identity():
+    components = [Normal(mu=0.0), Normal(mu=0.25), Normal(mu=0.5)]
+    p = Mixture(components=components, weights=[0.45, 0.1, 0.45])
+
+    ratio = DecomposedRatio(
+        CalibratedClassifierRatio(base_estimator=ElasticNetCV()))
+    ratio.fit(numerator=p, denominator=p, n_samples=10000)
+
+    reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)
+    assert ratio.score(reals, p.pdf(reals) / p.pdf(reals)) == 0.0
+    assert_array_almost_equal(ratio.predict(reals), np.ones(len(reals)))
+    assert_array_almost_equal(ratio.predict(reals, log=True),
+                              np.zeros(len(reals)))
