@@ -13,29 +13,6 @@ from sklearn.utils import check_array
 from .base import DistributionMixin
 
 
-def estimate_bins(X, method="sturges"):
-    assert X.shape[1] == 1
-
-    # Sturges estimator
-    if method == "sturges":
-        return np.ceil(np.log2(X.shape[0])) + 1
-
-    # Freedman Diaconis rule
-    elif method == "fd":
-        iqr = np.subtract(*np.percentile(X.ravel(), [75, 25]))
-
-        if iqr > 0:
-            h = (2 * iqr * X.shape[0] ** (-1.0 / 3))
-            fd = np.ceil(X.ptp() / h)
-        else:
-            fd = 1
-
-        return fd
-
-    else:
-        raise ValueError
-
-
 class Histogram(DistributionMixin):
     def __init__(self, bins=10, range=None, random_state=None):
         super(Histogram, self).__init__(random_state=random_state)
