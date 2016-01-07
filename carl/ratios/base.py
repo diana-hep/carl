@@ -19,8 +19,15 @@ class DensityRatioMixin:
     def predict(self, X, log=False, **kwargs):
         raise NotImplementedError
 
-    def score(self, X, y, **kwargs):
-        return -mean_squared_error(y, self.predict(X, **kwargs))
+    def score(self, X, y, finite_only=True, **kwargs):
+        ratios = self.predict(X, **kwargs)
+
+        if finite_only:
+            mask = np.isfinite(ratios)
+            y = y[mask]
+            ratios = ratios[mask]
+
+        return -mean_squared_error(y, ratios)
 
 
 class InverseRatio(DensityRatioMixin, BaseEstimator):

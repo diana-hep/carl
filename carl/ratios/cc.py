@@ -107,10 +107,16 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
                 else:
                     if log:
-                        r += (-cal_num.nnlf(p, **kwargs) +
-                              cal_den.nnlf(p, **kwargs))
+                        logp_num = -cal_num.nnlf(p, **kwargs)
+                        logp_den = -cal_den.nnlf(p, **kwargs)
+                        mask = logp_num != logp_den
+                        r[mask] += logp_num[mask] - logp_den[mask]
+
                     else:
-                        r += (cal_num.pdf(p, **kwargs) /
-                              cal_den.pdf(p, **kwargs))
+                        p_num = cal_num.pdf(p, **kwargs)
+                        p_den = cal_den.pdf(p, **kwargs)
+                        mask = p_num != p_den
+                        r[mask] += p_num[mask] / p_den[mask]
+                        r[~mask] += 1.0
 
             return r / len(self.classifiers_)
