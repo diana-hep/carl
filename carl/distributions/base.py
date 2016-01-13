@@ -16,8 +16,6 @@ from sklearn.utils import check_random_state
 from theano.gof import graph
 from theano.tensor.sharedvar import SharedVariable
 
-# XXX: define the bounds of the parameters
-
 
 def check_parameter(name, value):
     parameters = set()
@@ -49,6 +47,7 @@ def check_parameter(name, value):
 
 def bound(expression, out, *predicates):
     guard = 1
+
     for p in predicates:
         guard *= p
 
@@ -115,7 +114,8 @@ class TheanoDistribution(DistributionMixin):
             kwargs = self.observeds_
 
         func = theano.function(
-            args + [theano.Param(v, name=v.name) for v in kwargs],
+            [theano.Param(v, name=v.name) for v in args] +
+            [theano.Param(v, name=v.name) for v in kwargs],
             expression,
             allow_input_downcast=True
         )
@@ -146,24 +146,54 @@ class TheanoDistribution(DistributionMixin):
         # XXX: shall we also allow replacement of variables and
         #      recompile all expressions instead?
 
-    def fit(self, X, y=None, **kwargs):
-        shared_to_symbols = []
-        for v in self.parameters_:
-            w = T.TensorVariable(v.type)
-            shared_to_symbols.append((v, w))
+    def fit(self, X, y=None, constraints=None, **kwargs):
+        # Map parameters to placeholders
+        param_to_placeholder = []
+        param_to_index = {}
 
+        for i, v in enumerate(self.parameters_):
+            w = T.TensorVariable(v.type)
+            param_to_placeholder.append((v, w))
+            param_to_index[v.name] = i
+
+        # Build constraints
+        mapped_constraints = None
+
+        if constraints is not None:
+            mapped_constraints = []
+
+            for c in constraints:
+                if isinstance(c["param"], str):
+                    args = (c["param"], )
+                else:
+                    args = c["param"]  # constraints can span multiple params!
+
+                m_c = {
+                    "type": c["type"],
+                    "fun": lambda x: c["fun"](*[x[param_to_index[a]]
+                                                for a in args])
+                }
+
+                if "jac" in c:
+                    m_c["jac"] = lambda x: c["jac"](*[x[param_to_index[a]]
+                                                      for a in args])
+
+                mapped_constraints.append(m_c)
+
+        # Derive objective and gradient
         objective_ = theano.function(
-            [self.X] + [w for _, w in shared_to_symbols] +
+            [self.X] + [w for _, w in param_to_placeholder] +
             [theano.Param(v, name=v.name) for v in self.observeds_],
             T.sum(self.nnlf_),
-            givens=shared_to_symbols,
+            givens=param_to_placeholder,
             allow_input_downcast=True)
 
         gradient_ = theano.function(
-            [self.X] + [w for _, w in shared_to_symbols] +
+            [self.X] + [w for _, w in param_to_placeholder] +
             [theano.Param(v, name=v.name) for v in self.observeds_],
-            theano.grad(T.sum(self.nnlf_), [v for v, _ in shared_to_symbols]),
-            givens=shared_to_symbols,
+            theano.grad(T.sum(self.nnlf_),
+                        [v for v, _ in param_to_placeholder]),
+            givens=param_to_placeholder,
             allow_input_downcast=True)
 
         def objective(x):
@@ -172,11 +202,14 @@ class TheanoDistribution(DistributionMixin):
         def gradient(x):
             return np.array(gradient_(X, *x, **kwargs)) / len(X)
 
-        x0 = np.array([v.get_value() for v, _ in shared_to_symbols])
-        r = minimize(objective, jac=gradient, x0=x0, method=self.optimizer)
+        # Solve!
+        x0 = np.array([v.get_value() for v, _ in param_to_placeholder])
+        r = minimize(objective, jac=gradient, x0=x0,
+                     method=self.optimizer, constraints=mapped_constraints)
 
+        # Assign the solution
         for i, value in enumerate(r.x):
-            shared_to_symbols[i][0].set_value(value)
+            param_to_placeholder[i][0].set_value(value)
 
         return self
 

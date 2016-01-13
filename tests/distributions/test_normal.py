@@ -61,3 +61,20 @@ def check_fit(mu, sigma):
 def test_fit():
     for mu, sigma in [(0., 1.), (-1., 1.5), (3., 2.)]:
         yield check_fit, mu, sigma
+
+
+def test_fit_with_constraints():
+    p = Normal()
+    X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
+    s0 = p.score(X)
+    p.fit(X, constraints=[
+        {"param": "mu", "type": "ineq", "fun": lambda mu: mu},
+        {"param": "mu", "type": "ineq", "fun": lambda mu: 0.1 - mu},
+        {"param": "sigma", "type": "ineq", "fun": lambda sigma: sigma},
+        {"param": ("mu", "sigma"), "type": "ineq",
+         "fun": lambda mu, sigma: mu * sigma}])
+
+    assert p.mu.get_value() >= 0.0
+    assert p.mu.get_value() <= 0.1
+    assert p.sigma.get_value() >= 0.0
+    assert p.mu.get_value() * p.sigma.get_value() >= 0.0

@@ -80,9 +80,6 @@ class Mixture(TheanoDistribution):
             for i in range(1, len(self.components)):
                 self.nnlf_ += self.weights[i] * self.components[i].pdf_
             self.nnlf_ = -T.log(self.nnlf_)
-            self.nnlf_ = bound(self.nnlf_, np.inf,
-                               *([w >= 0 for w in self.weights] +
-                                 [w <= 1.0 for w in self.weights]))
             self.make_(self.nnlf_, "nnlf")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
