@@ -78,3 +78,11 @@ def test_fit_with_constraints():
     assert p.mu.get_value() <= 0.1
     assert p.sigma.get_value() >= 0.0
     assert p.mu.get_value() * p.sigma.get_value() >= 0.0
+
+
+def test_fit_with_bounds():
+    p = Normal()
+    X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
+    s0 = p.score(X)
+    p.fit(X, bounds=[{"param": "sigma", "bounds": (0, None)}])
+    assert p.sigma.get_value() >= 0.0

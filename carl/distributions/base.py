@@ -146,7 +146,7 @@ class TheanoDistribution(DistributionMixin):
         # XXX: shall we also allow replacement of variables and
         #      recompile all expressions instead?
 
-    def fit(self, X, y=None, constraints=None, **kwargs):
+    def fit(self, X, y=None, bounds=None, constraints=None, **kwargs):
         # Map parameters to placeholders
         param_to_placeholder = []
         param_to_index = {}
@@ -155,6 +155,17 @@ class TheanoDistribution(DistributionMixin):
             w = T.TensorVariable(v.type)
             param_to_placeholder.append((v, w))
             param_to_index[v.name] = i
+
+        # FIXME: in case of distinct params with identical names, this does not work!!!
+
+        # Build bounds
+        mapped_bounds = None
+
+        if bounds is not None:
+            mapped_bounds = [(None, None) for v in param_to_placeholder]
+
+            for b in bounds:
+                mapped_bounds[param_to_index[b["param"]]] = b["bounds"]
 
         # Build constraints
         mapped_constraints = None
@@ -204,8 +215,12 @@ class TheanoDistribution(DistributionMixin):
 
         # Solve!
         x0 = np.array([v.get_value() for v, _ in param_to_placeholder])
-        r = minimize(objective, jac=gradient, x0=x0,
-                     method=self.optimizer, constraints=mapped_constraints)
+        r = minimize(objective,
+                     jac=gradient,
+                     x0=x0,
+                     method=self.optimizer,
+                     bounds=mapped_bounds,
+                     constraints=mapped_constraints)
 
         # Assign the solution
         for i, value in enumerate(r.x):
