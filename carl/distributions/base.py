@@ -4,6 +4,7 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
+import collections
 import numpy as np
 import theano
 import theano.tensor as T
@@ -154,9 +155,7 @@ class TheanoDistribution(DistributionMixin):
         for i, v in enumerate(self.parameters_):
             w = T.TensorVariable(v.type)
             param_to_placeholder.append((v, w))
-            param_to_index[v.name] = i
-
-        # FIXME: in case of distinct params with identical names, this does not work!!!
+            param_to_index[v] = i
 
         # Build bounds
         mapped_bounds = None
@@ -174,10 +173,9 @@ class TheanoDistribution(DistributionMixin):
             mapped_constraints = []
 
             for c in constraints:
-                if isinstance(c["param"], str):
-                    args = (c["param"], )
-                else:
-                    args = c["param"]  # constraints can span multiple params!
+                args = c["param"]
+                if isinstance(args, SharedVariable):
+                    args = (args, )
 
                 m_c = {
                     "type": c["type"],
@@ -222,9 +220,14 @@ class TheanoDistribution(DistributionMixin):
                      bounds=mapped_bounds,
                      constraints=mapped_constraints)
 
-        # Assign the solution
-        for i, value in enumerate(r.x):
-            param_to_placeholder[i][0].set_value(value)
+        if r.success:
+            # Assign the solution
+            for i, value in enumerate(r.x):
+                param_to_placeholder[i][0].set_value(value)
+
+        else:
+            print("Parameter fitting failed!")
+            print(r)
 
         return self
 

@@ -68,10 +68,10 @@ def test_fit_with_constraints():
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
     s0 = p.score(X)
     p.fit(X, constraints=[
-        {"param": "mu", "type": "ineq", "fun": lambda mu: mu},
-        {"param": "mu", "type": "ineq", "fun": lambda mu: 0.1 - mu},
-        {"param": "sigma", "type": "ineq", "fun": lambda sigma: sigma},
-        {"param": ("mu", "sigma"), "type": "ineq",
+        {"param": p.mu, "type": "ineq", "fun": lambda mu: mu},
+        {"param": p.mu, "type": "ineq", "fun": lambda mu: 0.1 - mu},
+        {"param": p.sigma, "type": "ineq", "fun": lambda sigma: sigma},
+        {"param": (p.mu, p.sigma), "type": "ineq",
          "fun": lambda mu, sigma: mu * sigma}])
 
     assert p.mu.get_value() >= 0.0
@@ -84,5 +84,5 @@ def test_fit_with_bounds():
     p = Normal()
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
     s0 = p.score(X)
-    p.fit(X, bounds=[{"param": "sigma", "bounds": (0, None)}])
+    p.fit(X, bounds=[{"param": p.sigma, "bounds": (0, None)}])
     assert p.sigma.get_value() >= 0.0
