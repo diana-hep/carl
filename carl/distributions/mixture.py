@@ -49,7 +49,7 @@ class Mixture(TheanoDistribution):
 
             # Validate weights
             if weight is not None:
-                v, p, c, o = check_parameter("w_{}".format(i), weight)
+                v, p, c, o = check_parameter("param_w{}".format(i), weight)
                 self.weights.append(v)
 
                 for p_i in p:
@@ -60,12 +60,19 @@ class Mixture(TheanoDistribution):
                     self.observeds_.add(o_i)
 
             else:
+                assert i == len(self.components) - 1
                 w_last = 1.
 
                 for w_i in self.weights:
                     w_last = w_last - w_i
 
                 self.weights.append(w_last)
+
+        # Normalize weights
+        normalizer = self.weights[0]
+        for w in self.weights[1:]:
+            normalizer += w
+        self.weights = [w / normalizer for w in self.weights]
 
         # Derive and overide pdf, nnlf and cdf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
@@ -80,9 +87,6 @@ class Mixture(TheanoDistribution):
             for i in range(1, len(self.components)):
                 self.nnlf_ += self.weights[i] * self.components[i].pdf_
             self.nnlf_ = -T.log(self.nnlf_)
-            self.nnlf_ = bound(self.nnlf_, np.inf,
-                               *([w >= 0 for w in self.weights] +
-                                 [w <= 1.0 for w in self.weights]))
             self.make_(self.nnlf_, "nnlf")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
