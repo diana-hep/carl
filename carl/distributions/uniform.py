@@ -44,5 +44,5 @@ class Uniform(TheanoDistribution):
         self.make_(self.cdf_, "cdf")
 
         # ppf
-        self.ppf_ = (self.p - self.low) / (self.high - self.low)
+        self.ppf_ = self.p * (self.high - self.low) + self.low
         self.make_(self.ppf_, "ppf", args=[self.p])
