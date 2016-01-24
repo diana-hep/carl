@@ -84,6 +84,9 @@ class DistributionMixin(BaseEstimator):
     def score(self, X, **kwargs):
         return NotImplementedError
 
+    def ndim(self, **kwargs):
+        return 1
+
 
 class TheanoDistribution(DistributionMixin):
     # Mixin interface

@@ -17,6 +17,7 @@ class Sampler(DistributionMixin):
 
     def fit(self, X, y=None, sample_weight=None, **kwargs):
         self.X_ = X
+        self.ndim_ = X.shape[1]
         self.sample_weight_ = sample_weight
         return self
 
@@ -32,3 +33,6 @@ class Sampler(DistributionMixin):
         indices = np.searchsorted(np.cumsum(w), random_state.rand(n_samples))
 
         return self.X_[indices]
+
+    def ndim(self, **kwargs):
+        return self.ndim_
