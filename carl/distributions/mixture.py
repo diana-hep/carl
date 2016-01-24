@@ -9,7 +9,6 @@ import theano
 import theano.tensor as T
 
 from sklearn.utils import check_random_state
-from theano.gof import graph
 
 from . import DistributionMixin
 from . import TheanoDistribution

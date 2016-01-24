@@ -40,7 +40,13 @@ def check_parameter(name, value):
                     raise ValueError("Observed variables must be named.")
                 observeds.add(var)
     else:
-        value = theano.shared(float(value), name=name)
+        # XXX allow for lists and convert them to ndarray
+
+        if isinstance(value, np.ndarray):
+            value = theano.shared(value, name=name)
+        else:
+            value = theano.shared(float(value), name=name)
+
         parameters.add(value)
 
     return value, parameters, constants, observeds

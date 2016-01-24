@@ -8,8 +8,6 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-from theano.gof import graph
-
 from . import TheanoDistribution
 
 

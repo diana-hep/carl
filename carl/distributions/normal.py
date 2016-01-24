@@ -7,8 +7,9 @@
 import numpy as np
 import theano
 import theano.tensor as T
+import theano.sandbox.linalg as linalg
 
-from theano.gof import graph
+from sklearn.utils import check_random_state
 
 from . import TheanoDistribution
 from .base import bound
@@ -16,8 +17,10 @@ from .base import bound
 
 class Normal(TheanoDistribution):
     def __init__(self, random_state=None, mu=0.0, sigma=1.0):
-        super(Normal, self).__init__(mu=mu, sigma=sigma,
-                                     random_state=random_state, optimizer=None)
+        super(Normal, self).__init__(mu=mu,
+                                     sigma=sigma,
+                                     random_state=random_state,
+                                     optimizer=None)
 
         # pdf
         self.pdf_ = (
@@ -42,3 +45,43 @@ class Normal(TheanoDistribution):
         self.ppf_ = (self.mu +
                      np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
         self.make_(self.ppf_, "ppf", args=[self.p])
+
+
+class MultivariateNormal(TheanoDistribution):
+    def __init__(self, mu, sigma, random_state=None):
+        super(MultivariateNormal, self).__init__(mu=mu,
+                                                 sigma=sigma,
+                                                 random_state=random_state,
+                                                 optimizer=None)
+
+        # XXX: check semi-positive definite-ness of sigma
+
+        # ndim
+        self.ndim_ = self.mu.shape[0]
+        self.make_(self.ndim_, "ndim", args=[])
+
+        # pdf
+        sigma_det = linalg.det(self.sigma)
+        sigma_inv = linalg.matrix_inverse(self.sigma)
+
+        self.pdf_ = (
+            (1. / np.sqrt((2. * np.pi) ** self.ndim_ * T.abs_(sigma_det))) *
+            T.exp(-0.5 * T.sum(T.mul(T.dot(self.X - self.mu,
+                                           sigma_inv),
+                                     self.X - self.mu),
+                               axis=1))).ravel()
+        self.make_(self.pdf_, "pdf")
+
+        # -log pdf
+        self.nnlf_ = -T.log(self.pdf_)  # XXX: for sure this can be better
+        self.make_(self.nnlf_, "nnlf")
+
+        # self.rvs_
+        self.rvs_private_ = T.dot(linalg.cholesky(self.sigma),
+                                  self.X.T).T + self.mu
+        self.make_(self.rvs_private_, "rvs_private")
+
+    def rvs(self, n_samples, **kwargs):
+        rng = check_random_state(self.random_state)
+        X = rng.randn(n_samples, self.ndim(**kwargs))
+        return self.rvs_private(X, **kwargs)
