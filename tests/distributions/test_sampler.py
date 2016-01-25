@@ -20,7 +20,14 @@ def test_sampler():
     sampler.fit(X)
     X2 = sampler.rvs(1000)
     assert_array_equal(np.unique(X), np.unique(X2))
+    assert sampler.ndim == 1
 
     sampler.fit(X, sample_weight=np.ones(len(X)) / len(X))
     X3 = sampler.rvs(1000)
     assert_array_equal(np.unique(X), np.unique(X3))
+    assert sampler.ndim == 1
+
+    X = X.reshape(-1, 2)
+    sampler = Sampler()
+    sampler.fit(X)
+    assert sampler.ndim == 2

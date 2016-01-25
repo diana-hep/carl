@@ -67,8 +67,6 @@ class Histogram(DistributionMixin):
         if sample_weight is not None and len(sample_weight) != len(X):
             raise ValueError
 
-        self.ndims_ = X.shape[1]
-
         # Compute histogram and edges
         h, e = np.histogramdd(X, bins=self.bins, range=self.range,
                               weights=sample_weight, normed=True)
@@ -82,11 +80,13 @@ class Histogram(DistributionMixin):
 
         self.histogram_ = h
         self.edges_ = e
+        self.ndim_ = X.shape[1]
 
         return self
 
     def score(self, X, y=None, **kwargs):
         return -self.nnlf(X).sum()
 
-    def ndim(self, **kwargs):
+    @property
+    def ndim(self):
         return self.ndim_

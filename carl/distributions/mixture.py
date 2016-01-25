@@ -26,7 +26,12 @@ class Mixture(TheanoDistribution):
         self.weights = []
 
         # Check component and weights
-        # XXX check that ndim fit
+        ndim = self.components[0].ndim
+
+        for component in self.components[1:]:
+            if ndim != component.ndim:
+                raise ValueError("Mixture components must have the same "
+                                 "number of dimensions.")
 
         if weights is None:
             weights = [1. / len(components)] * (len(components) - 1)
@@ -126,7 +131,7 @@ class Mixture(TheanoDistribution):
         indices = rng.multinomial(1,
                                   pvals=self.compute_weights(**kwargs),
                                   size=n_samples)
-        out = np.zeros((n_samples, self.ndim()))
+        out = np.zeros((n_samples, self.ndim))
 
         for j in range(len(self.components)):
             mask = np.where(indices[:, j])[0]
@@ -142,5 +147,6 @@ class Mixture(TheanoDistribution):
         else:
             raise NotImplementedError
 
-    def ndim(self, **kwargs):
-        return self.components[0].ndim()
+    @property
+    def ndim(self):
+        return self.components[0].ndim

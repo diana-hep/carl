@@ -84,7 +84,8 @@ class DistributionMixin(BaseEstimator):
     def score(self, X, **kwargs):
         return NotImplementedError
 
-    def ndim(self, **kwargs):
+    @property
+    def ndim(self):
         return 1
 
 

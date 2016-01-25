@@ -13,6 +13,7 @@ from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Normal
+from carl.distributions import MultivariateNormal
 
 
 def check_normal(mu, sigma):
@@ -86,3 +87,19 @@ def test_fit_with_bounds():
     s0 = p.score(X)
     p.fit(X, bounds=[{"param": p.sigma, "bounds": (0, None)}])
     assert p.sigma.get_value() >= 0.0
+
+
+def check_mv_normal(mu, sigma):
+    p = MultivariateNormal(mu=mu, sigma=sigma, random_state=0)
+    X = p.rvs(20000)
+
+    assert np.mean(mu - X.mean(axis=0)) < 0.02
+    assert np.mean(sigma - np.cov(X.T)) < 0.02
+
+
+def test_mv_normal():
+    for mu, sigma in [(np.array([0.0, 0.0]), np.eye(2)),
+                      (np.array([1.0, -1.0, 0.0]), np.eye(3)),
+                      (np.array([0.5, -0.5]), np.array([[1.0, 0.5],
+                                                        [0.5, 2.0]]))]:
+        yield check_mv_normal, mu, sigma

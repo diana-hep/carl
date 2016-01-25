@@ -53,16 +53,17 @@ class MultivariateNormal(TheanoDistribution):
                                                  sigma=sigma,
                                                  random_state=random_state,
                                                  optimizer=None)
-
-        # XXX: check semi-positive definite-ness of sigma
+        # XXX: The SDP-ness of sigma should be check upon changes
 
         # ndim
         self.ndim_ = self.mu.shape[0]
-        self.make_(self.ndim_, "ndim", args=[])
+        self.ndim_func_ = func = theano.function([], self.ndim_,
+                                                 allow_input_downcast=True)
 
         # pdf
-        sigma_det = linalg.det(self.sigma)
-        sigma_inv = linalg.matrix_inverse(self.sigma)
+        L = linalg.cholesky(self.sigma)
+        sigma_det = linalg.det(self.sigma)  # XXX: compute from L instead
+        sigma_inv = linalg.matrix_inverse(self.sigma)  # XXX: idem
 
         self.pdf_ = (
             (1. / np.sqrt((2. * np.pi) ** self.ndim_ * T.abs_(sigma_det))) *
@@ -77,11 +78,13 @@ class MultivariateNormal(TheanoDistribution):
         self.make_(self.nnlf_, "nnlf")
 
         # self.rvs_
-        self.rvs_private_ = T.dot(linalg.cholesky(self.sigma),
-                                  self.X.T).T + self.mu
-        self.make_(self.rvs_private_, "rvs_private")
+        self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
 
     def rvs(self, n_samples, **kwargs):
         rng = check_random_state(self.random_state)
-        X = rng.randn(n_samples, self.ndim(**kwargs))
-        return self.rvs_private(X, **kwargs)
+        X = rng.randn(n_samples, self.ndim)
+        return self.rvs_func_(X, **kwargs)
+
+    @property
+    def ndim(self):
+        return self.ndim_func_()[None][0]

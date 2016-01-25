@@ -14,10 +14,11 @@ Note: This module is only meant to be a minimally working prototype for
 from .base import DistributionMixin
 from .base import TheanoDistribution
 
-from .normal import Normal
 from .exponential import Exponential
-from .uniform import Uniform
+from .normal import Normal
+from .normal import MultivariateNormal
 from .mixture import Mixture
+from .uniform import Uniform
 
 from .histogram import Histogram
 from .kde import KernelDensity
@@ -26,6 +27,7 @@ from .sampler import Sampler
 __all__ = ("DistributionMixin",
            "TheanoDistribution"
            "Normal",
+           "MultivariateNormal",
            "Exponential",
            "Uniform",
            "Mixture",

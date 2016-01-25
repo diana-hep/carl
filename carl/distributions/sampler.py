@@ -19,6 +19,7 @@ class Sampler(DistributionMixin):
         self.X_ = X
         self.ndim_ = X.shape[1]
         self.sample_weight_ = sample_weight
+
         return self
 
     def rvs(self, n_samples, **kwargs):
@@ -34,5 +35,6 @@ class Sampler(DistributionMixin):
 
         return self.X_[indices]
 
-    def ndim(self, **kwargs):
+    @property
+    def ndim(self):
         return self.ndim_
