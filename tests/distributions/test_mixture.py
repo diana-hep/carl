@@ -16,6 +16,7 @@ from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Normal
+from carl.distributions import MultivariateNormal
 from carl.distributions import Exponential
 from carl.distributions import Histogram
 from carl.distributions import Mixture
@@ -40,6 +41,8 @@ def test_mixture_api():
     assert p2.sigma in m.parameters_
     assert m.X == p1.X
     assert m.X == p2.X
+    assert m.ndim == p1.ndim
+    assert m.ndim == p2.ndim
 
     m = Mixture(components=[p1, p2])
     w = m.compute_weights()
@@ -81,9 +84,9 @@ def test_mixture_pdf():
 
 
 def test_rvs():
-    p1 = Normal(mu=0.0, sigma=T.constant(1.0))
-    p2 = Normal(mu=2.0, sigma=2.0)
-    m = Mixture(components=[p1, p2], weights=[0.25])
+    p1 = Normal(mu=0.0, sigma=T.constant(1.0), random_state=0)
+    p2 = Normal(mu=2.0, sigma=2.0, random_state=0)
+    m = Mixture(components=[p1, p2], weights=[0.25], random_state=0)
     X = m.rvs(2000)
     assert (np.mean(X) - (0.25 * p1.mu.eval() + 0.75 * p2.mu.eval())) < 0.1
 
@@ -133,3 +136,16 @@ def test_likelihood_free_mixture():
 
     # Check errors
     assert_raises(NotImplementedError, m2.fit, X)
+
+
+def test_mv_mixture():
+    p1 = MultivariateNormal(mu=np.array([0.0, 0.0]),
+                            sigma=np.eye(2))
+    p2 = MultivariateNormal(mu=np.array([2.0, 2.0]),
+                            sigma=0.5 * np.eye(2))
+    m = Mixture(components=[p1, p2])
+    assert m.ndim == 2
+    X = m.rvs(100)
+    assert X.shape == (100, 2)
+
+    assert_raises(ValueError, Mixture, components=[p1, Normal()])

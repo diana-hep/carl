@@ -76,7 +76,7 @@ class Histogram(DistributionMixin):
             h = np.insert(h, 0, 0., axis=j)
             h = np.insert(h, h.shape[j], 0., axis=j)
             e[j] = np.insert(e[j], 0, -np.inf)
-            e[j] = np.insert(e, len(e[j]), np.inf)
+            e[j] = np.insert(e[j], len(e[j]), np.inf)
 
         self.histogram_ = h
         self.edges_ = e

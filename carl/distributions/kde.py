@@ -12,6 +12,8 @@ from sklearn.utils import check_array
 
 from .base import DistributionMixin
 
+# XXX: replace with a wrapper of sklearn.neighbors.KernelDensity instead?
+
 
 class KernelDensity(DistributionMixin):
     def __init__(self, bandwidth=None, random_state=None):

@@ -95,6 +95,7 @@ def check_mv_normal(mu, sigma):
 
     assert np.mean(mu - X.mean(axis=0)) < 0.02
     assert np.mean(sigma - np.cov(X.T)) < 0.02
+    assert p.ndim == len(mu)
 
 
 def test_mv_normal():

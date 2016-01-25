@@ -46,3 +46,12 @@ def test_histogram_sample_weight():
         h2.pdf([[0.0], [1.0], [10.0], [-0.5], [10.5]]))
 
     assert_raises(ValueError, h1.fit, X, sample_weight=w[1:])
+
+
+def test_histogram_2d():
+    X = np.arange(100).reshape(-1, 2)
+    h = Histogram(bins=[5, 3], random_state=1)
+    h.fit(X)
+    assert h.ndim == 2
+    assert h.histogram_.shape[0] == 5+2
+    assert h.histogram_.shape[1] == 3+2

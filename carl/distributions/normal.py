@@ -57,8 +57,7 @@ class MultivariateNormal(TheanoDistribution):
 
         # ndim
         self.ndim_ = self.mu.shape[0]
-        self.ndim_func_ = func = theano.function([], self.ndim_,
-                                                 allow_input_downcast=True)
+        self.make_(self.ndim_, "ndim_func_", args=[])
 
         # pdf
         L = linalg.cholesky(self.sigma)
