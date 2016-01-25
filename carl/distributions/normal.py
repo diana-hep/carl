@@ -66,7 +66,7 @@ class MultivariateNormal(TheanoDistribution):
         sigma_inv = linalg.matrix_inverse(self.sigma)  # XXX: idem
 
         self.pdf_ = (
-            (1. / np.sqrt((2. * np.pi) ** self.ndim_ * T.abs_(sigma_det))) *
+            (1. / T.sqrt((2. * np.pi) ** self.ndim_ * T.abs_(sigma_det))) *
             T.exp(-0.5 * T.sum(T.mul(T.dot(self.X - self.mu,
                                            sigma_inv),
                                      self.X - self.mu),
