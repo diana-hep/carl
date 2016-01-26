@@ -74,11 +74,11 @@ class Mixture(TheanoDistribution):
 
                 self.weights.append(w_last)
 
-        # Normalize weights
-        normalizer = self.weights[0]
-        for w in self.weights[1:]:
-            normalizer += w
-        self.weights = [w / normalizer for w in self.weights]
+        # # Normalize weights
+        # normalizer = self.weights[0]
+        # for w in self.weights[1:]:
+        #     normalizer += w
+        # self.weights = [w / normalizer for w in self.weights]
 
         # Derive and overide pdf, nnlf and cdf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
