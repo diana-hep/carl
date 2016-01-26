@@ -221,6 +221,10 @@ class TheanoDistribution(DistributionMixin):
         def gradient(x):
             return np.array(gradient_(X, *x, **kwargs)) / len(X)
 
+        # XXX: scipy's minimize supports gradient-free optimization. We
+        #      should allow for that, in case of non-TheanoDistribution
+        #      objects
+
         # Solve!
         x0 = np.array([v.get_value() for v, _ in param_to_placeholder])
         r = minimize(objective,

@@ -26,9 +26,9 @@ from .sampler import Sampler
 
 __all__ = ("DistributionMixin",
            "TheanoDistribution"
+           "Exponential",
            "Normal",
            "MultivariateNormal",
-           "Exponential",
            "Uniform",
            "Mixture",
            "Histogram",
