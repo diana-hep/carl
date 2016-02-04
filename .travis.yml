@@ -18,8 +18,8 @@ install: source travis-install.sh
 script:
     - py.test tests
 
-after_success:
-    - coveralls
+# after_success:
+#     - coveralls
 
 notifications:
     email: false
