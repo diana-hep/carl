@@ -38,5 +38,4 @@ class KernelDensity(DistributionMixin):
         return self
 
     def score(self, X, y=None, **kwargs):
-        X = check_array(X)
-        return self.kde_.logpdf(X.T).sum()
+        raise NotImplementedError

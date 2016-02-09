@@ -18,6 +18,9 @@ from sklearn.preprocessing import LabelEncoder
 
 def as_classifier(regressor):
     class Wrapper(BaseEstimator, ClassifierMixin):
+        def __init__(self, base_estimator):
+            self.base_estimator = base_estimator
+
         def fit(self, X, y):
             # Check inputs
             X, y = check_X_y(X, y)
@@ -32,7 +35,7 @@ def as_classifier(regressor):
             self.classes_ = label_encoder.classes_
 
             # Fit regressor
-            self.regressor_ = clone(regressor).fit(X, y)
+            self.regressor_ = clone(self.base_estimator).fit(X, y)
 
             return self
 
@@ -52,7 +55,10 @@ def as_classifier(regressor):
 
             return probas
 
-    return Wrapper()
+        def score(self, X, y):
+            return self.regressor_.score(X, y)
+
+    return Wrapper(regressor)
 
 
 if int(sklearn.__version__[2:4]) < 18:

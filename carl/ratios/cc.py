@@ -35,20 +35,26 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
             return clf, None, None
 
         else:
+            X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
+            X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
+
+            X_min = min(np.min(X_num), np.min(X_den))
+            X_max = max(np.max(X_num), np.max(X_den))
+
             if self.calibration == "kde":
                 cal_num = KernelDensity()
                 cal_den = KernelDensity()
 
             elif self.calibration == "histogram":
-                cal_num = Histogram(bins=100, range=[(0.0, 1.0)])
-                cal_den = Histogram(bins=100, range=[(0.0, 1.0)])
+                cal_num = Histogram(bins=int(len(X_den) ** (1. / 3)),
+                                    range=[(X_min, X_max)])
+                cal_den = Histogram(bins=int(len(X_den) ** (1. / 3)),
+                                    range=[(X_min, X_max)])
 
             else:
                 cal_num = clone(self.calibration)
                 cal_den = clone(self.calibration)
 
-            X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
-            X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
             cal_num.fit(X_num.reshape(-1, 1))
             cal_den.fit(X_den.reshape(-1, 1))
 

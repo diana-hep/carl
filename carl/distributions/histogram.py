@@ -85,7 +85,7 @@ class Histogram(DistributionMixin):
         return self
 
     def score(self, X, y=None, **kwargs):
-        return -self.nnlf(X).sum()
+        raise NotImplementedError
 
     @property
     def ndim(self):
