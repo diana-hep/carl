@@ -38,18 +38,21 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
             X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
             X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
 
-            X_min = min(np.min(X_num), np.min(X_den))
-            X_max = max(np.max(X_num), np.max(X_den))
-
             if self.calibration == "kde":
                 cal_num = KernelDensity()
                 cal_den = KernelDensity()
 
             elif self.calibration == "histogram":
-                cal_num = Histogram(bins=int(len(X_den) ** (1. / 3)),
-                                    range=[(X_min, X_max)])
-                cal_den = Histogram(bins=int(len(X_den) ** (1. / 3)),
-                                    range=[(X_min, X_max)])
+                eps = 0.05
+                X_min = max(0, min(np.min(X_num), np.min(X_den)) - eps)
+                X_max = min(1, max(np.max(X_num), np.max(X_den)) + eps)
+
+                cal_num = Histogram(bins=10 + int(len(X_den) ** (1. / 3)),
+                                    range=[(X_min, X_max)],
+                                    smoothing=None)
+                cal_den = Histogram(bins=10 + int(len(X_den) ** (1. / 3)),
+                                    range=[(X_min, X_max)],
+                                    smoothing=None)
 
             else:
                 cal_num = clone(self.calibration)
