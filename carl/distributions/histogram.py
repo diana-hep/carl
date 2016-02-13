@@ -9,21 +9,33 @@ import numpy as np
 from itertools import product
 from sklearn.utils import check_random_state
 from sklearn.utils import check_array
+from scipy.interpolate import interp1d
 from scipy.signal import medfilt
 
 from .base import DistributionMixin
 
 
 class Histogram(DistributionMixin):
-    def __init__(self, bins=10, range=None, smoothing=None, random_state=None):
+    def __init__(self, bins=10, range=None, smoothing=None, interpolation=None,
+                 random_state=None):
         super(Histogram, self).__init__(random_state=random_state)
 
         self.bins = bins
         self.range = range
         self.smoothing = smoothing
+        self.interpolation = interpolation
 
     def pdf(self, X, **kwargs):
         X = check_array(X)
+
+        if self.ndim_ == 1 and self.interpolation:
+            values = np.zeros(len(X))
+            mask = X[:, 0] >= self.edges_[0][1]
+            mask &= X[:, 0] <= self.edges_[0][-2]
+            values[mask] = self.interpolation_(X[mask, 0])
+            values[values < 0.] = 0.
+            return values
+
         all_indices = []
 
         for j in range(X.shape[1]):
@@ -85,6 +97,14 @@ class Histogram(DistributionMixin):
                 h[1:-1] = _353qh(h[1:-1])
             elif self.smoothing == "353qh_twice":
                 h[1:-1] = _353qh_twice(h[1:-1])
+
+            if self.interpolation:
+                inputs = e[0][2:-1] - (e[0][2] - e[0][1]) / 2.
+                inputs[0] = e[0][1]
+                inputs[-1] = e[0][-2]
+                outputs = h[1:-1]
+                self.interpolation_ = interp1d(inputs, outputs,
+                                               kind=self.interpolation)
 
         self.histogram_ = h
         self.edges_ = e
