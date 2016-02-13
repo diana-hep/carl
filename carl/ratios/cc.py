@@ -49,10 +49,10 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
 
                 cal_num = Histogram(bins=10 + int(len(X_den) ** (1. / 3)),
                                     range=[(X_min, X_max)],
-                                    smoothing=None)
+                                    interpolation="linear")
                 cal_den = Histogram(bins=10 + int(len(X_den) ** (1. / 3)),
                                     range=[(X_min, X_max)],
-                                    smoothing=None)
+                                    interpolation="linear")
 
             else:
                 cal_num = clone(self.calibration)
