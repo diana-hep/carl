@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.base import clone
+from sklearn.calibration import CalibratedClassifierCV
 
 from ..distributions import KernelDensity
 from ..distributions import Histogram
@@ -29,12 +30,12 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         if isinstance(clf, RegressorMixin):
             clf = as_classifier(clf)
 
-        clf.fit(X_clf, y_clf)
-
         if self.calibration is None:
+            clf.fit(X_clf, y_clf)
             return clf, None, None
 
         else:
+            clf.fit(X_clf, y_clf)
             X_num = clf.predict_proba(X_cal[y_cal == 0])[:, 0]
             X_den = clf.predict_proba(X_cal[y_cal == 1])[:, 0]
 
@@ -87,15 +88,35 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.classifiers_ = []
         self.calibrators_ = []
 
-        cv = check_cv(self.cv, X=X, y=y, classifier=True)
+        if self.calibration in ("isotonic", "sigmoid"):
+            # XXX: unify code by using IsotonicRegression instead
+            clf = clone(self.base_estimator)
 
-        for train, calibrate in cv.split(X, y):
-            clf, cal_num, cal_den = self._fit_X_y(X[train], y[train],
-                                                  X[calibrate], y[calibrate])
+            if isinstance(clf, RegressorMixin):
+                clf = as_classifier(clf)
+
+            clf = CalibratedClassifierCV(clf,
+                                         method=self.calibration,
+                                         cv=self.cv)
+            clf.fit(X, y)
+
             self.classifiers_.append(clf)
-            self.calibrators_.append((cal_num, cal_den))
+            self.calibrators_.append((None, None))
 
-        return self
+            return self
+
+        else:
+            cv = check_cv(self.cv, X=X, y=y, classifier=True)
+
+            for train, calibrate in cv.split(X, y):
+                clf, cal_num, cal_den = self._fit_X_y(X[train],
+                                                      y[train],
+                                                      X[calibrate],
+                                                      y[calibrate])
+                self.classifiers_.append(clf)
+                self.calibrators_.append((cal_num, cal_den))
+
+            return self
 
     def predict(self, X, log=False, **kwargs):
         if self.identity_:
@@ -111,8 +132,11 @@ class CalibratedClassifierRatio(BaseEstimator, DensityRatioMixin):
                                                self.calibrators_):
                 p = clf.predict_proba(X)[:, 0].reshape(-1, 1)
 
-                if self.calibration is None:
-                    r += np.divide(p.ravel(), 1. - p.ravel())
+                if cal_num is None or cal_den is None:
+                    if log:
+                        r += np.log(p.ravel()) - np.log(1. - p.ravel())
+                    else:
+                        r += np.divide(p.ravel(), 1. - p.ravel())
 
                 else:
                     if log:

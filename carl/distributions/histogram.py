@@ -95,6 +95,8 @@ class Histogram(DistributionMixin):
 
             if self.interpolation:
                 inputs = e[0][2:-1] - (e[0][2] - e[0][1]) / 2.
+                inputs[0] = e[0][1]
+                inputs[-1] = e[0][-2]
                 outputs = h[1:-1]
                 self.interpolation_ = interp1d(inputs, outputs,
                                                kind=self.interpolation,

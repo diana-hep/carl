@@ -48,7 +48,9 @@ def check_calibrated_classifier_ratio(clf, calibration, cv):
 
 def test_calibrated_classifier_ratio():
     for clf, calibration, cv in [(ElasticNetCV(), "histogram", 3),
-                                 (GaussianNB(), "kde", 3)]:
+                                 (GaussianNB(), "kde", 3),
+                                 (ElasticNetCV(), "isotonic", 3),
+                                 (GaussianNB(), "sigmoid", 3)]:
         yield check_calibrated_classifier_ratio, clf, calibration, cv
 
 
