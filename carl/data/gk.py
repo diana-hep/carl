@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.utils import check_random_state
 
 from ..distributions import TheanoDistribution
-from ..distributions import Normal
 
 
 class GK(TheanoDistribution):
