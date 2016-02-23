@@ -19,7 +19,7 @@ class GK(TheanoDistribution):
     def rvs(self, n_samples, **kwargs):
         rng = check_random_state(self.random_state)
 
-        A = self.A.eval()  # pass kwargs?
+        A = self.A.eval()
         B = self.B.eval()
         g = self.g.eval()
         k = self.k.eval()

@@ -5,5 +5,6 @@
 # more details.
 
 from .gk import GK
+from .ricker import Ricker
 
-__all__ = ("GK")
+__all__ = ("GK", "Ricker")
