@@ -8,6 +8,12 @@
 
 from .base import as_classifier
 from .parameterize import ParameterStacker
+from .parameterize import ParameterizedClassifier
+from .parameterize import ParameterizedRegressor
+from .parameterize import make_parameterized_classification
 
 __all__ = ("as_classifier",
-           "ParameterStacker")
+           "ParameterStacker",
+           "ParameterizedClassifier",
+           "ParameterizedRegressor",
+           "make_parameterized_classification")
