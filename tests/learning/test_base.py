@@ -12,7 +12,7 @@ from numpy.testing import assert_raises
 from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeRegressor
 
-from carl.ml import as_classifier
+from carl.learning import as_classifier
 
 
 def test_as_classifier():

@@ -13,7 +13,7 @@ from sklearn.calibration import CalibratedClassifierCV
 
 from ..distributions import KernelDensity
 from ..distributions import Histogram
-from ..ml import as_classifier
+from ..learning import as_classifier
 from ..utils import check_cv
 from .base import DensityRatioMixin
 
