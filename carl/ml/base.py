@@ -10,9 +10,9 @@ import sklearn
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import clone
+from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
-from sklearn.preprocessing import LabelEncoder
 
 
 def as_classifier(regressor):

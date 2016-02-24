@@ -13,8 +13,6 @@ from sklearn.base import RegressorMixin
 from sklearn.base import TransformerMixin
 from sklearn.base import clone
 
-from theano.tensor.sharedvar import SharedVariable
-
 
 class ParameterStacker(BaseEstimator, TransformerMixin):
     def __init__(self, params):
