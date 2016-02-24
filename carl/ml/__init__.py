@@ -4,9 +4,8 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-"""Generators for likelihood-free benchmarks."""
+"""Machine learning helpers."""
 
-from .gk import GK
-from .ricker import Ricker
+from .base import as_classifier
 
-__all__ = ("GK", "Ricker")
+__all__ = ("as_classifier",)
