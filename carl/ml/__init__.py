@@ -7,5 +7,7 @@
 """Machine learning helpers."""
 
 from .base import as_classifier
+from .parameterize import ParameterStacker
 
-__all__ = ("as_classifier",)
+__all__ = ("as_classifier",
+           "ParameterStacker")
