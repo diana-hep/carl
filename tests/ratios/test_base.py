@@ -16,7 +16,8 @@ from carl.distributions import Mixture
 from carl.ratios import DensityRatioMixin
 from carl.ratios import InverseRatio
 from carl.ratios import DecomposedRatio
-from carl.ratios import CalibratedClassifierRatio
+from carl.ratios import ClassifierRatio
+from carl.learning import CalibratedClassifierCV
 
 from sklearn.linear_model import ElasticNetCV
 
@@ -51,7 +52,7 @@ def test_decomposed_ratio():
     p1 = Mixture(components=[components[0]] + [components[2]])
 
     ratio = DecomposedRatio(
-        CalibratedClassifierRatio(base_estimator=ElasticNetCV()))
+        ClassifierRatio(CalibratedClassifierCV(base_estimator=ElasticNetCV())))
     ratio.fit(numerator=p0, denominator=p1, n_samples=10000)
 
     reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)
@@ -65,7 +66,7 @@ def test_decomposed_ratio_identity():
     p = Mixture(components=components, weights=[0.45, 0.1, 0.45])
 
     ratio = DecomposedRatio(
-        CalibratedClassifierRatio(base_estimator=ElasticNetCV()))
+        ClassifierRatio(CalibratedClassifierCV(base_estimator=ElasticNetCV())))
     ratio.fit(numerator=p, denominator=p, n_samples=10000)
 
     reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)

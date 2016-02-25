@@ -22,7 +22,7 @@ from .base import check_cv
 
 
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
-    def __init__(self, base_estimator, method="isotonic", cv=3):
+    def __init__(self, base_estimator, method="histogram", cv=3):
         self.base_estimator = base_estimator
         self.method = method
         self.cv = cv
@@ -71,12 +71,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         # Fall back to scikit-learn CalibratedClassifierCV
         if self.method in ("isotonic", "sigmoid"):
-            clf = clone(self.base_estimator)
-
-            if isinstance(clf, RegressorMixin):
-                clf = as_classifier(clf)
-
-            clf = CCCV(clf, method=self.method, cv=self.cv)
+            clf = CCCV(self.base_estimator, method=self.method, cv=self.cv)
             clf.fit(X, y)
 
             self.classifiers_ = [clf]
@@ -138,3 +133,11 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             p /= np.sum(p, axis=1).reshape(-1, 1)
 
             return p
+
+    def clone(self):
+        estimator = clone(self, original=True)
+
+        if self.cv == "prefit":
+            estimator.base_estimator = self.base_estimator
+
+        return estimator

@@ -11,19 +11,21 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_raises
 
 from carl.distributions import Normal
-from carl.ratios import CalibratedClassifierRatio
+from carl.ratios import ClassifierRatio
+from carl.learning import CalibratedClassifierCV
 
 from sklearn.linear_model import ElasticNetCV
 from sklearn.naive_bayes import GaussianNB
 
 
-def check_calibrated_classifier_ratio(clf, calibration, cv):
+def check_calibrated_classifier_ratio(clf, method, cv):
     # Passing distributions directly
     p0 = Normal(mu=0.0)
     p1 = Normal(mu=0.1)
 
-    ratio = CalibratedClassifierRatio(base_estimator=clf,
-                                      calibration=calibration, cv=cv)
+    ratio = ClassifierRatio(CalibratedClassifierCV(base_estimator=clf,
+                                                   method=method,
+                                                   cv=cv))
     ratio.fit(numerator=p0, denominator=p1, n_samples=10000)
 
     reals = np.linspace(-1, 1, num=100).reshape(-1, 1)
@@ -36,8 +38,9 @@ def check_calibrated_classifier_ratio(clf, calibration, cv):
     y = np.zeros(10000, dtype=np.int)
     y[5000:] = 1
 
-    ratio = CalibratedClassifierRatio(base_estimator=clf,
-                                      calibration=calibration, cv=cv)
+    ratio = ClassifierRatio(CalibratedClassifierCV(base_estimator=clf,
+                                                   method=method,
+                                                   cv=cv))
     ratio.fit(X=X, y=y)
 
     reals = np.linspace(-1, 1, num=100).reshape(-1, 1)
@@ -56,7 +59,8 @@ def test_calibrated_classifier_ratio():
 
 def test_calibrated_classifier_ratio_identity():
     p = Normal(mu=0.0)
-    ratio = CalibratedClassifierRatio(base_estimator=ElasticNetCV())
+    ratio = ClassifierRatio(
+        CalibratedClassifierCV(base_estimator=ElasticNetCV()))
     ratio.fit(numerator=p, denominator=p, n_samples=10000)
 
     reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)
