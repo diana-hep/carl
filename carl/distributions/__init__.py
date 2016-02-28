@@ -17,8 +17,10 @@ from .base import TheanoDistribution
 from .exponential import Exponential
 from .normal import Normal
 from .normal import MultivariateNormal
-from .mixture import Mixture
 from .uniform import Uniform
+
+from .join import Join
+from .mixture import Mixture
 
 from .histogram import Histogram
 from .kde import KernelDensity
@@ -30,6 +32,7 @@ __all__ = ("DistributionMixin",
            "Normal",
            "MultivariateNormal",
            "Uniform",
+           "Join",
            "Mixture",
            "Histogram",
            "KernelDensity",
