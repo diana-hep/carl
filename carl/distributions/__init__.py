@@ -21,6 +21,7 @@ from .uniform import Uniform
 
 from .join import Join
 from .mixture import Mixture
+from .transforms import LinearTransform
 
 from .histogram import Histogram
 from .kde import KernelDensity
@@ -34,6 +35,7 @@ __all__ = ("DistributionMixin",
            "Uniform",
            "Join",
            "Mixture",
+           "LinearTransform",
            "Histogram",
            "KernelDensity",
            "Sampler")
