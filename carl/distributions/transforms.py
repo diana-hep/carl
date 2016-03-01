@@ -37,6 +37,9 @@ class LinearTransform(TheanoDistribution):
     def pdf(self, X, **kwargs):
         return self.p.pdf(np.dot(self.inv_A, X.T).T, **kwargs)
 
+    def nnlf(self, X, **kwargs):
+        return self.p.nnlf(np.dot(self.inv_A, X.T).T, **kwargs)
+
     def rvs(self, n_samples, **kwargs):
         out = self.p.rvs(n_samples, **kwargs)
         return np.dot(self.A, out.T).T

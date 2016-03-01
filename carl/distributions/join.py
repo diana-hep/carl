@@ -34,6 +34,32 @@ class Join(TheanoDistribution):
         # Derive and overide pdf, nnlf and cdf analytically if possible
         # XXX todo
 
+    def pdf(self, X, **kwargs):
+        out = np.zeros(len(X))
+        start = 0
+
+        for i, component in enumerate(self.components):
+            if i == 0:
+                out += component.pdf(X[:, start:start+component.ndim],
+                                     **kwargs)
+            else:
+                out *= component.pdf(X[:, start:start+component.ndim],
+                                     **kwargs)
+
+            start += component.ndim
+
+        return out
+
+    def nnlf(self, X, **kwargs):
+        out = np.zeros(len(X))
+        start = 0
+
+        for i, component in enumerate(self.components):
+            out += component.nnlf(X[:, start:start+component.ndim], **kwargs)
+            start += component.ndim
+
+        return out
+
     def rvs(self, n_samples, **kwargs):
         out = np.zeros((n_samples, self.ndim))
         start = 0
