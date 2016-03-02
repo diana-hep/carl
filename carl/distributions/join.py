@@ -35,17 +35,11 @@ class Join(TheanoDistribution):
         # XXX todo
 
     def pdf(self, X, **kwargs):
-        out = np.zeros(len(X))
+        out = np.ones(len(X))
         start = 0
 
         for i, component in enumerate(self.components):
-            if i == 0:
-                out += component.pdf(X[:, start:start+component.ndim],
-                                     **kwargs)
-            else:
-                out *= component.pdf(X[:, start:start+component.ndim],
-                                     **kwargs)
-
+            out *= component.pdf(X[:, start:start+component.ndim], **kwargs)
             start += component.ndim
 
         return out
