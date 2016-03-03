@@ -12,6 +12,7 @@ from sklearn.utils import check_random_state
 
 from carl.distributions import Join
 from carl.distributions import Normal
+from carl.distributions import Histogram
 
 
 def test_join():
@@ -23,7 +24,28 @@ def test_join():
 
     X = p.rvs(10000)
     assert X.shape == (10000, 3)
-    assert np.abs(np.mean(X[:, 0]) - p.components[0].mu.eval()) < 0.05
-    assert np.abs(np.mean(X[:, 1]) - p.components[1].mu.eval()) < 0.05
-    assert np.abs(np.mean(X[:, 2]) - p.components[2].mu.eval()) < 0.05
+    assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
+    assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05
+    assert np.abs(np.mean(X[:, 2]) - 2.) < 0.05
+    assert_array_almost_equal(-np.log(p.pdf(X)), p.nnlf(X))
+
+
+def test_join_non_theano():
+    h0 = Histogram(interpolation="linear", bins=30)
+    h1 = Histogram(interpolation="linear", bins=30)
+    h2 = Histogram(interpolation="linear", bins=30)
+
+    h0.fit(Normal(mu=0, random_state=0).rvs(10000))
+    h1.fit(Normal(mu=1, random_state=1).rvs(10000))
+    h2.fit(Normal(mu=2, random_state=2).rvs(10000))
+
+    p = Join(components=[h0, h1, h2], random_state=0)
+    assert p.ndim == 3
+    assert len(p.parameters_) == 0
+
+    X = p.rvs(10000)
+    assert X.shape == (10000, 3)
+    assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
+    assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05
+    assert np.abs(np.mean(X[:, 2]) - 2.) < 0.05
     assert_array_almost_equal(-np.log(p.pdf(X)), p.nnlf(X))
