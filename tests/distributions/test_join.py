@@ -7,6 +7,7 @@
 import numpy as np
 
 from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
 
 from carl.distributions import Join
@@ -25,3 +26,4 @@ def test_join():
     assert np.abs(np.mean(X[:, 0]) - p.components[0].mu.eval()) < 0.05
     assert np.abs(np.mean(X[:, 1]) - p.components[1].mu.eval()) < 0.05
     assert np.abs(np.mean(X[:, 2]) - p.components[2].mu.eval()) < 0.05
+    assert_array_almost_equal(-np.log(p.pdf(X)), p.nnlf(X))

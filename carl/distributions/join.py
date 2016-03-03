@@ -31,8 +31,31 @@ class Join(TheanoDistribution):
                 for o_i in component.observeds_:
                     self.observeds_.add(o_i)
 
-        # Derive and overide pdf, nnlf and cdf analytically if possible
-        # XXX todo
+        if all([hasattr(c, "pdf_") for c in self.components]):
+            # pdf
+            c0 = self.components[0]
+            self.pdf_ = theano.clone(c0.pdf_, {c0.X: self.X[:, 0:c0.ndim]})
+            start = c0.ndim
+
+            for c in self.components[1:]:
+                self.pdf_ *= theano.clone(
+                    c.pdf_, {c.X: self.X[:, start:start+c.ndim]})
+                start += c.ndim
+
+            self.make_(self.pdf_, "pdf")
+
+        if all([hasattr(c, "nnlf_") for c in self.components]):
+            # nnlf
+            c0 = self.components[0]
+            self.nnlf_ = theano.clone(c0.nnlf_, {c0.X: self.X[:, 0:c0.ndim]})
+            start = c0.ndim
+
+            for c in self.components[1:]:
+                self.nnlf_ += theano.clone(
+                    c.nnlf_, {c.X: self.X[:, start:start+c.ndim]})
+                start += c.ndim
+
+            self.make_(self.nnlf_, "nnlf")
 
     def pdf(self, X, **kwargs):
         out = np.ones(len(X))
