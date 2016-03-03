@@ -18,7 +18,7 @@ from sklearn.linear_model import ElasticNetCV
 from sklearn.naive_bayes import GaussianNB
 
 
-def check_calibrated_classifier_ratio(clf, method, cv):
+def check_classifier_ratio(clf, method, cv):
     # Passing distributions directly
     p0 = Normal(mu=0.0)
     p1 = Normal(mu=0.1)
@@ -49,15 +49,15 @@ def check_calibrated_classifier_ratio(clf, method, cv):
                           ratio.predict(reals, log=True))) < 0.01
 
 
-def test_calibrated_classifier_ratio():
+def test_classifier_ratio():
     for clf, calibration, cv in [(ElasticNetCV(), "histogram", 3),
                                  (GaussianNB(), "kde", 3),
                                  (ElasticNetCV(), "isotonic", 3),
                                  (GaussianNB(), "sigmoid", 3)]:
-        yield check_calibrated_classifier_ratio, clf, calibration, cv
+        yield check_classifier_ratio, clf, calibration, cv
 
 
-def test_calibrated_classifier_ratio_identity():
+def test_classifier_ratio_identity():
     p = Normal(mu=0.0)
     ratio = ClassifierRatio(
         CalibratedClassifierCV(base_estimator=ElasticNetCV()))

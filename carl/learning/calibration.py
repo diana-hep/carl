@@ -57,6 +57,8 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         return calibrator0, calibrator1
 
     def fit(self, X, y=None):
+        # XXX: add support for sample_weight
+
         # Check inputs
         X, y = check_X_y(X, y)
 
