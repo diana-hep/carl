@@ -157,7 +157,8 @@ class TheanoDistribution(DistributionMixin):
         # XXX: shall we also allow replacement of variables and
         #      recompile all expressions instead?
 
-    def fit(self, X, y=None, bounds=None, constraints=None, **kwargs):
+    def fit(self, X, y=None, bounds=None, constraints=None, use_gradient=True,
+            **kwargs):
         # Map parameters to placeholders
         param_to_placeholder = []
         param_to_index = {}
@@ -207,19 +208,20 @@ class TheanoDistribution(DistributionMixin):
             givens=param_to_placeholder,
             allow_input_downcast=True)
 
-        gradient_ = theano.function(
-            [self.X] + [w for _, w in param_to_placeholder] +
-            [theano.Param(v, name=v.name) for v in self.observeds_],
-            theano.grad(T.sum(self.nnlf_),
-                        [v for v, _ in param_to_placeholder]),
-            givens=param_to_placeholder,
-            allow_input_downcast=True)
-
         def objective(x):
             return objective_(X, *x, **kwargs) / len(X)
 
-        def gradient(x):
-            return np.array(gradient_(X, *x, **kwargs)) / len(X)
+        if use_gradient:
+            gradient_ = theano.function(
+                [self.X] + [w for _, w in param_to_placeholder] +
+                [theano.Param(v, name=v.name) for v in self.observeds_],
+                theano.grad(T.sum(self.nnlf_),
+                            [v for v, _ in param_to_placeholder]),
+                givens=param_to_placeholder,
+                allow_input_downcast=True)
+
+            def gradient(x):
+                return np.array(gradient_(X, *x, **kwargs)) / len(X)
 
         # XXX: scipy's minimize supports gradient-free optimization. We
         #      should allow for that, in case of non-TheanoDistribution
@@ -228,7 +230,7 @@ class TheanoDistribution(DistributionMixin):
         # Solve!
         x0 = np.array([v.get_value() for v, _ in param_to_placeholder])
         r = minimize(objective,
-                     jac=gradient,
+                     jac=gradient if use_gradient else None,
                      x0=x0,
                      method=self.optimizer,
                      bounds=mapped_bounds,
