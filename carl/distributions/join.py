@@ -31,6 +31,7 @@ class Join(TheanoDistribution):
                 for o_i in component.observeds_:
                     self.observeds_.add(o_i)
 
+        # Derive and overide pdf and nnlf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
             # pdf
             c0 = self.components[0]
