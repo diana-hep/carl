@@ -101,8 +101,7 @@ class Mixture(TheanoDistribution):
             self.make_(self.cdf_, "cdf")
 
         # Weight evaluation function
-        self.make_(T.stack(*self.weights), "compute_weights", args=[])
-        #self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
+        self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
 
     def pdf(self, X, **kwargs):
         weights = self.compute_weights(**kwargs)
