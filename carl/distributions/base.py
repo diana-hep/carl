@@ -125,8 +125,8 @@ class TheanoDistribution(DistributionMixin):
             kwargs = self.observeds_
 
         func = theano.function(
-            [theano.Param(v, name=v.name) for v in args] +
-            [theano.Param(v, name=v.name) for v in kwargs],
+            [theano.In(v, name=v.name) for v in args] +
+            [theano.In(v, name=v.name) for v in kwargs],
             expression,
             allow_input_downcast=True
         )
@@ -203,7 +203,7 @@ class TheanoDistribution(DistributionMixin):
         # Derive objective and gradient
         objective_ = theano.function(
             [self.X] + [w for _, w in param_to_placeholder] +
-            [theano.Param(v, name=v.name) for v in self.observeds_],
+            [theano.In(v, name=v.name) for v in self.observeds_],
             T.sum(self.nnlf_),
             givens=param_to_placeholder,
             allow_input_downcast=True)
@@ -214,7 +214,7 @@ class TheanoDistribution(DistributionMixin):
         if use_gradient:
             gradient_ = theano.function(
                 [self.X] + [w for _, w in param_to_placeholder] +
-                [theano.Param(v, name=v.name) for v in self.observeds_],
+                [theano.In(v, name=v.name) for v in self.observeds_],
                 theano.grad(T.sum(self.nnlf_),
                             [v for v, _ in param_to_placeholder]),
                 givens=param_to_placeholder,
