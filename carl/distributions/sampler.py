@@ -15,7 +15,7 @@ class Sampler(DistributionMixin):
     def __init__(self, random_state=None):
         super(Sampler, self).__init__(random_state=random_state)
 
-    def fit(self, X, y=None, sample_weight=None, **kwargs):
+    def fit(self, X, sample_weight=None, **kwargs):
         self.X_ = X
         self.ndim_ = X.shape[1]
         self.sample_weight_ = sample_weight

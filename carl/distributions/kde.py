@@ -32,10 +32,10 @@ class KernelDensity(DistributionMixin):
         # gaussian_kde uses Numpy global random state...
         return self.kde_.resample(n_samples).T
 
-    def fit(self, X, y=None, **kwargs):
+    def fit(self, X, **kwargs):
         X = check_array(X).T
         self.kde_ = gaussian_kde(X, bw_method=self.bandwidth)
         return self
 
-    def score(self, X, y=None, **kwargs):
+    def score(self, X, **kwargs):
         raise NotImplementedError

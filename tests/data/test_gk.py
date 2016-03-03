@@ -14,4 +14,10 @@ from carl.data import GK
 
 
 def test_gk():
-    pass  # XXX
+    gk = GK(A=3, B=1.5, g=2, k=0.5)
+    X = gk.rvs(100)
+
+    assert gk.ndim == 1
+    assert X.shape == (100, 1)
+
+    # XXX not sure what else to test?

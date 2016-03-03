@@ -89,6 +89,12 @@ class Join(TheanoDistribution):
 
         return out
 
+    def fit(self, X, **kwargs):
+        if all([hasattr(c, "nnlf_") for c in self.components]):
+            return super(Join, self).fit(X, **kwargs)
+        else:
+            raise NotImplementedError
+
     @property
     def ndim(self):
         return sum([c.ndim for c in self.components])

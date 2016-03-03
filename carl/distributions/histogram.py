@@ -68,7 +68,7 @@ class Histogram(DistributionMixin):
 
         return low + u * (high - low)
 
-    def fit(self, X, y=None, sample_weight=None, **kwargs):
+    def fit(self, X, sample_weight=None, **kwargs):
         # Checks
         X = check_array(X)
 
@@ -102,7 +102,7 @@ class Histogram(DistributionMixin):
 
         return self
 
-    def score(self, X, y=None, **kwargs):
+    def score(self, X, **kwargs):
         raise NotImplementedError
 
     @property

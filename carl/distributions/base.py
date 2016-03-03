@@ -78,7 +78,7 @@ class DistributionMixin(BaseEstimator):
     def ppf(self, X, **kwargs):
         raise NotImplementedError
 
-    def fit(self, X, y=None, **kwargs):
+    def fit(self, X, **kwargs):
         return self
 
     def score(self, X, **kwargs):
@@ -157,7 +157,7 @@ class TheanoDistribution(DistributionMixin):
         # XXX: shall we also allow replacement of variables and
         #      recompile all expressions instead?
 
-    def fit(self, X, y=None, bounds=None, constraints=None, use_gradient=True,
+    def fit(self, X, bounds=None, constraints=None, use_gradient=True,
             **kwargs):
         # Map parameters to placeholders
         param_to_placeholder = []

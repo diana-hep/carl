@@ -139,9 +139,9 @@ class Mixture(TheanoDistribution):
 
         return out
 
-    def fit(self, X, y=None, **kwargs):
+    def fit(self, X, **kwargs):
         if all([hasattr(c, "nnlf_") for c in self.components]):
-            return super(Mixture, self).fit(X, y=y, **kwargs)
+            return super(Mixture, self).fit(X, **kwargs)
         else:
             raise NotImplementedError
 
