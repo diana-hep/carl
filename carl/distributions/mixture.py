@@ -10,7 +10,6 @@ import theano.tensor as T
 
 from sklearn.utils import check_random_state
 
-from . import DistributionMixin
 from . import TheanoDistribution
 from .base import check_parameter
 

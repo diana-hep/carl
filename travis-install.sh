@@ -31,10 +31,11 @@ conda update --yes conda
 # provided versions
 conda create -n testenv --yes python=$PYTHON_VERSION pip \
     numpy=$NUMPY_VERSION scipy=$SCIPY_VERSION scikit-learn=$SKLEARN_VERSION \
-    pytest pytest-pep8 nose coverage theano
+    pytest pytest-pep8 nose coverage
 source activate testenv
 
 pip install coveralls pep257 pytest-cov six
+pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"
