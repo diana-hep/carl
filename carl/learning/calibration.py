@@ -73,7 +73,12 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         # Fall back to scikit-learn CalibratedClassifierCV
         if self.method in ("isotonic", "sigmoid"):
-            clf = CCCV(self.base_estimator, method=self.method, cv=self.cv)
+            base = self.base_estimator
+
+            if isinstance(base, RegressorMixin):
+                base = as_classifier(base)
+
+            clf = CCCV(base, method=self.method, cv=self.cv)
             clf.fit(X, y)
 
             self.classifiers_ = [clf]

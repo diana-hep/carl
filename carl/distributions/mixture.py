@@ -140,7 +140,7 @@ class Mixture(TheanoDistribution):
         return out
 
     def fit(self, X, **kwargs):
-        if all([hasattr(c, "nnlf_") for c in self.components]):
+        if hasattr(self, "nnlf_"):
             return super(Mixture, self).fit(X, **kwargs)
         else:
             raise NotImplementedError
