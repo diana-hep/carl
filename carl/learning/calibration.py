@@ -22,7 +22,7 @@ from .base import check_cv
 
 
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
-    def __init__(self, base_estimator, method="histogram", cv=3):
+    def __init__(self, base_estimator, method="histogram", cv=1):
         self.base_estimator = base_estimator
         self.method = method
         self.cv = cv
@@ -85,9 +85,20 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         # Or use carl.distributions distributions
         else:
-            if self.cv == "prefit":
-                df = self.base_estimator.predict_proba(X)[:, 0]
-                self.classifiers_ = [self.base_estimator]
+            if self.cv == "prefit" or self.cv == 1:
+                if self.cv == 1:
+                    clf = clone(self.base_estimator)
+
+                    if isinstance(clf, RegressorMixin):
+                        clf = as_classifier(clf)
+
+                    clf.fit(X, y)
+
+                else:
+                    clf = self.base_estimator
+
+                df = clf.predict_proba(X)[:, 0]
+                self.classifiers_ = [clf]
                 self.calibrators_ = [self._fit_calibrators(df[y == 0],
                                                            df[y == 1])]
 
