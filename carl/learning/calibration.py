@@ -22,11 +22,13 @@ from .base import check_cv
 
 
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
-    def __init__(self, base_estimator, method="histogram", cv=1, bins="auto"):
+    def __init__(self, base_estimator, method="histogram", cv=1,
+                 bins="auto", eps=0.1):
         self.base_estimator = base_estimator
         self.method = method
         self.cv = cv
         self.bins = bins
+        self.eps = 0.1
 
     def _fit_calibrators(self, df0, df1):
         df0 = df0.reshape(-1, 1)
@@ -37,8 +39,8 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             calibrator1 = KernelDensity()
 
         elif self.method == "histogram":
-            df_min = max(0, min(np.min(df0), np.min(df1)) - 0.1)
-            df_max = min(1, max(np.max(df0), np.max(df1)) + 0.1)
+            df_min = max(0, min(np.min(df0), np.min(df1)) - self.eps)
+            df_max = min(1, max(np.max(df0), np.max(df1)) + self.eps)
 
             bins = self.bins
             if self.bins == "auto":
