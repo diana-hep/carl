@@ -63,9 +63,6 @@ def bound(expression, out, *predicates):
 
 class DistributionMixin(BaseEstimator):
     # Mixin interface
-    def __init__(self, random_state=None):
-        self.random_state = random_state
-
     def pdf(self, X, **kwargs):
         raise NotImplementedError
 
@@ -76,6 +73,9 @@ class DistributionMixin(BaseEstimator):
         raise NotImplementedError
 
     def ppf(self, X, **kwargs):
+        raise NotImplementedError
+
+    def rvs(self, n_samples, random_state=None, **kwargs):
         raise NotImplementedError
 
     def fit(self, X, **kwargs):
@@ -94,11 +94,7 @@ class TheanoDistribution(DistributionMixin):
     X = T.dmatrix(name="X")  # Input expression is shared by all distributions
     p = T.dmatrix(name="p")
 
-    def __init__(self, random_state=None, optimizer=None, **parameters):
-        # Settings
-        super(TheanoDistribution, self).__init__(random_state=random_state)
-        self.optimizer = optimizer
-
+    def __init__(self, **parameters):
         # Validate parameters of the distribution
         self.parameters_ = set()        # base parameters
         self.constants_ = set()         # base constants
@@ -133,8 +129,8 @@ class TheanoDistribution(DistributionMixin):
 
         setattr(self, name, func)
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
         p = rng.rand(n_samples, 1)
         return self.ppf(p, **kwargs)
 
@@ -158,7 +154,7 @@ class TheanoDistribution(DistributionMixin):
         #      recompile all expressions instead?
 
     def fit(self, X, bounds=None, constraints=None, use_gradient=True,
-            **kwargs):
+            optimizer=None, **kwargs):
         # Map parameters to placeholders
         param_to_placeholder = []
         param_to_index = {}
@@ -228,7 +224,7 @@ class TheanoDistribution(DistributionMixin):
         r = minimize(objective,
                      jac=gradient if use_gradient else None,
                      x0=x0,
-                     method=self.optimizer,
+                     method=optimizer,
                      bounds=mapped_bounds,
                      constraints=mapped_constraints)
 

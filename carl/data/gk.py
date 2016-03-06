@@ -12,12 +12,11 @@ from ..distributions import TheanoDistribution
 
 
 class GK(TheanoDistribution):
-    def __init__(self, A, B, g, k, c=0.8, random_state=None):
-        super(GK, self).__init__(A=A, B=B, g=g, k=k, c=c,
-                                 random_state=random_state)
+    def __init__(self, A, B, g, k, c=0.8):
+        super(GK, self).__init__(A=A, B=B, g=g, k=k, c=c)
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
 
         A = self.A.eval()
         B = self.B.eval()

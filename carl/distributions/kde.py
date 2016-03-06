@@ -16,8 +16,7 @@ from .base import DistributionMixin
 
 
 class KernelDensity(DistributionMixin):
-    def __init__(self, bandwidth=None, random_state=None):
-        super(KernelDensity, self).__init__(random_state=random_state)
+    def __init__(self, bandwidth=None):
         self.bandwidth = bandwidth
 
     def pdf(self, X, **kwargs):
@@ -28,8 +27,8 @@ class KernelDensity(DistributionMixin):
         X = check_array(X)
         return -self.kde_.logpdf(X.T)
 
-    def rvs(self, n_samples, **kwargs):
-        # gaussian_kde uses Numpy global random state...
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        # XXX gaussian_kde uses Numpy global random state...
         return self.kde_.resample(n_samples).T
 
     def fit(self, X, **kwargs):

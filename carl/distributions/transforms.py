@@ -15,10 +15,7 @@ from .base import check_parameter
 
 
 class LinearTransform(TheanoDistribution):
-    def __init__(self, p, A, random_state=None, optimizer=None):
-        super(LinearTransform, self).__init__(random_state=random_state,
-                                              optimizer=optimizer)
-
+    def __init__(self, p, A):
         self.p = p
         self.A = A
         self.inv_A = np.linalg.inv(A)
@@ -40,8 +37,9 @@ class LinearTransform(TheanoDistribution):
     def nnlf(self, X, **kwargs):
         return self.p.nnlf(np.dot(self.inv_A, X.T).T, **kwargs)
 
-    def rvs(self, n_samples, **kwargs):
-        out = self.p.rvs(n_samples, **kwargs)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
+        out = self.p.rvs(n_samples, random_state=rng, **kwargs)
         return np.dot(self.A, out.T).T
 
     @property

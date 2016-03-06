@@ -15,7 +15,7 @@ from carl.distributions import Histogram
 
 def test_histogram():
     X = np.arange(11).reshape(-1, 1)
-    h = Histogram(bins=11, random_state=1)
+    h = Histogram(bins=11)
     h.fit(X)
 
     assert_array_almost_equal(
@@ -26,7 +26,7 @@ def test_histogram():
         h.nnlf([[0.0], [1.0], [10.0], [-0.5], [10.5]]),
         -np.log(h.pdf([[0.0], [1.0], [10.0], [-0.5], [10.5]])))
 
-    X = h.rvs(10000)
+    X = h.rvs(10000, random_state=1)
     assert np.abs(np.mean(X) - 5.0) < 0.05
     assert X.min() >= 0.0
     assert X.max() <= 10.0
@@ -50,7 +50,7 @@ def test_histogram_sample_weight():
 
 def test_histogram_2d():
     X = np.arange(100).reshape(-1, 2)
-    h = Histogram(bins=[5, 3], random_state=1)
+    h = Histogram(bins=[5, 3])
     h.fit(X)
     assert h.ndim == 2
     assert h.histogram_.shape[0] == 5+2

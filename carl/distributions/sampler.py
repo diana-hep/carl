@@ -12,9 +12,6 @@ from .base import DistributionMixin
 
 
 class Sampler(DistributionMixin):
-    def __init__(self, random_state=None):
-        super(Sampler, self).__init__(random_state=random_state)
-
     def fit(self, X, sample_weight=None, **kwargs):
         self.X_ = X
         self.ndim_ = X.shape[1]
@@ -22,8 +19,8 @@ class Sampler(DistributionMixin):
 
         return self
 
-    def rvs(self, n_samples, **kwargs):
-        random_state = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
 
         if self.sample_weight_ is None:
             w = np.ones(len(self.X_))
@@ -31,7 +28,7 @@ class Sampler(DistributionMixin):
             w = self.sample_weight_
 
         w = w / w.sum()
-        indices = np.searchsorted(np.cumsum(w), random_state.rand(n_samples))
+        indices = np.searchsorted(np.cumsum(w), rng.rand(n_samples))
 
         return self.X_[indices]
 

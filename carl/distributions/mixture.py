@@ -15,11 +15,8 @@ from .base import check_parameter
 
 
 class Mixture(TheanoDistribution):
-    def __init__(self, components, weights=None,
-                 random_state=None, optimizer=None):
-        super(Mixture, self).__init__(random_state=random_state,
-                                      optimizer=optimizer)
-
+    def __init__(self, components, weights=None):
+        super(Mixture, self).__init__()
         self.components = components
         self.weights = []
 
@@ -124,8 +121,8 @@ class Mixture(TheanoDistribution):
 
         return c
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
         indices = rng.multinomial(1,
                                   pvals=self.compute_weights(**kwargs),
                                   size=n_samples)
@@ -135,6 +132,7 @@ class Mixture(TheanoDistribution):
             mask = np.where(indices[:, j])[0]
             if len(mask) > 0:
                 out[mask, :] = self.components[j].rvs(n_samples=len(mask),
+                                                      random_state=rng,
                                                       **kwargs)
 
         return out

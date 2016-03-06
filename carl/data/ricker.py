@@ -12,12 +12,11 @@ from ..distributions import TheanoDistribution
 
 
 class Ricker(TheanoDistribution):
-    def __init__(self, log_r=3.8, sigma=0.3, phi=10.0, random_state=None):
-        super(Ricker, self).__init__(log_r=log_r, sigma=sigma, phi=phi,
-                                     random_state=random_state)
+    def __init__(self, log_r=3.8, sigma=0.3, phi=10.0):
+        super(Ricker, self).__init__(log_r=log_r, sigma=sigma, phi=phi)
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
 
         log_r = self.log_r.eval()
         sigma = self.sigma.eval()

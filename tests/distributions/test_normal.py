@@ -37,8 +37,8 @@ def test_normal():
 
 
 def check_rvs(mu, sigma, random_state):
-    p = Normal(mu=mu, sigma=sigma, random_state=random_state)
-    samples = p.rvs(10000)
+    p = Normal(mu=mu, sigma=sigma)
+    samples = p.rvs(10000, random_state=random_state)
     assert np.abs(np.mean(samples) - mu) <= 0.05
     assert np.abs(np.std(samples) - sigma) <= 0.05
 
@@ -90,8 +90,8 @@ def test_fit_with_bounds():
 
 
 def check_mv_normal(mu, sigma):
-    p = MultivariateNormal(mu=mu, sigma=sigma, random_state=0)
-    X = p.rvs(20000)
+    p = MultivariateNormal(mu=mu, sigma=sigma)
+    X = p.rvs(20000, random_state=0)
 
     assert np.mean(mu - X.mean(axis=0)) < 0.02
     assert np.mean(sigma - np.cov(X.T)) < 0.02

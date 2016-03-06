@@ -10,14 +10,16 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.base import clone
+from sklearn.utils import check_random_state
 
 from ..learning import as_classifier
 from .base import DensityRatioMixin
 
 
 class ClassifierRatio(BaseEstimator, DensityRatioMixin):
-    def __init__(self, base_estimator):
+    def __init__(self, base_estimator, random_state=None):
         self.base_estimator = base_estimator
+        self.random_state = random_state
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
@@ -28,11 +30,15 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
             return self
 
         # Build training data
+        rng = check_random_state(self.random_state)
+
         if (numerator is not None and denominator is not None and
                 n_samples is not None):
             X = np.vstack(
-                (numerator.rvs(n_samples // 2, **kwargs),
-                 denominator.rvs(n_samples - (n_samples // 2), **kwargs)))
+                (numerator.rvs(n_samples // 2,
+                               random_state=rng, **kwargs),
+                 denominator.rvs(n_samples - (n_samples // 2),
+                                 random_state=rng, **kwargs)))
             y = np.zeros(n_samples, dtype=np.int)
             y[n_samples // 2:] = 1
 

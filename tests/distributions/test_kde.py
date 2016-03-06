@@ -14,8 +14,8 @@ from carl.distributions import KernelDensity
 
 def test_kde():
     # Test API
-    p = Normal(random_state=1)
-    X = p.rvs(10000)
+    p = Normal()
+    X = p.rvs(10000, random_state=1)
     k = KernelDensity()
     k.fit(X)
 
@@ -24,5 +24,5 @@ def test_kde():
     assert np.mean(np.abs(p.nnlf(reals) - k.nnlf(reals))) < 0.05
 
     # Test sampling
-    X = k.rvs(10000)
+    X = k.rvs(10000, random_state=1)
     assert np.abs(np.mean(X)) < 0.05

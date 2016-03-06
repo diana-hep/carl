@@ -16,10 +16,7 @@ from .base import DistributionMixin
 
 
 class Histogram(DistributionMixin):
-    def __init__(self, bins=10, range=None, interpolation=None,
-                 random_state=None):
-        super(Histogram, self).__init__(random_state=random_state)
-
+    def __init__(self, bins=10, range=None, interpolation=None):
         self.bins = bins
         self.range = range
         self.interpolation = interpolation
@@ -46,8 +43,8 @@ class Histogram(DistributionMixin):
     def nnlf(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
 
         # Draw random bins with respect to their densities
         h = (self.histogram_ / self.histogram_.sum()).ravel()

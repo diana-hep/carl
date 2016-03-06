@@ -38,16 +38,16 @@ def test_uniform():
 
 
 def test_rvs():
-    p = Uniform(low=-10, high=10, random_state=0)
-    samples = p.rvs(100)
+    p = Uniform(low=-10, high=10)
+    samples = p.rvs(100, random_state=0)
     assert_equal(samples.shape, (100, 1))
     assert np.all(samples < 10)
     assert np.all(samples > -10)
 
-    q = Uniform(low=-10, high=10, random_state=0)
-    samples2 = q.rvs(100)
+    q = Uniform(low=-10, high=10)
+    samples2 = q.rvs(100, random_state=0)
     assert_array_equal(samples, samples2)
 
-    q = Uniform(low=-10, high=10, random_state=1)
-    samples2 = q.rvs(100)
+    q = Uniform(low=-10, high=10)
+    samples2 = q.rvs(100, random_state=1)
     assert np.all(samples != samples2)

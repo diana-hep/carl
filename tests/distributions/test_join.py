@@ -16,13 +16,11 @@ from carl.distributions import Histogram
 
 
 def test_join():
-    p = Join(components=[Normal(mu=0, random_state=0),
-                         Normal(mu=1, random_state=1),
-                         Normal(mu=2, random_state=2)], random_state=0)
+    p = Join(components=[Normal(mu=0), Normal(mu=1), Normal(mu=2)])
     assert p.ndim == 3
     assert len(p.parameters_) == 6
 
-    X = p.rvs(10000)
+    X = p.rvs(10000, random_state=1)
     assert X.shape == (10000, 3)
     assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
     assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05
@@ -35,15 +33,15 @@ def test_join_non_theano():
     h1 = Histogram(interpolation="linear", bins=30)
     h2 = Histogram(interpolation="linear", bins=30)
 
-    h0.fit(Normal(mu=0, random_state=0).rvs(10000))
-    h1.fit(Normal(mu=1, random_state=1).rvs(10000))
-    h2.fit(Normal(mu=2, random_state=2).rvs(10000))
+    h0.fit(Normal(mu=0).rvs(10000, random_state=0))
+    h1.fit(Normal(mu=1).rvs(10000, random_state=1))
+    h2.fit(Normal(mu=2).rvs(10000, random_state=2))
 
-    p = Join(components=[h0, h1, h2], random_state=0)
+    p = Join(components=[h0, h1, h2])
     assert p.ndim == 3
     assert len(p.parameters_) == 0
 
-    X = p.rvs(10000)
+    X = p.rvs(10000, random_state=1)
     assert X.shape == (10000, 3)
     assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
     assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05

@@ -36,8 +36,8 @@ def test_exponential():
 
 
 def check_rvs(inverse_scale, random_state):
-    p = Exponential(inverse_scale=inverse_scale, random_state=random_state)
-    samples = p.rvs(1000)
+    p = Exponential(inverse_scale=inverse_scale)
+    samples = p.rvs(1000, random_state=random_state)
     assert np.abs(np.mean(samples) - 1. / inverse_scale) <= 0.05
 
 

@@ -37,8 +37,8 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             calibrator1 = KernelDensity()
 
         elif self.method == "histogram":
-            df_min = min(np.min(df0), np.min(df1))
-            df_max = max(np.max(df0), np.max(df1))
+            df_min = max(0, min(np.min(df0), np.min(df1)) - 0.1)
+            df_max = min(1, max(np.max(df0), np.max(df1)) + 0.1)
 
             bins = self.bins
             if self.bins == "auto":

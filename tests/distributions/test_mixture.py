@@ -84,10 +84,10 @@ def test_mixture_pdf():
 
 
 def test_rvs():
-    p1 = Normal(mu=0.0, sigma=T.constant(1.0), random_state=0)
-    p2 = Normal(mu=2.0, sigma=2.0, random_state=0)
-    m = Mixture(components=[p1, p2], weights=[0.25], random_state=0)
-    X = m.rvs(2000)
+    p1 = Normal(mu=0.0, sigma=T.constant(1.0))
+    p2 = Normal(mu=2.0, sigma=2.0)
+    m = Mixture(components=[p1, p2], weights=[0.25])
+    X = m.rvs(2000, random_state=1)
     assert (np.mean(X) - (0.25 * p1.mu.eval() + 0.75 * p2.mu.eval())) < 0.1
 
 
@@ -110,10 +110,10 @@ def test_fit():
 
 
 def test_likelihood_free_mixture():
-    p1 = Normal(random_state=1)
-    p2 = Normal(mu=2.0, random_state=1)
-    h1 = Histogram(bins=50).fit(p1.rvs(10000))
-    h2 = Histogram(bins=50).fit(p2.rvs(10000))
+    p1 = Normal()
+    p2 = Normal(mu=2.0)
+    h1 = Histogram(bins=50).fit(p1.rvs(10000, random_state=0))
+    h2 = Histogram(bins=50).fit(p2.rvs(10000, random_state=1))
     m1 = Mixture(components=[p1, p2])
     m2 = Mixture(components=[h1, h2])
 

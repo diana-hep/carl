@@ -16,11 +16,8 @@ from .base import bound
 
 
 class Normal(TheanoDistribution):
-    def __init__(self, random_state=None, mu=0.0, sigma=1.0):
-        super(Normal, self).__init__(mu=mu,
-                                     sigma=sigma,
-                                     random_state=random_state,
-                                     optimizer=None)
+    def __init__(self, mu=0.0, sigma=1.0):
+        super(Normal, self).__init__(mu=mu, sigma=sigma)
 
         # pdf
         self.pdf_ = (
@@ -49,10 +46,7 @@ class Normal(TheanoDistribution):
 
 class MultivariateNormal(TheanoDistribution):
     def __init__(self, mu, sigma, random_state=None):
-        super(MultivariateNormal, self).__init__(mu=mu,
-                                                 sigma=sigma,
-                                                 random_state=random_state,
-                                                 optimizer=None)
+        super(MultivariateNormal, self).__init__(mu=mu, sigma=sigma)
         # XXX: The SDP-ness of sigma should be check upon changes
 
         # ndim
@@ -79,8 +73,8 @@ class MultivariateNormal(TheanoDistribution):
         # self.rvs_
         self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
 
-    def rvs(self, n_samples, **kwargs):
-        rng = check_random_state(self.random_state)
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
         X = rng.randn(n_samples, self.ndim)
         return self.rvs_func_(X, **kwargs)
 

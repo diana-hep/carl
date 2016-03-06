@@ -15,10 +15,8 @@ from .base import check_parameter
 
 
 class Join(TheanoDistribution):
-    def __init__(self, components, random_state=None, optimizer=None):
-        super(Join, self).__init__(random_state=random_state,
-                                   optimizer=optimizer)
-
+    def __init__(self, components):
+        super(Join, self).__init__()
         self.components = components
 
         for i, component in enumerate(components):
@@ -78,13 +76,14 @@ class Join(TheanoDistribution):
 
         return out
 
-    def rvs(self, n_samples, **kwargs):
+    def rvs(self, n_samples, random_state=None, **kwargs):
+        rng = check_random_state(random_state)
         out = np.zeros((n_samples, self.ndim))
         start = 0
 
         for i, component in enumerate(self.components):
-            out[:, start:start+component.ndim] = component.rvs(n_samples,
-                                                               **kwargs)
+            out[:, start:start+component.ndim] = component.rvs(
+                n_samples, random_state=rng, **kwargs)
             start += component.ndim
 
         return out

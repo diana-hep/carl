@@ -93,17 +93,9 @@ def test_mixin_sklearn_params():
     # get_params
     p = Normal(mu=0.0, sigma=1.0)
     params = p.get_params()
-    assert len(params) == 3
-    assert "random_state" in params
+    assert len(params) == 2
     assert "mu" in params
     assert "sigma" in params
-
-    # set_params
-    old_rng = p.get_params()["random_state"]
-    assert old_rng is None
-    p.set_params(random_state=42)
-    new_rng = p.get_params()["random_state"]
-    assert new_rng == 42
 
     # for parameters, set_params should change the value contained
     old_mu = p.get_params()["mu"]

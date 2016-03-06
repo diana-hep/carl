@@ -18,12 +18,12 @@ def test_sampler():
 
     sampler = Sampler()
     sampler.fit(X)
-    X2 = sampler.rvs(1000)
+    X2 = sampler.rvs(1000, random_state=1)
     assert_array_equal(np.unique(X), np.unique(X2))
     assert sampler.ndim == 1
 
     sampler.fit(X, sample_weight=np.ones(len(X)) / len(X))
-    X3 = sampler.rvs(1000)
+    X3 = sampler.rvs(1000, random_state=2)
     assert_array_equal(np.unique(X), np.unique(X3))
     assert sampler.ndim == 1
 
