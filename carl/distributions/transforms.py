@@ -16,6 +16,8 @@ from .base import check_parameter
 
 class LinearTransform(TheanoDistribution):
     def __init__(self, p, A):
+        super(LinearTransform, self).__init__()
+
         self.p = p
         self.A = A
         self.inv_A = np.linalg.inv(A)

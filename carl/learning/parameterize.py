@@ -12,6 +12,7 @@ from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
 from sklearn.base import TransformerMixin
 from sklearn.base import clone
+from sklearn.utils import check_random_state
 
 
 class ParameterStacker(BaseEstimator, TransformerMixin):
@@ -61,10 +62,13 @@ class ParameterizedRegressor(_ParameterizedEstimator, RegressorMixin):
     pass
 
 
-def make_parameterized_classification(p0, p1, n_samples, params):
+def make_parameterized_classification(p0, p1, n_samples, params,
+                                      random_state=None):
+    rng = check_random_state(random_state)
+
     if not isinstance(params[0], tuple):
-        X0 = p0.rvs(n_samples // 2)
-        X1 = p1.rvs(n_samples - (n_samples // 2))
+        X0 = p0.rvs(n_samples // 2, random_state=rng)
+        X1 = p1.rvs(n_samples - (n_samples // 2), random_state=rng)
         X = ParameterStacker(params).transform(np.vstack((X0, X1)))
         y = np.zeros(n_samples)
         y[len(X0):] = 1
@@ -84,7 +88,8 @@ def make_parameterized_classification(p0, p1, n_samples, params):
             X, y = make_parameterized_classification(
                 p0, p1,
                 n_samples // len(combinations),
-                [p for p, _ in params])
+                [p for p, _ in params],
+                random_state=rng)
 
             all_X.append(X)
             all_y.append(y)
