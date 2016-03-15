@@ -59,18 +59,17 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         elif self.method == "interpolated-isotonic":
             self.interp_iso_ = InterpolatedIsotonicRegression()
 
-            Xtemp = np.hstack((df0.reshape(-1,),df1.reshape(-1,)))
-            self.interp_iso_.fit(Xtemp.reshape(-1,),
-                np.hstack((np.zeros(df0.size),1.+np.zeros(df1.size))))
-            calibrator0, calibrator1 = clone(self.method), clone(self.method)
+            Xtemp = np.hstack((df0.ravel(),df1.ravel()))
+            self.interp_iso_.fit(Xtemp.ravel(),
+                np.hstack((np.zeros(df0.size),np.ones(df1.size))))
+            return None, None
 
         else:
             calibrator0 = clone(self.method)
             calibrator1 = clone(self.method)
 
-        if self.method != "interpolated-isotonic": 
-            calibrator0.fit(df0)
-            calibrator1.fit(df1)
+        calibrator0.fit(df0)
+        calibrator1.fit(df1)
 
         return calibrator0, calibrator1
 
@@ -195,8 +194,6 @@ class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin, RegressorM
         self.y_max = y_max
         self.increasing = increasing
         self.out_of_bounds = out_of_bounds
-        self.iso_ = IsotonicRegression(y_min=y_min, y_max=y_max, 
-            increasing=increasing, out_of_bounds=out_of_bounds)
 
     def fit(self, X, y, sample_weight=None):
         """Fit the model using X, y as training data.
@@ -218,6 +215,9 @@ class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin, RegressorM
         X is stored for future use, as `transform` needs X to interpolate
         new input data.
         """
+        self.iso_ = IsotonicRegression(y_min=self.y_min, y_max=self.y_max, 
+            increasing=self.increasing, out_of_bounds=self.out_of_bounds)
+
         self.iso_.fit(X,y,sample_weight=sample_weight)
         p = self.iso_.transform(X)
         change_mask1 = (p-np.roll(p,1))>0
@@ -232,6 +232,7 @@ class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin, RegressorM
 
         self.xmin_ = np.max((np.min(X[change_mask1]),np.min(X[change_mask2])))
         self.xmax_ = np.min((np.max(X[change_mask1]),np.max(X[change_mask2])))
+        return self
 
 
     def transform(self, T):
