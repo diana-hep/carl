@@ -56,12 +56,21 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
                                     range=[(df_min, df_max)],
                                     interpolation="linear")
 
+        elif self.method == "interpolated-isotonic":
+            self.interp_iso_ = InterpolatedIsotonicRegression()
+
+            Xtemp = np.hstack((df0.reshape(-1,),df1.reshape(-1,)))
+            self.interp_iso_.fit(Xtemp.reshape(-1,),
+                np.hstack((np.zeros(df0.size),1.+np.zeros(df1.size))))
+            calibrator0, calibrator1 = clone(self.method), clone(self.method)
+
         else:
             calibrator0 = clone(self.method)
             calibrator1 = clone(self.method)
 
-        calibrator0.fit(df0)
-        calibrator1.fit(df1)
+        if self.method != "interpolated-isotonic": 
+            calibrator0.fit(df0)
+            calibrator1.fit(df1)
 
         return calibrator0, calibrator1
 
@@ -79,6 +88,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             raise ValueError
 
         self.classes_ = label_encoder.classes_
+
 
         # Fall back to scikit-learn CalibratedClassifierCV
         if self.method in ("isotonic", "sigmoid"):
@@ -145,6 +155,9 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     def predict_proba(self, X):
         if self.method in ("isotonic", "sigmoid"):
             return self.classifiers_[0].predict_proba(X)
+
+        elif self.method == "interpolated-isotonic":
+            self.interp_iso_.predict( self.classifiers_[0].predict_proba(X)[:,1] )
 
         else:
             X = check_array(X)
@@ -217,6 +230,9 @@ class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin, RegressorM
         self.iso_interp1_ = interp1d(X[change_mask1],p[change_mask1])
         self.iso_interp2_ = interp1d(X[change_mask2],p[change_mask2])
 
+        self.xmin_ = np.max((np.min(X[change_mask1]),np.min(X[change_mask2])))
+        self.xmax_ = np.min((np.max(X[change_mask1]),np.max(X[change_mask2])))
+
 
     def transform(self, T):
         """Transform new data by linear interpolation
@@ -229,8 +245,14 @@ class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin, RegressorM
         T_ : array, shape=(n_samples,)
             The transformed data
         """
-        return 0.5*(self.iso_interp1_(T)+self.iso_interp2_(T))
-
+        temp = np.zeros(T.size)
+        low_mask = (T<=self.xmin_)
+        high_mask = (T>=self.xmax_)
+        ok_mask = (T>self.xmin_)*(T<self.xmax_)
+        temp[ok_mask] = 0.5*(self.iso_interp1_(T[ok_mask])+self.iso_interp2_(T[ok_mask]))
+        temp[low_mask] = 0.
+        temp[high_mask] = 1.
+        return temp
 
     def predict(self, T):
         """Predict new data by linear interpolation.
