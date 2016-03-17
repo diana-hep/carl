@@ -29,6 +29,14 @@ cd carl
 python setup.py install
 ```
 
-## Examples
+## Documentation
 
-Illustrative examples serving as documentation can be found under the `examples/` directory.
+Illustrative examples serving as documentation can be found under the
+`examples/` directory.
+
+Extended details regarding likelihood-free inference with calibrated classifiers
+can be found in the companion paper:
+
+> "Approximating Likelihood Ratios with Calibrated Discriminative Classifiers",
+> Kyle Cranmer, Juan Pavez, Gilles Louppe.  
+> http://arxiv.org/abs/1506.02169
