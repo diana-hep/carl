@@ -9,6 +9,7 @@
 from .base import as_classifier
 from .base import check_cv
 from .calibration import CalibratedClassifierCV
+from .calibration import InterpolatedIsotonicRegression
 from .parameterize import make_parameterized_classification
 from .parameterize import ParameterStacker
 from .parameterize import ParameterizedClassifier
@@ -21,4 +22,5 @@ __all__ = ("as_classifier",
            "make_parameterized_classification",
            "ParameterStacker",
            "ParameterizedClassifier",
-           "ParameterizedRegressor",)
+           "ParameterizedRegressor",
+           "InterpolatedIsotonicRegression",)
