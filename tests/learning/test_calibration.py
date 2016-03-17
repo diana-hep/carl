@@ -75,5 +75,6 @@ def check_calibration(method):
 
 
 def test_calibration():
-    for method in ["isotonic", "sigmoid", "histogram", "kde"]:
+    for method in ["isotonic", "sigmoid", "histogram", "kde",
+                   "interpolated-isotonic"]:
         yield check_calibration, method

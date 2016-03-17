@@ -20,6 +20,9 @@ from ..distributions import Histogram
 from .base import as_classifier
 from .base import check_cv
 
+from scipy.interpolate import interp1d
+from sklearn.base import TransformerMixin
+from sklearn.isotonic import IsotonicRegression
 
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     def __init__(self, base_estimator, method="histogram", cv=1,
@@ -52,6 +55,13 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             calibrator1 = Histogram(bins=bins,
                                     range=[(df_min, df_max)],
                                     interpolation="linear")
+
+        elif self.method == "interpolated-isotonic":
+            T = np.concatenate((1. - df0.ravel(), 1. - df1.ravel()))
+            calibrator0 = InterpolatedIsotonicRegression(out_of_bounds='clip')
+            calibrator0.fit(T, np.concatenate((np.zeros(len(df0)),
+                                               np.ones(len(df1)))))
+            return calibrator0, None
 
         else:
             calibrator0 = clone(self.method)
@@ -143,6 +153,18 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         if self.method in ("isotonic", "sigmoid"):
             return self.classifiers_[0].predict_proba(X)
 
+        elif self.method == "interpolated-isotonic":
+            p = np.zeros((len(X), 2))
+
+            for clf, (calibrator0, _) in zip(self.classifiers_,
+                                             self.calibrators_):
+                p[:, 1] += calibrator0.predict(clf.predict_proba(X)[:, 1])
+
+            p[:, 1] /= len(self.classifiers_)
+            p[:, 0] = 1. - p[:, 1]
+
+            return p
+
         else:
             X = check_array(X)
             p = np.zeros((len(X), 2))
@@ -165,3 +187,90 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             estimator.base_estimator = self.base_estimator
 
         return estimator
+
+
+class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin,
+                                     RegressorMixin):
+    """Interpolated Isotonic Regression model.
+
+        apply linear interpolation to transform piecewise constant isotonic
+        regression model into piecewise linear model
+    """
+
+    def __init__(self, y_min=None, y_max=None, increasing=True,
+                 out_of_bounds='nan'):
+        self.y_min = y_min
+        self.y_max = y_max
+        self.increasing = increasing
+        self.out_of_bounds = out_of_bounds
+
+    def fit(self, X, y, sample_weight=None):
+        """Fit the model using X, y as training data.
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples,)
+            Training data.
+        y : array-like, shape=(n_samples,)
+            Training target.
+        sample_weight : array-like, shape=(n_samples,), optional, default: None
+            Weights. If set to None, all weights will be set to 1 (equal
+            weights).
+        Returns
+        -------
+        self : object
+            Returns an instance of self.
+        Notes
+        -----
+        X is stored for future use, as `transform` needs X to interpolate
+        new input data.
+        """
+        self.iso_ = IsotonicRegression(y_min=self.y_min,
+                                       y_max=self.y_max,
+                                       increasing=self.increasing,
+                                       out_of_bounds=self.out_of_bounds)
+        self.iso_.fit(X, y, sample_weight=sample_weight)
+
+        p = self.iso_.transform(X)
+        change_mask1 = (p - np.roll(p, 1)) > 0
+        change_mask2 = np.roll(change_mask1, -1)
+        change_mask1[0] = True
+        change_mask1[-1] = True
+        change_mask2[0] = True
+        change_mask2[-1] = True
+
+        self.iso_interp1_ = interp1d(X[change_mask1],
+                                     p[change_mask1],
+                                     bounds_error=False,
+                                     fill_value=(0., 1.))
+        self.iso_interp2_ = interp1d(X[change_mask2],
+                                     p[change_mask2],
+                                     bounds_error=False,
+                                     fill_value=(0., 1.))
+
+        return self
+
+    def transform(self, T):
+        """Transform new data by linear interpolation
+        Parameters
+        ----------
+        T : array-like, shape=(n_samples,)
+            Data to transform.
+        Returns
+        -------
+        T_ : array, shape=(n_samples,)
+            The transformed data
+        """
+        return 0.5 * (self.iso_interp1_(T) + self.iso_interp2_(T))
+
+    def predict(self, T):
+        """Predict new data by linear interpolation.
+        Parameters
+        ----------
+        T : array-like, shape=(n_samples,)
+            Data to transform.
+        Returns
+        -------
+        T_ : array, shape=(n_samples,)
+            Transformed data.
+        """
+        return self.transform(T)
