@@ -45,9 +45,8 @@ can be found in the companion paper:
 ## Citation
 
 ```
-@misc{gilles_louppe_2016_47798,
-  author       = {Gilles Louppe and
-                  Kyle Cranmer and Juan Pavez},
+@misc{carl,
+  author       = {Gilles Louppe and Kyle Cranmer and Juan Pavez},
   title        = {carl: a likelihood-free inference toolbox},
   month        = mar,
   year         = 2016,
