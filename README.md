@@ -1,6 +1,7 @@
 # carl
 
-[![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl) [![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master)
+[![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl) [![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master) [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
+
 
 Likelihood-free inference toolbox. Supported features include:
 
@@ -40,3 +41,16 @@ can be found in the companion paper:
 > "Approximating Likelihood Ratios with Calibrated Discriminative Classifiers",
 > Kyle Cranmer, Juan Pavez, Gilles Louppe.  
 > http://arxiv.org/abs/1506.02169
+
+## Citation
+
+```
+@misc{carl,
+  author       = {Gilles Louppe and Kyle Cranmer and Juan Pavez},
+  title        = {carl: a likelihood-free inference toolbox},
+  month        = mar,
+  year         = 2016,
+  doi          = {10.5281/zenodo.47798},
+  url          = {http://dx.doi.org/10.5281/zenodo.47798}
+}
+```
