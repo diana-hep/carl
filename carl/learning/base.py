@@ -20,7 +20,7 @@ def as_classifier(regressor):
         def __init__(self, base_estimator):
             self.base_estimator = base_estimator
 
-        def fit(self, X, y):
+        def fit(self, X, y, **kwargs):
             # Check inputs
             X, y = check_X_y(X, y)
 
@@ -34,7 +34,7 @@ def as_classifier(regressor):
             self.classes_ = label_encoder.classes_
 
             # Fit regressor
-            self.regressor_ = clone(self.base_estimator).fit(X, y)
+            self.regressor_ = clone(self.base_estimator).fit(X, y, **kwargs)
 
             return self
 
