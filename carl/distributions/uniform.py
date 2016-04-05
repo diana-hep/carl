@@ -22,11 +22,11 @@ class Uniform(TheanoDistribution):
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = T.switch(
+        self.nll_ = T.switch(
             T.or_(T.lt(self.X, self.low), T.ge(self.X, self.high)),
             np.inf,
             T.log(self.high - self.low)).ravel()
-        self.make_(self.nnlf_, "nnlf")
+        self.make_(self.nll_, "nll")
 
         # cdf
         self.cdf_ = T.switch(

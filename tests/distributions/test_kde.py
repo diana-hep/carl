@@ -19,7 +19,7 @@ def test_kde():
 
     reals = np.linspace(-3, 3).reshape(-1, 1)
     assert np.mean(np.abs(p.pdf(reals) - k.pdf(reals))) < 0.05
-    assert np.mean(np.abs(p.nnlf(reals) - k.nnlf(reals))) < 0.05
+    assert np.mean(np.abs(p.nll(reals) - k.nll(reals))) < 0.05
 
     # Test sampling
     X = k.rvs(10000, random_state=1)

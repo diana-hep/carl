@@ -25,7 +25,7 @@ def check_exponential(inverse_scale):
     assert_array_almost_equal(p_carl.cdf(X),
                               p_scipy.cdf(X.ravel()))
     assert_array_almost_equal(-np.log(p_carl.pdf(X)),
-                              p_carl.nnlf(X))
+                              p_carl.nll(X))
 
 
 def test_exponential():

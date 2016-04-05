@@ -27,14 +27,14 @@ class LinearTransform(TheanoDistribution):
             for o_i in p.observeds_:
                 self.observeds_.add(o_i)
 
-        # Derive and overide pdf, nnlf and cdf analytically if possible
+        # Derive and overide pdf, nll and cdf analytically if possible
         # XXX todo
 
     def pdf(self, X, **kwargs):
         return self.p.pdf(np.dot(self.inv_A, X.T).T, **kwargs)
 
-    def nnlf(self, X, **kwargs):
-        return self.p.nnlf(np.dot(self.inv_A, X.T).T, **kwargs)
+    def nll(self, X, **kwargs):
+        return self.p.nll(np.dot(self.inv_A, X.T).T, **kwargs)
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)

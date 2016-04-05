@@ -65,7 +65,7 @@ class DistributionMixin(BaseEstimator):
     def pdf(self, X, **kwargs):
         raise NotImplementedError
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         raise NotImplementedError
 
     def cdf(self, X, **kwargs):
@@ -199,7 +199,7 @@ class TheanoDistribution(DistributionMixin):
         objective_ = theano.function(
             [self.X] + [w for _, w in param_to_placeholder] +
             [theano.In(v, name=v.name) for v in self.observeds_],
-            T.sum(self.nnlf_),
+            T.sum(self.nll_),
             givens=param_to_placeholder,
             allow_input_downcast=True)
 
@@ -210,7 +210,7 @@ class TheanoDistribution(DistributionMixin):
             gradient_ = theano.function(
                 [self.X] + [w for _, w in param_to_placeholder] +
                 [theano.In(v, name=v.name) for v in self.observeds_],
-                theano.grad(T.sum(self.nnlf_),
+                theano.grad(T.sum(self.nll_),
                             [v for v, _ in param_to_placeholder]),
                 givens=param_to_placeholder,
                 allow_input_downcast=True)
@@ -239,4 +239,4 @@ class TheanoDistribution(DistributionMixin):
         return self
 
     def score(self, X, **kwargs):
-        return self.nnlf(X, **kwargs).sum()
+        return self.nll(X, **kwargs).sum()

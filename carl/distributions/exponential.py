@@ -23,11 +23,11 @@ class Exponential(TheanoDistribution):
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = bound(
+        self.nll_ = bound(
             -T.log(self.inverse_scale) + self.inverse_scale * self.X,
             np.inf,
             self.inverse_scale > 0.).ravel()
-        self.make_(self.nnlf_, "nnlf")
+        self.make_(self.nll_, "nll")
 
         # cdf
         self.cdf_ = (1. - T.exp(-self.inverse_scale * self.X)).ravel()

@@ -20,7 +20,7 @@ class KernelDensity(DistributionMixin):
         X = check_array(X)
         return self.kde_.pdf(X.T)
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         X = check_array(X)
         return -self.kde_.logpdf(X.T)
 

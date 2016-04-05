@@ -117,12 +117,12 @@ def test_likelihood_free_mixture():
     m1 = Mixture(components=[p1, p2])
     m2 = Mixture(components=[h1, h2])
 
-    # Check whether pdf, nnlf and cdf have been overriden
+    # Check whether pdf, nll and cdf have been overriden
     assert isinstance(m1.pdf, theano.compile.function_module.Function)
-    assert isinstance(m1.nnlf, theano.compile.function_module.Function)
+    assert isinstance(m1.nll, theano.compile.function_module.Function)
     assert isinstance(m1.cdf, theano.compile.function_module.Function)
     assert isinstance(m2.pdf, types.MethodType)
-    assert isinstance(m2.nnlf, types.MethodType)
+    assert isinstance(m2.nll, types.MethodType)
     assert isinstance(m2.cdf, types.MethodType)
 
     # Compare pdfs

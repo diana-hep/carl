@@ -39,7 +39,7 @@ class Histogram(DistributionMixin):
 
         return self.histogram_[all_indices]
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
 
     def rvs(self, n_samples, random_state=None, **kwargs):

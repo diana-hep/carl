@@ -25,12 +25,12 @@ class Normal(TheanoDistribution):
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = bound(
+        self.nll_ = bound(
             T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
             (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
             np.inf,
             self.sigma > 0.).ravel()
-        self.make_(self.nnlf_, "nnlf")
+        self.make_(self.nll_, "nll")
 
         # cdf
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
@@ -66,8 +66,8 @@ class MultivariateNormal(TheanoDistribution):
         self.make_(self.pdf_, "pdf")
 
         # -log pdf
-        self.nnlf_ = -T.log(self.pdf_)  # XXX: for sure this can be better
-        self.make_(self.nnlf_, "nnlf")
+        self.nll_ = -T.log(self.pdf_)  # XXX: for sure this can be better
+        self.make_(self.nll_, "nll")
 
         # self.rvs_
         self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")

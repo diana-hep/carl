@@ -27,7 +27,7 @@ class Join(TheanoDistribution):
                 for o_i in component.observeds_:
                     self.observeds_.add(o_i)
 
-        # Derive and overide pdf and nnlf analytically if possible
+        # Derive and overide pdf and nll analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
             # pdf
             c0 = self.components[0]
@@ -41,18 +41,18 @@ class Join(TheanoDistribution):
 
             self.make_(self.pdf_, "pdf")
 
-        if all([hasattr(c, "nnlf_") for c in self.components]):
-            # nnlf
+        if all([hasattr(c, "nll_") for c in self.components]):
+            # nll
             c0 = self.components[0]
-            self.nnlf_ = theano.clone(c0.nnlf_, {c0.X: self.X[:, 0:c0.ndim]})
+            self.nll_ = theano.clone(c0.nll_, {c0.X: self.X[:, 0:c0.ndim]})
             start = c0.ndim
 
             for c in self.components[1:]:
-                self.nnlf_ += theano.clone(
-                    c.nnlf_, {c.X: self.X[:, start:start+c.ndim]})
+                self.nll_ += theano.clone(
+                    c.nll_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.nnlf_, "nnlf")
+            self.make_(self.nll_, "nll")
 
     def pdf(self, X, **kwargs):
         out = np.ones(len(X))
@@ -64,12 +64,12 @@ class Join(TheanoDistribution):
 
         return out
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         out = np.zeros(len(X))
         start = 0
 
         for i, component in enumerate(self.components):
-            out += component.nnlf(X[:, start:start+component.ndim], **kwargs)
+            out += component.nll(X[:, start:start+component.ndim], **kwargs)
             start += component.ndim
 
         return out
@@ -87,7 +87,7 @@ class Join(TheanoDistribution):
         return out
 
     def fit(self, X, **kwargs):
-        if hasattr(self, "nnlf_"):
+        if hasattr(self, "nll_"):
             return super(Join, self).fit(X, **kwargs)
         else:
             raise NotImplementedError

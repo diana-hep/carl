@@ -68,7 +68,7 @@ class Mixture(TheanoDistribution):
 
                 self.weights.append(w_last)
 
-        # Derive and overide pdf, nnlf and cdf analytically if possible
+        # Derive and overide pdf, nll and cdf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
             # pdf
             self.pdf_ = self.weights[0] * self.components[0].pdf_
@@ -77,11 +77,11 @@ class Mixture(TheanoDistribution):
             self.make_(self.pdf_, "pdf")
 
             # -log pdf
-            self.nnlf_ = self.weights[0] * self.components[0].pdf_
+            self.nll_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
-                self.nnlf_ += self.weights[i] * self.components[i].pdf_
-            self.nnlf_ = -T.log(self.nnlf_)
-            self.make_(self.nnlf_, "nnlf")
+                self.nll_ += self.weights[i] * self.components[i].pdf_
+            self.nll_ = -T.log(self.nll_)
+            self.make_(self.nll_, "nll")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
             # cdf
@@ -102,7 +102,7 @@ class Mixture(TheanoDistribution):
 
         return p
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
 
     def cdf(self, X, **kwargs):
@@ -131,7 +131,7 @@ class Mixture(TheanoDistribution):
         return out
 
     def fit(self, X, **kwargs):
-        if hasattr(self, "nnlf_"):
+        if hasattr(self, "nll_"):
             return super(Mixture, self).fit(X, **kwargs)
         else:
             raise NotImplementedError

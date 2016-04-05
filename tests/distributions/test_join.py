@@ -23,7 +23,7 @@ def test_join():
     assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
     assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05
     assert np.abs(np.mean(X[:, 2]) - 2.) < 0.05
-    assert_array_almost_equal(-np.log(p.pdf(X)), p.nnlf(X))
+    assert_array_almost_equal(-np.log(p.pdf(X)), p.nll(X))
 
 
 def test_join_non_theano():
@@ -44,4 +44,4 @@ def test_join_non_theano():
     assert np.abs(np.mean(X[:, 0]) - 0.) < 0.05
     assert np.abs(np.mean(X[:, 1]) - 1.) < 0.05
     assert np.abs(np.mean(X[:, 2]) - 2.) < 0.05
-    assert_array_almost_equal(-np.log(p.pdf(X)), p.nnlf(X))
+    assert_array_almost_equal(-np.log(p.pdf(X)), p.nll(X))
