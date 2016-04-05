@@ -51,10 +51,10 @@ with open(os.path.join("carl", "__init__.py"), "rt") as f:
 
 
 _install_requires = [
-    "numpy>=1.10",
+    "numpy>=1.11",
     "scipy>=0.17",
     "scikit-learn>=0.17.1",
-    "theano>=0.7",
+    "theano>=0.8",
     "six"
 ]
 
