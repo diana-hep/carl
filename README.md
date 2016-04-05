@@ -17,10 +17,10 @@ Note: `carl` is still in its early stage of development. Join us if you feel lik
 
 The following dependencies are required:
 
-- Numpy >= 1.10
+- Numpy >= 1.11
 - Scipy >= 0.17
 - Scikit-Learn >= 0.18-dev
-- Theano >= 0.8-dev
+- Theano >= 0.8
 
 Once satisfied, `carl` can be installed from source using the following commands:
 
