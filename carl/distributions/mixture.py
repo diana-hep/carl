@@ -5,7 +5,6 @@
 # more details.
 
 import numpy as np
-import theano
 import theano.tensor as T
 
 from sklearn.utils import check_random_state
@@ -68,12 +67,6 @@ class Mixture(TheanoDistribution):
                     w_last = w_last - w_i
 
                 self.weights.append(w_last)
-
-        # # Normalize weights
-        # normalizer = self.weights[0]
-        # for w in self.weights[1:]:
-        #     normalizer += w
-        # self.weights = [w / normalizer for w in self.weights]
 
         # Derive and overide pdf, nnlf and cdf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):

@@ -6,8 +6,6 @@
 
 import numpy as np
 import scipy.stats as st
-import theano
-import theano.tensor as T
 
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
@@ -67,7 +65,6 @@ def test_fit():
 def test_fit_with_constraints():
     p = Normal()
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
-    s0 = p.score(X)
     p.fit(X, constraints=[
         {"param": p.mu, "type": "ineq", "fun": lambda mu: mu},
         {"param": p.mu, "type": "ineq", "fun": lambda mu: 0.1 - mu},
@@ -84,7 +81,6 @@ def test_fit_with_constraints():
 def test_fit_with_bounds():
     p = Normal()
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
-    s0 = p.score(X)
     p.fit(X, bounds=[{"param": p.sigma, "bounds": (0, None)}])
     assert p.sigma.get_value() >= 0.0
 

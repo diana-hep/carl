@@ -4,7 +4,6 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-import copy
 import numpy as np
 
 from sklearn.base import BaseEstimator

@@ -6,9 +6,7 @@
 
 import numpy as np
 
-from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
-from sklearn.utils import check_random_state
 
 from carl.distributions import Join
 from carl.distributions import Normal

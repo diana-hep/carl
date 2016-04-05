@@ -4,7 +4,6 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-import collections
 import numpy as np
 import theano
 import theano.tensor as T

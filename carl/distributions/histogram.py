@@ -10,7 +10,6 @@ from itertools import product
 from sklearn.utils import check_random_state
 from sklearn.utils import check_array
 from scipy.interpolate import interp1d
-from scipy.signal import medfilt
 
 from .base import DistributionMixin
 

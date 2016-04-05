@@ -6,8 +6,6 @@
 
 import numpy as np
 import scipy.stats as st
-import theano
-import theano.tensor as T
 
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state

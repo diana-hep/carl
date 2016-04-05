@@ -5,13 +5,10 @@
 # more details.
 
 import numpy as np
-import theano
-import theano.tensor as T
 
 from sklearn.utils import check_random_state
 
 from . import TheanoDistribution
-from .base import check_parameter
 
 
 class LinearTransform(TheanoDistribution):

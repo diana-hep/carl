@@ -24,6 +24,7 @@ from scipy.interpolate import interp1d
 from sklearn.base import TransformerMixin
 from sklearn.isotonic import IsotonicRegression
 
+
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     def __init__(self, base_estimator, method="histogram", cv=1,
                  bins="auto", eps=0.1):

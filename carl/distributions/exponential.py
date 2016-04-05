@@ -5,7 +5,6 @@
 # more details.
 
 import numpy as np
-import theano
 import theano.tensor as T
 
 from . import TheanoDistribution

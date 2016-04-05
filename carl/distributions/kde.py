@@ -4,10 +4,7 @@
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-import numpy as np
-
 from scipy.stats import gaussian_kde
-from sklearn.utils import check_random_state
 from sklearn.utils import check_array
 
 from .base import DistributionMixin
