@@ -6,74 +6,31 @@
 
 import numpy as np
 
+from scipy.interpolate import interp1d
+
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import RegressorMixin
-from sklearn.calibration import CalibratedClassifierCV as CCCV
+from sklearn.calibration import _SigmoidCalibration
+from sklearn.isotonic import IsotonicRegression
 from sklearn.preprocessing import LabelEncoder
-from sklearn.utils import check_array
 from sklearn.utils import check_X_y
+from sklearn.utils import column_or_1d
 
 from ..distributions import KernelDensity
 from ..distributions import Histogram
 from .base import as_classifier
 from .base import check_cv
 
-from scipy.interpolate import interp1d
-from sklearn.base import TransformerMixin
-from sklearn.isotonic import IsotonicRegression
-
 
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
-    def __init__(self, base_estimator, method="histogram", cv=1,
-                 bins="auto", eps=0.1):
+    def __init__(self, base_estimator, method="histogram", cv=1):
         self.base_estimator = base_estimator
         self.method = method
         self.cv = cv
-        self.bins = bins
-        self.eps = 0.1
 
-    def _fit_calibrators(self, df0, df1):
-        df0 = df0.reshape(-1, 1)
-        df1 = df1.reshape(-1, 1)
-
-        if self.method == "kde":
-            calibrator0 = KernelDensity()
-            calibrator1 = KernelDensity()
-
-        elif self.method == "histogram":
-            df_min = max(0, min(np.min(df0), np.min(df1)) - self.eps)
-            df_max = min(1, max(np.max(df0), np.max(df1)) + self.eps)
-
-            bins = self.bins
-            if self.bins == "auto":
-                bins = 10 + int(len(df0) ** (1. / 3.))
-
-            calibrator0 = Histogram(bins=bins,
-                                    range=[(df_min, df_max)],
-                                    interpolation="linear")
-            calibrator1 = Histogram(bins=bins,
-                                    range=[(df_min, df_max)],
-                                    interpolation="linear")
-
-        elif self.method == "interpolated-isotonic":
-            T = np.concatenate((1. - df0.ravel(), 1. - df1.ravel()))
-            calibrator0 = InterpolatedIsotonicRegression(out_of_bounds='clip')
-            calibrator0.fit(T, np.concatenate((np.zeros(len(df0)),
-                                               np.ones(len(df1)))))
-            return calibrator0, None
-
-        else:
-            calibrator0 = clone(self.method)
-            calibrator1 = clone(self.method)
-
-        calibrator0.fit(df0)
-        calibrator1.fit(df1)
-
-        return calibrator0, calibrator1
-
-    def fit(self, X, y=None):
+    def fit(self, X, y):
         # XXX: add support for sample_weight
 
         # Check inputs
@@ -88,98 +45,81 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         self.classes_ = label_encoder.classes_
 
-        # Fall back to scikit-learn CalibratedClassifierCV
-        if self.method in ("isotonic", "sigmoid"):
-            base = self.base_estimator
+        # Calibrator
+        if self.method == "histogram":
+            base_calibrator = HistogramCalibrator()
+        elif self.method == "kde":
+            base_calibrator = KernelDensityCalibrator()
+        elif self.method == "isotonic":
+            base_calibrator = IsotonicCalibrator()
+        elif self.method == "interpolated-isotonic":
+            base_calibrator = IsotonicCalibrator(interpolation=True)
+        elif self.method == "sigmoid":
+            base_calibrator = SigmoidCalibrator()
+        else:
+            base_calibrator = self.method
 
-            if isinstance(base, RegressorMixin):
-                base = as_classifier(base)
+        # Fit
+        if self.cv == "prefit" or self.cv == 1:
+            # Classifier
+            if self.cv == 1:
+                clf = clone(self.base_estimator)
 
-            clf = CCCV(base, method=self.method, cv=self.cv)
-            clf.fit(X, y)
+                if isinstance(clf, RegressorMixin):
+                    clf = as_classifier(clf)
+
+                clf.fit(X, y)
+
+            else:
+                clf = self.base_estimator
 
             self.classifiers_ = [clf]
 
-        # Or use carl.distributions distributions
+            # Calibrator
+            calibrator = clone(base_calibrator)
+            T = clf.predict_proba(X)[:, 1]
+            calibrator.fit(T, y)
+            self.calibrators_ = [calibrator]
+
         else:
-            if self.cv == "prefit" or self.cv == 1:
-                if self.cv == 1:
-                    clf = clone(self.base_estimator)
+            self.classifiers_ = []
+            self.calibrators_ = []
 
-                    if isinstance(clf, RegressorMixin):
-                        clf = as_classifier(clf)
+            cv = check_cv(self.cv, X=X, y=y, classifier=True)
 
-                    clf.fit(X, y)
+            for train, calibrate in cv.split(X, y):
+                # Classifier
+                clf = clone(self.base_estimator)
 
-                else:
-                    clf = self.base_estimator
+                if isinstance(clf, RegressorMixin):
+                    clf = as_classifier(clf)
 
-                df = clf.predict_proba(X)[:, 0]
-                self.classifiers_ = [clf]
-                self.calibrators_ = [self._fit_calibrators(df[y == 0],
-                                                           df[y == 1])]
+                clf.fit(X[train], y[train])
+                self.classifiers_.append(clf)
 
-            else:
-                self.classifiers_ = []
-                self.calibrators_ = []
-
-                cv = check_cv(self.cv, X=X, y=y, classifier=True)
-
-                for train, calibrate in cv.split(X, y):
-                    clf = clone(self.base_estimator)
-
-                    if isinstance(clf, RegressorMixin):
-                        clf = as_classifier(clf)
-
-                    clf.fit(X[train], y[train])
-                    df = clf.predict_proba(X[calibrate])[:, 0]
-
-                    self.classifiers_.append(clf)
-                    self.calibrators_.append(
-                        self._fit_calibrators(df[y[calibrate] == 0],
-                                              df[y[calibrate] == 1]))
+                # Calibrator
+                calibrator = clone(base_calibrator)
+                T = clf.predict_proba(X[calibrate])[:, 1]
+                calibrator.fit(T, y[calibrate])
+                self.calibrators_.append(calibrator)
 
         return self
 
     def predict(self, X):
-        if self.method in ("isotonic", "sigmoid"):
-            return self.classifiers_[0].predict(X)
-
-        else:
-            return np.where(self.predict_proba(X)[:, 1] >= 0.5,
-                            self.classes_[1],
-                            self.classes_[0])
+        return np.where(self.predict_proba(X)[:, 1] >= 0.5,
+                        self.classes_[1],
+                        self.classes_[0])
 
     def predict_proba(self, X):
-        if self.method in ("isotonic", "sigmoid"):
-            return self.classifiers_[0].predict_proba(X)
+        p = np.zeros((len(X), 2))
 
-        elif self.method == "interpolated-isotonic":
-            p = np.zeros((len(X), 2))
+        for clf, calibrator in zip(self.classifiers_, self.calibrators_):
+            p[:, 1] += calibrator.predict(clf.predict_proba(X)[:, 1])
 
-            for clf, (calibrator0, _) in zip(self.classifiers_,
-                                             self.calibrators_):
-                p[:, 1] += calibrator0.predict(clf.predict_proba(X)[:, 1])
+        p[:, 1] /= len(self.classifiers_)
+        p[:, 0] = 1. - p[:, 1]
 
-            p[:, 1] /= len(self.classifiers_)
-            p[:, 0] = 1. - p[:, 1]
-
-            return p
-
-        else:
-            X = check_array(X)
-            p = np.zeros((len(X), 2))
-
-            for classifier, (calibrator0,
-                             calibrator1) in zip(self.classifiers_,
-                                                 self.calibrators_):
-                df = classifier.predict_proba(X)[:, 0].reshape(-1, 1)
-                p[:, 0] += calibrator0.pdf(df)
-                p[:, 1] += calibrator1.pdf(df)
-
-            p /= np.sum(p, axis=1).reshape(-1, 1)
-
-            return p
+        return p
 
     def clone(self):
         estimator = clone(self, original=True)
@@ -190,88 +130,177 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         return estimator
 
 
-class InterpolatedIsotonicRegression(BaseEstimator, TransformerMixin,
-                                     RegressorMixin):
-    """Interpolated Isotonic Regression model.
+class HistogramCalibrator(BaseEstimator, RegressorMixin):
+    def __init__(self, bins="auto", range=None, interpolation="linear",
+                 eps=0.1):
+        self.bins = bins
+        self.range = range
+        self.interpolation = interpolation
+        self.eps = eps
 
-        apply linear interpolation to transform piecewise constant isotonic
-        regression model into piecewise linear model
-    """
+    def fit(self, T, y, sample_weight=None):
+        # Check input
+        T = column_or_1d(T)
 
+        # Fit
+        t0 = T[y == 0]
+        t1 = T[y == 1]
+
+        bins = self.bins
+        if self.bins == "auto":
+            bins = 10 + int(len(t0) ** (1. / 3.))
+
+        range = self.range
+        if self.range is None:
+            t_min = max(0, min(np.min(t0), np.min(t1)) - self.eps)
+            t_max = min(1, max(np.max(t0), np.max(t1)) + self.eps)
+            range = [(t_min, t_max)]
+
+        self.calibrator0 = Histogram(bins=bins, range=range,
+                                     interpolation=self.interpolation)
+        self.calibrator1 = Histogram(bins=bins, range=range,
+                                     interpolation=self.interpolation)
+
+        self.calibrator0.fit(t0.reshape(-1, 1))
+        self.calibrator1.fit(t1.reshape(-1, 1))
+
+        return self
+
+    def predict(self, T):
+        T = column_or_1d(T).reshape(-1, 1)
+        num = self.calibrator1.pdf(T)
+        den = self.calibrator0.pdf(T) + self.calibrator1.pdf(T)
+
+        p = num / den
+        p[den == 0] = 0.5
+
+        return p
+
+
+class KernelDensityCalibrator(BaseEstimator, RegressorMixin):
+    def __init__(self, bandwidth=None):
+        self.bandwidth = bandwidth
+
+    def fit(self, T, y, sample_weight=None):
+        # Check input
+        T = column_or_1d(T)
+
+        # Fit
+        t0 = T[y == 0]
+        t1 = T[y == 1]
+
+        self.calibrator0 = KernelDensity(bandwidth=self.bandwidth)
+        self.calibrator1 = KernelDensity(bandwidth=self.bandwidth)
+
+        self.calibrator0.fit(t0.reshape(-1, 1))
+        self.calibrator1.fit(t1.reshape(-1, 1))
+
+        return self
+
+    def predict(self, T):
+        T = column_or_1d(T).reshape(-1, 1)
+        num = self.calibrator1.pdf(T)
+        den = self.calibrator0.pdf(T) + self.calibrator1.pdf(T)
+
+        p = num / den
+        p[den == 0] = 0.5
+
+        return p
+
+
+class IsotonicCalibrator(BaseEstimator, RegressorMixin):
     def __init__(self, y_min=None, y_max=None, increasing=True,
-                 out_of_bounds='nan'):
+                 interpolation=False):
         self.y_min = y_min
         self.y_max = y_max
         self.increasing = increasing
-        self.out_of_bounds = out_of_bounds
+        self.interpolation = interpolation
 
-    def fit(self, X, y, sample_weight=None):
+    def fit(self, T, y, sample_weight=None):
         """Fit the model using X, y as training data.
+
         Parameters
         ----------
-        X : array-like, shape=(n_samples,)
+        T : array-like, shape=(n_samples,)
             Training data.
+
         y : array-like, shape=(n_samples,)
             Training target.
-        sample_weight : array-like, shape=(n_samples,), optional, default: None
-            Weights. If set to None, all weights will be set to 1 (equal
-            weights).
+
+        sample_weight : array-like, shape=(n_samples,), optional
+            Weights. If set to None, all weights will be set to 1.
+
         Returns
         -------
         self : object
-            Returns an instance of self.
+            Returns self.
+
         Notes
         -----
-        X is stored for future use, as `transform` needs X to interpolate
+        T is stored for future use, as `transform` needs T to interpolate
         new input data.
         """
-        self.iso_ = IsotonicRegression(y_min=self.y_min,
-                                       y_max=self.y_max,
-                                       increasing=self.increasing,
-                                       out_of_bounds=self.out_of_bounds)
-        self.iso_.fit(X, y, sample_weight=sample_weight)
+        # Check input
+        T = column_or_1d(T)
 
-        p = self.iso_.transform(X)
-        change_mask1 = (p - np.roll(p, 1)) > 0
-        change_mask2 = np.roll(change_mask1, -1)
-        change_mask1[0] = True
-        change_mask1[-1] = True
-        change_mask2[0] = True
-        change_mask2[-1] = True
+        # Fit isotonic regression
+        self.ir_ = IsotonicRegression(y_min=self.y_min,
+                                      y_max=self.y_max,
+                                      increasing=self.increasing,
+                                      out_of_bounds="clip")
+        self.ir_.fit(T, y, sample_weight=sample_weight)
 
-        self.iso_interp1_ = interp1d(X[change_mask1],
-                                     p[change_mask1],
+        # Interpolators
+        if self.interpolation:
+            p = self.ir_.transform(T)
+
+            change_mask1 = (p - np.roll(p, 1)) > 0
+            change_mask2 = np.roll(change_mask1, -1)
+            change_mask1[0] = True
+            change_mask1[-1] = True
+            change_mask2[0] = True
+            change_mask2[-1] = True
+
+            self.interp1_ = interp1d(T[change_mask1], p[change_mask1],
                                      bounds_error=False,
                                      fill_value=(0., 1.))
-        self.iso_interp2_ = interp1d(X[change_mask2],
-                                     p[change_mask2],
+            self.interp2_ = interp1d(T[change_mask2], p[change_mask2],
                                      bounds_error=False,
                                      fill_value=(0., 1.))
 
         return self
 
-    def transform(self, T):
-        """Transform new data by linear interpolation
-        Parameters
-        ----------
-        T : array-like, shape=(n_samples,)
-            Data to transform.
-        Returns
-        -------
-        T_ : array, shape=(n_samples,)
-            The transformed data
-        """
-        return 0.5 * (self.iso_interp1_(T) + self.iso_interp2_(T))
-
     def predict(self, T):
         """Predict new data by linear interpolation.
+
         Parameters
         ----------
         T : array-like, shape=(n_samples,)
             Data to transform.
+
         Returns
         -------
         T_ : array, shape=(n_samples,)
             Transformed data.
         """
-        return self.transform(T)
+        if self.interpolation:
+            T = column_or_1d(T)
+            return 0.5 * (self.interp1_(T) + self.interp2_(T))
+
+        else:
+            return self.ir_.transform(T)
+
+
+class SigmoidCalibrator(BaseEstimator, RegressorMixin):
+    def fit(self, T, y, sample_weight=None):
+        # Check input
+        T = column_or_1d(T)
+
+        # Fit
+        self.calibrator_ = _SigmoidCalibration()
+        self.calibrator_.fit(T, y, sample_weight=sample_weight)
+
+        return self
+
+    def predict(self, T):
+        return self.calibrator_.predict(T)
