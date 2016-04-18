@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-#
+"""`carl.learning` defines machine learning algorithms."""
+
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -16,6 +16,23 @@ from sklearn.utils import check_X_y
 
 
 def as_classifier(regressor):
+    """Wrap a Scikit-Learn regressor into a binary classifier.
+
+    This function can be used to solve a binary classification problem as a
+    regression problem, where output labels {0,1} are treated as real values.
+    The wrapped regressor exhibits the classifier API, with the corresponding
+    `predict`, `predict_proba` and `score` methods.
+
+    Parameters
+    ----------
+    regressor : RegressorMixin
+        The regressor object.
+
+    Returns
+    -------
+    clf : ClassifierMixin.
+        The wrapped regressor, but with a classifier API.
+    """
     class Wrapper(BaseEstimator, ClassifierMixin):
         def __init__(self, base_estimator):
             self.base_estimator = base_estimator
@@ -46,11 +63,11 @@ def as_classifier(regressor):
         def predict_proba(self, X):
             X = check_array(X)
 
-            p = self.regressor_.predict(X)
-            p = np.clip(p, 0., 1.)
+            df = self.regressor_.predict(X)
+            df = np.clip(df, 0., 1.)
             probas = np.zeros((len(X), 2))
-            probas[:, 0] = 1. - p
-            probas[:, 1] = p
+            probas[:, 0] = 1. - df
+            probas[:, 1] = df
 
             return probas
 
@@ -61,37 +78,7 @@ def as_classifier(regressor):
 
 
 if int(sklearn.__version__[2:4]) < 18:
-    from abc import ABCMeta
-    from abc import abstractmethod
-    from six import with_metaclass
-
-    class BaseCrossValidator(with_metaclass(ABCMeta)):
-        # Backport from sklearn.model_selection
-        def split(self, X, y=None, labels=None):
-            X, y, labels = indexable(X, y, labels)
-            indices = np.arange(_num_samples(X))
-            for test_index in self._iter_test_masks(X, y, labels):
-                train_index = indices[np.logical_not(test_index)]
-                test_index = indices[test_index]
-                yield train_index, test_index
-
-        def _iter_test_masks(self, X=None, y=None, labels=None):
-            for test_index in self._iter_test_indices(X, y, labels):
-                test_mask = np.zeros(_num_samples(X), dtype=np.bool)
-                test_mask[test_index] = True
-                yield test_mask
-
-        def _iter_test_indices(self, X=None, y=None, labels=None):
-            raise NotImplementedError
-
-        @abstractmethod
-        def get_n_splits(self, X=None, y=None, labels=None):
-            pass
-
-        def __repr__(self):
-            return _build_repr(self)
-
-    class _CVIterableWrapper(BaseCrossValidator):
+    class _CVIterableWrapper:
         # Backport from sklearn.model_selection
         def __init__(self, cv):
             self.cv = cv
@@ -105,6 +92,37 @@ if int(sklearn.__version__[2:4]) < 18:
 
 
 def check_cv(cv=3, X=None, y=None, classifier=False):
+    """Input checker utility for building a cross-validator.
+
+    Parameters
+    ----------
+    cv : int, cross-validation generator or an iterable, optional, default=3
+        Determines the cross-validation splitting strategy.
+        Possible inputs for cv are:
+          - integer, to specify the number of folds.
+          - An object to be used as a cross-validation generator.
+          - An iterable yielding train/test splits.
+        For integer/None inputs, if classifier is True and ``y`` is either
+        binary or multiclass, :class:`StratifiedKFold` used. In all other
+        cases, :class:`KFold` is used.
+
+    y : array-like, optional
+        The target variable for supervised learning problems.
+
+    classifier : boolean, default=False
+        Whether the task is a classification task, in which case
+        stratified KFold will be used.
+
+    Returns
+    -------
+    checked_cv : a cross-validator instance.
+        The return value is a cross-validator which generates the train/test
+        splits via the ``split`` method.
+
+    Note
+    ----
+    This method is backported from scikit-learn 0.18.
+    """
     if int(sklearn.__version__[2:4]) >= 18:
         from sklearn.model_selection import check_cv as sklearn_check_cv
         return sklearn_check_cv(cv, y=y, classifier=classifier)

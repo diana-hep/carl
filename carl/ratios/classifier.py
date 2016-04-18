@@ -1,8 +1,10 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
+
+"""
+Classifier-based approximation of density ratios.
+"""
 
 import numpy as np
 
@@ -11,8 +13,8 @@ from sklearn.base import RegressorMixin
 from sklearn.base import clone
 from sklearn.utils import check_random_state
 
-from ..learning import as_classifier
 from .base import DensityRatioMixin
+from ..learning import as_classifier
 
 
 class ClassifierRatio(BaseEstimator, DensityRatioMixin):

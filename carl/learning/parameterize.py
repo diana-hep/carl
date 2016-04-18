@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-#
+"""`carl.learning.parameterize` defines tools for parameterized learning."""
+
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -16,10 +16,32 @@ from sklearn.utils import check_random_state
 
 
 class ParameterStacker(BaseEstimator, TransformerMixin):
+    """Stack current parameter values as additional features."""
+
     def __init__(self, params):
+        """Constructor.
+
+        Parameters
+        ----------
+        params : list of Theano shared variables
+            The parameters.
+        """
         self.params = params
 
     def transform(self, X, y=None):
+        """Stack current parameter values as additional features.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features)
+            The samples.
+
+        Returns
+        -------
+        Xt : array, shape=(n_samples, n_features+len(params))
+            The horizontal concatenation of X with the current parameter
+            values, added as new columns.
+        """
         Xp = np.empty((len(X), len(self.params)))
 
         for i, p in enumerate(self.params):
@@ -29,7 +51,24 @@ class ParameterStacker(BaseEstimator, TransformerMixin):
 
 
 class _ParameterizedEstimator(BaseEstimator):
+    """Parameterize a Scikit-Learn estimator.
+
+    This wrapper can be used to learn a parameterized classification or
+    regression problem, where parameter values are automatically added
+    as additional features.
+    """
+
     def __init__(self, base_estimator, params):
+        """Constructor.
+
+        Parameters
+        ----------
+        base_estimator : BaseEstimator
+            The estimator to parameterize.
+
+        params : list of Theano shared variables
+            The parameters.
+        """
         self.base_estimator = base_estimator
         self.params = params
 
@@ -41,6 +80,21 @@ class _ParameterizedEstimator(BaseEstimator):
         return X
 
     def fit(self, X, y):
+        """Fit estimator on parameterized data.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features+len(params))
+            The samples, concatenated with the corresponding parameter values.
+
+        y : array-like, shape=(n_samples,)
+            The output values.
+
+        Returns
+        -------
+        self : object
+            `self`.
+        """
         self.stacker_ = ParameterStacker(self.params)
 
         # XXX: this assumes that X is extended with parameters
@@ -50,20 +104,97 @@ class _ParameterizedEstimator(BaseEstimator):
         return self
 
     def predict(self, X):
+        """Predict the targets for X.
+
+        Parameter values are automatically appended from the current state
+        of the parameters if those are not provided with X.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features) or
+                        shape=(n_samples, n_features+len(params))
+            The samples.
+
+        Returns
+        -------
+        y : array, shape=(n_samples,)
+            The predicted output values.
+        """
         return self.estimator_.predict(self._validate_X(X))
 
 
 class ParameterizedClassifier(_ParameterizedEstimator, ClassifierMixin):
+    """Parameterize a Scikit-Learn classifier.
+
+    This wrapper can be used to learn a parameterized classification problem,
+    where parameter values are automatically added as additional features.
+    """
+
     def predict_proba(self, X):
+        """Predict the posterior probabilities of classification for X.
+
+        Parameter values are automatically appended from the current state
+        of the parameters if those are not provided with X.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features) or
+                        shape=(n_samples, n_features+len(params))
+            The samples.
+
+        Returns
+        -------
+        probas : array, shape=(n_samples, n_classes)
+            The predicted probabilities.
+        """
         return self.estimator_.predict_proba(self._validate_X(X))
 
 
 class ParameterizedRegressor(_ParameterizedEstimator, RegressorMixin):
+    """Parameterize a Scikit-Learn regressor.
+
+    This wrapper can be used to learn a parameterized regression problem,
+    where parameter values are automatically added as additional features.
+    """
+
     pass
 
 
 def make_parameterized_classification(p0, p1, n_samples, params,
                                       random_state=None):
+    """Generate parameterized classification data.
+
+    This function generates parameterized classification data, by enumerating
+    all possible combinations of provided parameter values and producing
+    samples in equal number from `p0` and `p1`.
+
+    Parameters
+    ----------
+    p0 : DistributionMixin
+        The distribution to draw samples from class 0.
+
+    p1 : DistributionMixin
+        The distribution to draw sample from class 1.
+
+    n_samples : int
+        The total number of samples to generate.
+
+    params : list of pairs (theano shared variables, list of values)
+        The list of parameters along with the corresponding values to generate
+        samples for.
+
+    random_state : int or RandomState object
+        The random seed.
+
+    Returns
+    -------
+    X : array, shape=(n_samples, n_features+len(params))
+        The generated training data, as sample features and concatenated
+        parameter values.
+
+    y : array, shape=(n_samples,)
+        The labels.
+    """
     rng = check_random_state(random_state)
 
     if not isinstance(params[0], tuple):
