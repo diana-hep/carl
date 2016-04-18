@@ -169,7 +169,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
                         self.classes_[0])
 
     def predict_proba(self, X):
-        """Posterior probabilities of classification.
+        """Predict the posterior probabilities of classification for X.
 
         Parameters
         ----------

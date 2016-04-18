@@ -4,8 +4,7 @@ Carl is a Likelihood-free inference toolbox for Python.
 Supported features include:
 - `carl.distributions`: Composition and fitting of distributions;
 - `carl.ratios`: Likelihood-free density ratio estimation;
-- `carl.learning`: Machine learning tools, including tools for
-  parameterized supervised learning and calibration.
+- `carl.learning`: Machine learning tools.
 """
 
 # Carl is free software; you can redistribute it and/or modify it
