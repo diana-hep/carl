@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -28,7 +26,7 @@ from .kde import KernelDensity
 from .sampler import Sampler
 
 __all__ = ("DistributionMixin",
-           "TheanoDistribution"
+           "TheanoDistribution",
            "Exponential",
            "Normal",
            "MultivariateNormal",

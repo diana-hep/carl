@@ -66,11 +66,11 @@ def as_classifier(regressor):
         def predict_proba(self, X):
             X = check_array(X)
 
-            p = self.regressor_.predict(X)
-            p = np.clip(p, 0., 1.)
+            df = self.regressor_.predict(X)
+            df = np.clip(df, 0., 1.)
             probas = np.zeros((len(X), 2))
-            probas[:, 0] = 1. - p
-            probas[:, 1] = p
+            probas[:, 0] = 1. - df
+            probas[:, 1] = df
 
             return probas
 
