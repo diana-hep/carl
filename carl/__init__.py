@@ -22,8 +22,8 @@ def _clone(estimator, safe=True, original=False):
     # XXX: This is a monkey patch to allow cloning of
     #      CalibratedClassifierCV(cv="prefit"), while keeping the original
     #      base_estimator. Do not reproduce at home!
-    if hasattr(estimator, "clone") and not original:
-        return estimator.clone()
+    if hasattr(estimator, "_clone") and not original:
+        return estimator._clone()
     else:
         return sk_clone(estimator, safe=safe)
 

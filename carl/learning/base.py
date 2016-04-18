@@ -1,7 +1,4 @@
-"""
-The `carl.learning` module defines functions and classes for
-machine learning, and that are complementary to Scikit-Learn.
-"""
+"""`carl.learning` defines machine learning algorithms."""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
@@ -99,23 +96,20 @@ def check_cv(cv=3, X=None, y=None, classifier=False):
 
     Parameters
     ----------
-    cv : int, cross-validation generator or an iterable, optional
+    cv : int, cross-validation generator or an iterable, optional, default=3
         Determines the cross-validation splitting strategy.
         Possible inputs for cv are:
-          - None, to use the default 3-fold cross-validation,
           - integer, to specify the number of folds.
           - An object to be used as a cross-validation generator.
           - An iterable yielding train/test splits.
         For integer/None inputs, if classifier is True and ``y`` is either
         binary or multiclass, :class:`StratifiedKFold` used. In all other
         cases, :class:`KFold` is used.
-        Refer :ref:`User Guide <cross_validation>` for the various
-        cross-validation strategies that can be used here.
 
     y : array-like, optional
         The target variable for supervised learning problems.
 
-    classifier : boolean, optional, default False
+    classifier : boolean, default=False
         Whether the task is a classification task, in which case
         stratified KFold will be used.
 
