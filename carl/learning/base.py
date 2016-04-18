@@ -61,37 +61,7 @@ def as_classifier(regressor):
 
 
 if int(sklearn.__version__[2:4]) < 18:
-    from abc import ABCMeta
-    from abc import abstractmethod
-    from six import with_metaclass
-
-    class BaseCrossValidator(with_metaclass(ABCMeta)):
-        # Backport from sklearn.model_selection
-        def split(self, X, y=None, labels=None):
-            X, y, labels = indexable(X, y, labels)
-            indices = np.arange(_num_samples(X))
-            for test_index in self._iter_test_masks(X, y, labels):
-                train_index = indices[np.logical_not(test_index)]
-                test_index = indices[test_index]
-                yield train_index, test_index
-
-        def _iter_test_masks(self, X=None, y=None, labels=None):
-            for test_index in self._iter_test_indices(X, y, labels):
-                test_mask = np.zeros(_num_samples(X), dtype=np.bool)
-                test_mask[test_index] = True
-                yield test_mask
-
-        def _iter_test_indices(self, X=None, y=None, labels=None):
-            raise NotImplementedError
-
-        @abstractmethod
-        def get_n_splits(self, X=None, y=None, labels=None):
-            pass
-
-        def __repr__(self):
-            return _build_repr(self)
-
-    class _CVIterableWrapper(BaseCrossValidator):
+    class _CVIterableWrapper:
         # Backport from sklearn.model_selection
         def __init__(self, cv):
             self.cv = cv
