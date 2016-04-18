@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
-#
+"""
+The `carl.learning` module defines functions and classes for
+machine learning, and that are complementary to Scikit-Learn.
+"""
+
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
-
-"""Machine learning helpers."""
 
 from .base import as_classifier
 from .base import check_cv
