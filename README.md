@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl) [![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master) [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
 
 
-Likelihood-free inference toolbox. Supported features include:
+Likelihood-free inference toolbox. Supported features currently include:
 
 - Composition and fitting of distributions;
 - Likelihood-free inference from classifiers;
@@ -31,6 +31,8 @@ python setup.py install
 ```
 
 ## Documentation
+
+The static documentation can be found online at [http://diana-hep.org/carl](http://diana-hep.org/carl).
 
 Illustrative examples serving as documentation can be found under the
 `examples/` directory.
