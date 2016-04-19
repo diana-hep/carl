@@ -25,12 +25,12 @@ def as_classifier(regressor):
 
     Parameters
     ----------
-    regressor : RegressorMixin
+    * `regressor` [`RegressorMixin`]:
         The regressor object.
 
     Returns
     -------
-    clf : ClassifierMixin.
+    * `clf` [`ClassifierMixin`]:
         The wrapped regressor, but with a classifier API.
     """
     class Wrapper(BaseEstimator, ClassifierMixin):
@@ -96,28 +96,30 @@ def check_cv(cv=3, X=None, y=None, classifier=False):
 
     Parameters
     ----------
-    cv : int, cross-validation generator or an iterable, optional, default=3
+    * `cv` [integer, cross-validation generator or an iterable, default=`3`]:
         Determines the cross-validation splitting strategy.
         Possible inputs for cv are:
+
           - integer, to specify the number of folds.
           - An object to be used as a cross-validation generator.
           - An iterable yielding train/test splits.
-        For integer/None inputs, if classifier is True and ``y`` is either
-        binary or multiclass, :class:`StratifiedKFold` used. In all other
-        cases, :class:`KFold` is used.
 
-    y : array-like, optional
+        For integer/None inputs, if classifier is True and `y` is either
+        binary or multiclass, `StratifiedKFold` used. In all other
+        cases, `KFold` is used.
+
+    * `y` [array-like, optional]:
         The target variable for supervised learning problems.
 
-    classifier : boolean, default=False
+    * `classifier` [boolean, default=`False`]:
         Whether the task is a classification task, in which case
-        stratified KFold will be used.
+        stratified `KFold` will be used.
 
     Returns
     -------
-    checked_cv : a cross-validator instance.
+    * `checked_cv` [a cross-validator instance]:
         The return value is a cross-validator which generates the train/test
-        splits via the ``split`` method.
+        splits via the `split` method.
 
     Note
     ----

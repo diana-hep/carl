@@ -27,7 +27,7 @@ from .base import check_cv
 class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     """Probability calibration.
 
-    With this class, the base_estimator is fit on the train set of the
+    With this class, the `base_estimator` is fit on the train set of the
     cross-validation generator and the test set is used for calibration. The
     probabilities for each of the folds are then averaged for prediction.
     """
@@ -37,24 +37,26 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        base_estimator : ClassifierMixin
-            The classifier whose output ecision function needs to be calibrated
-            to offer more accurate predict_proba outputs. If cv=prefit, the
-            classifier must have been fit already on data.
+        * `base_estimator` [`ClassifierMixin`]:
+            The classifier whose output decision function needs to be
+            calibrated to offer more accurate predict_proba outputs. If
+            `cv=prefit`, the classifier must have been fit already on data.
 
-        method : string
+        * `method` [string]:
             The method to use for calibration. Supported methods include
-            "histogram", "kde", "isotonic", "interpolated-isotonic" and
-            "sigmoid".
+            `"histogram"`, `"kde"`, `"isotonic"`, `"interpolated-isotonic"` and
+            `"sigmoid"`.
 
-        cv : integer, cross-validation generator, iterable or "prefit",
+        * `cv` [integer, cross-validation generator, iterable or `"prefit"`]:
             Determines the cross-validation splitting strategy.
             Possible inputs for cv are:
+
             - integer, to specify the number of folds.
             - An object to be used as a cross-validation generator.
             - An iterable yielding train/test splits.
-            If "prefit" is passed, it is assumed that base_estimator has been
-            fitted already and all data is used for calibration. If cv=1,
+
+            If `"prefit"` is passed, it is assumed that base_estimator has been
+            fitted already and all data is used for calibration. If `cv=1`,
             the training data is used for both training and calibration.
         """
         self.base_estimator = base_estimator
@@ -66,15 +68,15 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Target values.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         # Check inputs
@@ -150,18 +152,18 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         return self
 
     def predict(self, X):
-        """Predict the targets for X.
+        """Predict the targets for `X`.
 
         Can be different from the predictions of the uncalibrated classifier.
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        y : array, shape=(n_samples,)
+        * `y` [array, shape=(n_samples,)]:
             The predicted class.
         """
         return np.where(self.predict_proba(X)[:, 1] >= 0.5,
@@ -169,16 +171,16 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
                         self.classes_[0])
 
     def predict_proba(self, X):
-        """Predict the posterior probabilities of classification for X.
+        """Predict the posterior probabilities of classification for `X`.
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        probas : array, shape=(n_samples, n_classes)
+        * `probas` [array, shape=(n_samples, n_classes)]:
             The predicted probabilities.
         """
         p = np.zeros((len(X), 2))
@@ -209,20 +211,21 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        bins : string or int
-            The number of bins, or "auto" to automatically determine the number
-            of bins depending on the number of samples.
+        * `bins` [string or integer]:
+            The number of bins, or `"auto"` to automatically determine the
+            number of bins depending on the number of samples.
 
-        range : [(lower, upper)], optional
-            The lower and upper bounds. If None, bounds are automatically
+        * `range` [(lower, upper), optional]:
+            The lower and upper bounds. If `None`, bounds are automatically
             inferred from the data.
 
-        eps : float
+        * `eps` [float]:
             The margin to the lower and upper bounds.
 
-        interpolation : string, optional
+        * `interpolation` [string, optional]:
             Specifies the kind of interpolation between bins as a string
-            (`linear`, `nearest`, `zero`, `slinear`, `quadratic`, `cubic`).
+            (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
+            `"cubic"`).
         """
         self.bins = bins
         self.range = range
@@ -230,22 +233,22 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
         self.eps = eps
 
     def fit(self, T, y, sample_weight=None):
-        """Fit using T, y as training data.
+        """Fit using `T`, `y` as training data.
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
+        * `T` [array-like, shape=(n_samples,)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Training target.
 
-        sample_weight : array-like, shape=(n_samples,), optional
-            Weights. If set to None, all weights will be set to 1.
+        * `sample_weight` [array-like, shape=(n_samples,), optional]:
+            Weights. If set to `None`, all weights will be set to 1.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         # Check input
@@ -287,13 +290,13 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
-            Data to transform.
+        * `T` [array-like, shape=(n_samples,)]:
+            Data to calibrate.
 
         Returns
         -------
-        T_ : array, shape=(n_samples,)
-            Transformed data.
+        * `Tt` [array, shape=(n_samples,)]:
+            Calibrated data.
         """
         T = column_or_1d(T).reshape(-1, 1)
         num = self.calibrator1.pdf(T)
@@ -313,25 +316,25 @@ class KernelDensityCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        bandwidth : string or float, optional
+        * `bandwidth` [string or float, optional]:
             The method used to calculate the estimator bandwidth.
         """
         self.bandwidth = bandwidth
 
     def fit(self, T, y):
-        """Fit using T, y as training data.
+        """Fit using `T`, `y` as training data.
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
+        * `T` [array-like, shape=(n_samples,)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Training target.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         # Check input
@@ -354,13 +357,13 @@ class KernelDensityCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
-            Data to transform.
+        * `T` [array-like, shape=(n_samples,)]:
+            Data to calibrate.
 
         Returns
         -------
-        T_ : array, shape=(n_samples,)
-            Transformed data.
+        * `Tt` [array, shape=(n_samples,)]:
+            Calibrated data.
         """
         T = column_or_1d(T).reshape(-1, 1)
         num = self.calibrator1.pdf(T)
@@ -386,19 +389,19 @@ class IsotonicCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        y_min : optional
-            If not None, set the lowest value of the fit to y_min.
+        * `y_min` [optional]:
+            If not `None`, set the lowest value of the fit to `y_min`.
 
-        y_max : optional
-            If not None, set the highest value of the fit to y_max.
+        * `y_max` [optional]:
+            If not `None`, set the highest value of the fit to `y_max`.
 
-        increasing : boolean or string, default=True
-            If boolean, whether or not to fit the isotonic regression with y
+        * `increasing` [boolean or string, default=`True`]:
+            If boolean, whether or not to fit the isotonic regression with `y`
             increasing or decreasing.
-            The string value "auto" determines whether y should increase or
+            The string value `"auto"` determines whether `y` should increase or
             decrease based on the Spearman correlation estimate's sign.
 
-        interpolation : boolean, default=False
+        * `interpolation` [boolean, default=`False`]:
             Whether linear interpolation is enabled or not.
         """
         self.y_min = y_min
@@ -407,27 +410,27 @@ class IsotonicCalibrator(BaseEstimator, RegressorMixin):
         self.interpolation = interpolation
 
     def fit(self, T, y, sample_weight=None):
-        """Fit using T, y as training data.
+        """Fit using `T`, `y` as training data.
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
+        * `T` [array-like, shape=(n_samples,)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Training target.
 
-        sample_weight : array-like, shape=(n_samples,), optional
+        * `sample_weight` [array-like, shape=(n_samples,), optional]:
             Weights. If set to None, all weights will be set to 1.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
 
         Notes
         -----
-        T is stored for future use, as `transform` needs T to interpolate
+        `T` is stored for future use, as `predict` needs T to interpolate
         new input data.
         """
         # Check input
@@ -465,13 +468,13 @@ class IsotonicCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
-            Data to transform.
+        * `T` [array-like, shape=(n_samples,)]:
+            Data to calibrate.
 
         Returns
         -------
-        T_ : array, shape=(n_samples,)
-            Transformed data.
+        * `Tt` [array, shape=(n_samples,)]:
+            Calibrated data.
         """
         if self.interpolation:
             T = column_or_1d(T)
@@ -490,22 +493,22 @@ class SigmoidCalibrator(BaseEstimator, RegressorMixin):
     """
 
     def fit(self, T, y, sample_weight=None):
-        """Fit using T, y as training data.
+        """Fit using `T`, `y` as training data.
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
+        * `T` [array-like, shape=(n_samples,)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Training target.
 
-        sample_weight : array-like, shape=(n_samples,), optional
-            Weights. If set to None, all weights will be set to 1.
+        * `sample_weight` [array-like, shape=(n_samples,), optional]:
+            Weights. If set to `None`, all weights will be set to 1.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         # Check input
@@ -522,12 +525,12 @@ class SigmoidCalibrator(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        T : array-like, shape=(n_samples,)
-            Data to transform.
+        * `T` [array-like, shape=(n_samples,)]:
+            Data to calibrate.
 
         Returns
         -------
-        T_ : array, shape=(n_samples,)
-            Transformed data.
+        * `Tt` [array, shape=(n_samples,)]:
+            Calibrated data.
         """
         return self.calibrator_.predict(T)

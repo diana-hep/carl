@@ -23,7 +23,7 @@ class ParameterStacker(BaseEstimator, TransformerMixin):
 
         Parameters
         ----------
-        params : list of Theano shared variables
+        * `params` [list of Theano shared variables]:
             The parameters.
         """
         self.params = params
@@ -33,12 +33,12 @@ class ParameterStacker(BaseEstimator, TransformerMixin):
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        Xt : array, shape=(n_samples, n_features+len(params))
+        * `Xt` [array, shape=(n_samples, n_features+len(params))]:
             The horizontal concatenation of X with the current parameter
             values, added as new columns.
         """
@@ -63,10 +63,10 @@ class _ParameterizedEstimator(BaseEstimator):
 
         Parameters
         ----------
-        base_estimator : BaseEstimator
+        * `base_estimator` [`BaseEstimator`]:
             The estimator to parameterize.
 
-        params : list of Theano shared variables
+        * `params` [list of Theano shared variables]:
             The parameters.
         """
         self.base_estimator = base_estimator
@@ -84,15 +84,15 @@ class _ParameterizedEstimator(BaseEstimator):
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features+len(params))
+        * `X` [array-like, shape=(n_samples, n_features+len(params))]:
             The samples, concatenated with the corresponding parameter values.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             The output values.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         self.stacker_ = ParameterStacker(self.params)
@@ -104,20 +104,20 @@ class _ParameterizedEstimator(BaseEstimator):
         return self
 
     def predict(self, X):
-        """Predict the targets for X.
+        """Predict the targets for `X`.
 
         Parameter values are automatically appended from the current state
-        of the parameters if those are not provided with X.
+        of the parameters if those are not provided with `X`.
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features) or
-                        shape=(n_samples, n_features+len(params))
+        * `X` [array-like, shape=(n_samples, n_features) or
+                           shape=(n_samples, n_features+len(params))]:
             The samples.
 
         Returns
         -------
-        y : array, shape=(n_samples,)
+        * `y` [array, shape=(n_samples,)]:
             The predicted output values.
         """
         return self.estimator_.predict(self._validate_X(X))
@@ -138,13 +138,13 @@ class ParameterizedClassifier(_ParameterizedEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features) or
-                        shape=(n_samples, n_features+len(params))
+        * `X` [array-like, shape=(n_samples, n_features) or
+                           shape=(n_samples, n_features+len(params))]:
             The samples.
 
         Returns
         -------
-        probas : array, shape=(n_samples, n_classes)
+        * `probas` [array, shape=(n_samples, n_classes)]:
             The predicted probabilities.
         """
         return self.estimator_.predict_proba(self._validate_X(X))
@@ -170,29 +170,29 @@ def make_parameterized_classification(p0, p1, n_samples, params,
 
     Parameters
     ----------
-    p0 : DistributionMixin
+    * `p0` [`DistributionMixin`]:
         The distribution to draw samples from class 0.
 
-    p1 : DistributionMixin
+    * `p1` [DistributionMixin`]:
         The distribution to draw sample from class 1.
 
-    n_samples : int
+    * `n_samples` [integer]:
         The total number of samples to generate.
 
-    params : list of pairs (theano shared variables, list of values)
+    * `params` [list of pairs (theano shared variables, list of values)]:
         The list of parameters along with the corresponding values to generate
         samples for.
 
-    random_state : int or RandomState object
+    * `random_state` [integer or RandomState object]:
         The random seed.
 
     Returns
     -------
-    X : array, shape=(n_samples, n_features+len(params))
+    * `X` [array, shape=(n_samples, n_features+len(params))]:
         The generated training data, as sample features and concatenated
         parameter values.
 
-    y : array, shape=(n_samples,)
+    * `y` [array, shape=(n_samples,)]:
         The labels.
     """
     rng = check_random_state(random_state)
