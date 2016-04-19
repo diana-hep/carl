@@ -1,10 +1,62 @@
 """
-Carl is a Likelihood-free inference toolbox for Python.
+Carl is a toolbox for likelihood-free inference in Python.
 
-Supported features include:
+[![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl)
+[![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master) 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
+
+Supported features currently include:
+
+- `carl.data`: Generators for toy data;
 - `carl.distributions`: Composition and fitting of distributions;
 - `carl.ratios`: Likelihood-free density ratio estimation;
 - `carl.learning`: Machine learning tools.
+
+Carl is still in its early stage of development.
+[Join us on GitHub](https://github.com/diana-hep/carl) if you feel like
+contributing!
+
+## Installation
+
+The following dependencies are required:
+
+- Numpy >= 1.11
+- Scipy >= 0.17
+- Scikit-Learn >= 0.18-dev
+- Theano >= 0.8
+
+Once satisfied, Carl can be installed from source using the following
+commands:
+
+    #!bash
+    git clone https://github.com/diana-hep/carl.git
+    cd carl
+    python setup.py install
+
+## Documentation
+
+Illustrative examples serving as documentation can be found under the
+[`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
+directory.
+
+Extended details regarding likelihood-free inference with calibrated
+classifiers can also be found in the companion paper:
+
+> "Approximating Likelihood Ratios with Calibrated Discriminative Classifiers",
+> Kyle Cranmer, Juan Pavez, Gilles Louppe.
+> [http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)
+
+## Citation
+
+    @misc{carl,
+      author       = {Gilles Louppe and Kyle Cranmer and Juan Pavez},
+      title        = {carl: a likelihood-free inference toolbox},
+      month        = mar,
+      year         = 2016,
+      doi          = {10.5281/zenodo.47798},
+      url          = {http://dx.doi.org/10.5281/zenodo.47798}
+    }
+
 """
 
 # Carl is free software; you can redistribute it and/or modify it

@@ -20,6 +20,7 @@ script:
 
 after_success:
     - coveralls
+    - '[ "${TRAVIS_PULL_REQUEST}" != "false" ] || source travis-deploy.sh'
 
 notifications:
     email: false
