@@ -6,7 +6,7 @@
     <title>carl API documentation</title>
     <meta name="description" content="Carl is a toolbox for likelihood-free inference in Python.
 
-[![Build Status](https://travis-ci.org/d..." />
+This project is still in its early stage..." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -995,19 +995,12 @@ table {
   <header id="section-intro">
   <h1 class="title"><span class="name">carl</span> module</h1>
   <p>Carl is a toolbox for likelihood-free inference in Python.</p>
+<p>This project is still in its early stage of development.
+<a href="https://github.com/diana-hep/carl">Join us on GitHub</a> if you feel like
+contributing!</p>
 <p><a href="https://travis-ci.org/diana-hep/carl"><img alt="Build Status" src="https://travis-ci.org/diana-hep/carl.svg" /></a>
 <a href="https://coveralls.io/github/diana-hep/carl?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&amp;service=github" /></a>
 <a href="http://dx.doi.org/10.5281/zenodo.47798"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg" /></a></p>
-<p>Supported features currently include:</p>
-<ul>
-<li><a href="data/index.html"><code>carl.data</code></a>: Generators for toy data;</li>
-<li><a href="distributions/index.html"><code>carl.distributions</code></a>: Composition and fitting of distributions;</li>
-<li><a href="learning/index.html"><code>carl.learning</code></a>: Machine learning tools;</li>
-<li><a href="ratios/index.html"><code>carl.ratios</code></a>: Likelihood-free density ratio estimation.</li>
-</ul>
-<p>Carl is still in its early stage of development.
-<a href="https://github.com/diana-hep/carl">Join us on GitHub</a> if you feel like
-contributing!</p>
 <h2>Documentation</h2>
 <ul>
 <li>
@@ -1016,9 +1009,9 @@ contributing!</p>
   directory.</p>
 </li>
 <li>
-<p>Extended details regarding likelihood-free inference with calibrated classifiers
-  can be found in the companion paper <em>"Approximating Likelihood Ratios with
-  Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
+<p>Extended details regarding likelihood-free inference with calibrated
+  classifiers can be found in the companion paper <em>"Approximating Likelihood
+  Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
   Gilles Louppe.</em>
   <a href="http://arxiv.org/abs/1506.02169">http://arxiv.org/abs/1506.02169</a></p>
 </li>
@@ -1033,8 +1026,7 @@ contributing!</p>
 </ul>
 <p>Once satisfied, Carl can be installed from source using the following
 commands:</p>
-<pre><code>#!bash
-git clone https://github.com/diana-hep/carl.git
+<pre><code>git clone https://github.com/diana-hep/carl.git
 cd carl
 python setup.py install
 </code></pre>
@@ -1054,20 +1046,13 @@ python setup.py install
     <pre><code>"""
 Carl is a toolbox for likelihood-free inference in Python.
 
+This project is still in its early stage of development.
+[Join us on GitHub](https://github.com/diana-hep/carl) if you feel like
+contributing!
+
 [![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl)
 [![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
-
-Supported features currently include:
-
-- `carl.data`: Generators for toy data;
-- `carl.distributions`: Composition and fitting of distributions;
-- `carl.learning`: Machine learning tools;
-- `carl.ratios`: Likelihood-free density ratio estimation.
-
-Carl is still in its early stage of development.
-[Join us on GitHub](https://github.com/diana-hep/carl) if you feel like
-contributing!
 
 
 ## Documentation
@@ -1076,9 +1061,9 @@ contributing!
   [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
   directory.
 
-* Extended details regarding likelihood-free inference with calibrated classifiers
-  can be found in the companion paper _"Approximating Likelihood Ratios with
-  Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
+* Extended details regarding likelihood-free inference with calibrated
+  classifiers can be found in the companion paper _"Approximating Likelihood
+  Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
   Gilles Louppe._
   [http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)
 
@@ -1095,7 +1080,6 @@ The following dependencies are required:
 Once satisfied, Carl can be installed from source using the following
 commands:
 
-    #!bash
     git clone https://github.com/diana-hep/carl.git
     cd carl
     python setup.py install
