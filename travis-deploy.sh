@@ -5,10 +5,10 @@ cd ~
 pip install pdoc
 
 pdoc --html --html-dir ./doc carl
-git clone -b master "https://${GH_TOKEN}@github.com/diana-hep/carl.github.io.git" deploy > /dev/null 2>&1 || exit 1
+git clone -b gh-pages "https://${GH_TOKEN}@github.com/diana-hep/carl.git" deploy > /dev/null 2>&1 || exit 1
 
 echo "Copying built files"
-cp -r ./doc/* deploy
+cp -r ./doc/carl/* deploy
 
 # Move into deployment directory
 cd deploy
@@ -23,7 +23,7 @@ git add -A
 git commit --allow-empty -m "Deploying site" || exit 1
 
 # Push to branch
-git push origin master > /dev/null 2>&1 || exit 1
+git push origin gh-pages > /dev/null 2>&1 || exit 1
 
 echo "Pushed deployment successfully"
 exit 0

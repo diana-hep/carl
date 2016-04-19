@@ -20,7 +20,7 @@ script:
 
 after_success:
     - coveralls
-    - '[ "${TRAVIS_PULL_REQUEST}" != "false" ] || source travis-deploy.sh'
+    - '([ "${TRAVIS_PULL_REQUEST}" == "false" ] && [ "${PYTHON_VERSION}" == "3.4" ] && source travis-deploy.sh) || echo pass'
 
 notifications:
     email: false
