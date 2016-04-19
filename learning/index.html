@@ -1,0 +1,3078 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>carl.learning API documentation</title>
+    <meta name="description" content="Machine learning algorithms and utils, complementary to Scikit-Learn." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#carl.learning.as_classifier">as_classifier</a></li>
+    <li class="mono"><a href="#carl.learning.check_cv">check_cv</a></li>
+    <li class="mono"><a href="#carl.learning.make_parameterized_classification">make_parameterized_classification</a></li>
+  </ul>
+
+    </li>
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#carl.learning.CalibratedClassifierCV">CalibratedClassifierCV</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.__init__">__init__</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.fit">fit</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.get_params">get_params</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.predict">predict</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.predict_proba">predict_proba</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.score">score</a></li>
+    <li class="mono"><a href="#carl.learning.CalibratedClassifierCV.set_params">set_params</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#carl.learning.ParameterStacker">ParameterStacker</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#carl.learning.ParameterStacker.__init__">__init__</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterStacker.fit_transform">fit_transform</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterStacker.get_params">get_params</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterStacker.set_params">set_params</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterStacker.transform">transform</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#carl.learning.ParameterizedClassifier">ParameterizedClassifier</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.__init__">__init__</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.fit">fit</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.get_params">get_params</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.predict">predict</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.predict_proba">predict_proba</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.score">score</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedClassifier.set_params">set_params</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#carl.learning.ParameterizedRegressor">ParameterizedRegressor</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.__init__">__init__</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.fit">fit</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.get_params">get_params</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.predict">predict</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.score">score</a></li>
+    <li class="mono"><a href="#carl.learning.ParameterizedRegressor.set_params">set_params</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">carl.learning</span> module</h1>
+  <p>Machine learning algorithms and utils, complementary to Scikit-Learn.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning" class="source">
+    <pre><code>"""
+Machine learning algorithms and utils, complementary to Scikit-Learn.
+"""
+
+# Carl is free software; you can redistribute it and/or modify it
+# under the terms of the Revised BSD License; see LICENSE file for
+# more details.
+
+from .base import as_classifier
+from .base import check_cv
+from .calibration import CalibratedClassifierCV
+from .parameterize import make_parameterized_classification
+from .parameterize import ParameterStacker
+from .parameterize import ParameterizedClassifier
+from .parameterize import ParameterizedRegressor
+
+
+__all__ = ("as_classifier",
+           "check_cv",
+           "CalibratedClassifierCV",
+           "make_parameterized_classification",
+           "ParameterStacker",
+           "ParameterizedClassifier",
+           "ParameterizedRegressor",)
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+
+    <h2 class="section-title" id="header-functions">Functions</h2>
+      
+  <div class="item">
+    <div class="name def" id="carl.learning.as_classifier">
+    <p>def <span class="ident">as_classifier</span>(</p><p>regressor)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Wrap a Scikit-Learn regressor into a binary classifier.</p>
+<p>This function can be used to solve a binary classification problem as a
+regression problem, where output labels {0,1} are treated as real values.
+The wrapped regressor exhibits the classifier API, with the corresponding
+<code>predict</code>, <code>predict_proba</code> and <code>score</code> methods.</p>
+<h2>Parameters</h2>
+<p>regressor : RegressorMixin
+    The regressor object.</p>
+<h2>Returns</h2>
+<p>clf : ClassifierMixin.
+    The wrapped regressor, but with a classifier API.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.as_classifier', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.as_classifier" class="source">
+    <pre><code>def as_classifier(regressor):
+    """Wrap a Scikit-Learn regressor into a binary classifier.
+
+    This function can be used to solve a binary classification problem as a
+    regression problem, where output labels {0,1} are treated as real values.
+    The wrapped regressor exhibits the classifier API, with the corresponding
+    `predict`, `predict_proba` and `score` methods.
+
+    Parameters
+    ----------
+    regressor : RegressorMixin
+        The regressor object.
+
+    Returns
+    -------
+    clf : ClassifierMixin.
+        The wrapped regressor, but with a classifier API.
+    """
+    class Wrapper(BaseEstimator, ClassifierMixin):
+        def __init__(self, base_estimator):
+            self.base_estimator = base_estimator
+
+        def fit(self, X, y, **kwargs):
+            # Check inputs
+            X, y = check_X_y(X, y)
+
+            # Convert y
+            label_encoder = LabelEncoder()
+            y = label_encoder.fit_transform(y).astype(np.float)
+
+            if len(label_encoder.classes_) != 2:
+                raise ValueError
+
+            self.classes_ = label_encoder.classes_
+
+            # Fit regressor
+            self.regressor_ = clone(self.base_estimator).fit(X, y, **kwargs)
+
+            return self
+
+        def predict(self, X):
+            return np.where(self.predict_proba(X)[:, 1] >= 0.5,
+                            self.classes_[1],
+                            self.classes_[0])
+
+        def predict_proba(self, X):
+            X = check_array(X)
+
+            df = self.regressor_.predict(X)
+            df = np.clip(df, 0., 1.)
+            probas = np.zeros((len(X), 2))
+            probas[:, 0] = 1. - df
+            probas[:, 1] = df
+
+            return probas
+
+        def score(self, X, y):
+            return self.regressor_.score(X, y)
+
+    return Wrapper(regressor)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="carl.learning.check_cv">
+    <p>def <span class="ident">check_cv</span>(</p><p>cv=3, X=None, y=None, classifier=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Input checker utility for building a cross-validator.</p>
+<h2>Parameters</h2>
+<p>cv : int, cross-validation generator or an iterable, optional, default=3
+    Determines the cross-validation splitting strategy.
+    Possible inputs for cv are:
+      - integer, to specify the number of folds.
+      - An object to be used as a cross-validation generator.
+      - An iterable yielding train/test splits.
+    For integer/None inputs, if classifier is True and <code>y</code> is either
+    binary or multiclass, :class:<code>StratifiedKFold</code> used. In all other
+    cases, :class:<code>KFold</code> is used.</p>
+<p>y : array-like, optional
+    The target variable for supervised learning problems.</p>
+<p>classifier : boolean, default=False
+    Whether the task is a classification task, in which case
+    stratified KFold will be used.</p>
+<h2>Returns</h2>
+<p>checked_cv : a cross-validator instance.
+    The return value is a cross-validator which generates the train/test
+    splits via the <code>split</code> method.</p>
+<h2>Note</h2>
+<p>This method is backported from scikit-learn 0.18.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.check_cv', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.check_cv" class="source">
+    <pre><code>def check_cv(cv=3, X=None, y=None, classifier=False):
+    """Input checker utility for building a cross-validator.
+
+    Parameters
+    ----------
+    cv : int, cross-validation generator or an iterable, optional, default=3
+        Determines the cross-validation splitting strategy.
+        Possible inputs for cv are:
+          - integer, to specify the number of folds.
+          - An object to be used as a cross-validation generator.
+          - An iterable yielding train/test splits.
+        For integer/None inputs, if classifier is True and ``y`` is either
+        binary or multiclass, :class:`StratifiedKFold` used. In all other
+        cases, :class:`KFold` is used.
+
+    y : array-like, optional
+        The target variable for supervised learning problems.
+
+    classifier : boolean, default=False
+        Whether the task is a classification task, in which case
+        stratified KFold will be used.
+
+    Returns
+    -------
+    checked_cv : a cross-validator instance.
+        The return value is a cross-validator which generates the train/test
+        splits via the ``split`` method.
+
+    Note
+    ----
+    This method is backported from scikit-learn 0.18.
+    """
+    if int(sklearn.__version__[2:4]) >= 18:
+        from sklearn.model_selection import check_cv as sklearn_check_cv
+        return sklearn_check_cv(cv, y=y, classifier=classifier)
+
+    else:
+        from sklearn.cross_validation import check_cv as sklearn_check_cv
+        return _CVIterableWrapper(sklearn_check_cv(cv, X=X, y=y,
+                                                   classifier=classifier))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="carl.learning.make_parameterized_classification">
+    <p>def <span class="ident">make_parameterized_classification</span>(</p><p>p0, p1, n_samples, params, random_state=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Generate parameterized classification data.</p>
+<p>This function generates parameterized classification data, by enumerating
+all possible combinations of provided parameter values and producing
+samples in equal number from <code>p0</code> and <code>p1</code>.</p>
+<h2>Parameters</h2>
+<p>p0 : DistributionMixin
+    The distribution to draw samples from class 0.</p>
+<p>p1 : DistributionMixin
+    The distribution to draw sample from class 1.</p>
+<p>n_samples : int
+    The total number of samples to generate.</p>
+<p>params : list of pairs (theano shared variables, list of values)
+    The list of parameters along with the corresponding values to generate
+    samples for.</p>
+<p>random_state : int or RandomState object
+    The random seed.</p>
+<h2>Returns</h2>
+<p>X : array, shape=(n_samples, n_features+len(params))
+    The generated training data, as sample features and concatenated
+    parameter values.</p>
+<p>y : array, shape=(n_samples,)
+    The labels.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.make_parameterized_classification', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.make_parameterized_classification" class="source">
+    <pre><code>def make_parameterized_classification(p0, p1, n_samples, params,
+                                      random_state=None):
+    """Generate parameterized classification data.
+
+    This function generates parameterized classification data, by enumerating
+    all possible combinations of provided parameter values and producing
+    samples in equal number from `p0` and `p1`.
+
+    Parameters
+    ----------
+    p0 : DistributionMixin
+        The distribution to draw samples from class 0.
+
+    p1 : DistributionMixin
+        The distribution to draw sample from class 1.
+
+    n_samples : int
+        The total number of samples to generate.
+
+    params : list of pairs (theano shared variables, list of values)
+        The list of parameters along with the corresponding values to generate
+        samples for.
+
+    random_state : int or RandomState object
+        The random seed.
+
+    Returns
+    -------
+    X : array, shape=(n_samples, n_features+len(params))
+        The generated training data, as sample features and concatenated
+        parameter values.
+
+    y : array, shape=(n_samples,)
+        The labels.
+    """
+    rng = check_random_state(random_state)
+
+    if not isinstance(params[0], tuple):
+        X0 = p0.rvs(n_samples // 2, random_state=rng)
+        X1 = p1.rvs(n_samples - (n_samples // 2), random_state=rng)
+        X = ParameterStacker(params).transform(np.vstack((X0, X1)))
+        y = np.zeros(n_samples)
+        y[len(X0):] = 1
+
+        return X, y
+
+    elif isinstance(params[0], tuple):
+        combinations = list(product(*[values for _, values in params]))
+
+        all_X = []
+        all_y = []
+
+        for c in combinations:
+            for i, v in enumerate(c):
+                params[i][0].set_value(v)
+
+            X, y = make_parameterized_classification(
+                p0, p1,
+                n_samples // len(combinations),
+                [p for p, _ in params],
+                random_state=rng)
+
+            all_X.append(X)
+            all_y.append(y)
+
+        X = np.vstack(all_X)
+        y = np.concatenate(all_y)
+
+        return X, y
+
+    else:
+        raise ValueError
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="carl.learning.CalibratedClassifierCV" class="name">class <span class="ident">CalibratedClassifierCV</span></p>
+      
+  
+    <div class="desc"><p>Probability calibration.</p>
+<p>With this class, the base_estimator is fit on the train set of the
+cross-validation generator and the test set is used for calibration. The
+probabilities for each of the folds are then averaged for prediction.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV" class="source">
+    <pre><code>class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
+    """Probability calibration.
+
+    With this class, the base_estimator is fit on the train set of the
+    cross-validation generator and the test set is used for calibration. The
+    probabilities for each of the folds are then averaged for prediction.
+    """
+
+    def __init__(self, base_estimator, method="histogram", cv=1):
+        """Constructor.
+
+        Parameters
+        ----------
+        base_estimator : ClassifierMixin
+            The classifier whose output ecision function needs to be calibrated
+            to offer more accurate predict_proba outputs. If cv=prefit, the
+            classifier must have been fit already on data.
+
+        method : string
+            The method to use for calibration. Supported methods include
+            "histogram", "kde", "isotonic", "interpolated-isotonic" and
+            "sigmoid".
+
+        cv : integer, cross-validation generator, iterable or "prefit",
+            Determines the cross-validation splitting strategy.
+            Possible inputs for cv are:
+            - integer, to specify the number of folds.
+            - An object to be used as a cross-validation generator.
+            - An iterable yielding train/test splits.
+            If "prefit" is passed, it is assumed that base_estimator has been
+            fitted already and all data is used for calibration. If cv=1,
+            the training data is used for both training and calibration.
+        """
+        self.base_estimator = base_estimator
+        self.method = method
+        self.cv = cv
+
+    def fit(self, X, y):
+        """Fit the calibrated model.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features)
+            Training data.
+
+        y : array-like, shape=(n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : object
+            `self`.
+        """
+        # Check inputs
+        X, y = check_X_y(X, y)
+
+        # Convert y
+        label_encoder = LabelEncoder()
+        y = label_encoder.fit_transform(y).astype(np.float)
+
+        if len(label_encoder.classes_) != 2:
+            raise ValueError
+
+        self.classes_ = label_encoder.classes_
+
+        # Calibrator
+        if self.method == "histogram":
+            base_calibrator = HistogramCalibrator()
+        elif self.method == "kde":
+            base_calibrator = KernelDensityCalibrator()
+        elif self.method == "isotonic":
+            base_calibrator = IsotonicCalibrator()
+        elif self.method == "interpolated-isotonic":
+            base_calibrator = IsotonicCalibrator(interpolation=True)
+        elif self.method == "sigmoid":
+            base_calibrator = SigmoidCalibrator()
+        else:
+            base_calibrator = self.method
+
+        # Fit
+        if self.cv == "prefit" or self.cv == 1:
+            # Classifier
+            if self.cv == 1:
+                clf = clone(self.base_estimator)
+
+                if isinstance(clf, RegressorMixin):
+                    clf = as_classifier(clf)
+
+                clf.fit(X, y)
+
+            else:
+                clf = self.base_estimator
+
+            self.classifiers_ = [clf]
+
+            # Calibrator
+            calibrator = clone(base_calibrator)
+            T = clf.predict_proba(X)[:, 1]
+            calibrator.fit(T, y)
+            self.calibrators_ = [calibrator]
+
+        else:
+            self.classifiers_ = []
+            self.calibrators_ = []
+
+            cv = check_cv(self.cv, X=X, y=y, classifier=True)
+
+            for train, calibrate in cv.split(X, y):
+                # Classifier
+                clf = clone(self.base_estimator)
+
+                if isinstance(clf, RegressorMixin):
+                    clf = as_classifier(clf)
+
+                clf.fit(X[train], y[train])
+                self.classifiers_.append(clf)
+
+                # Calibrator
+                calibrator = clone(base_calibrator)
+                T = clf.predict_proba(X[calibrate])[:, 1]
+                calibrator.fit(T, y[calibrate])
+                self.calibrators_.append(calibrator)
+
+        return self
+
+    def predict(self, X):
+        """Predict the targets for X.
+
+        Can be different from the predictions of the uncalibrated classifier.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features)
+            The samples.
+
+        Returns
+        -------
+        y : array, shape=(n_samples,)
+            The predicted class.
+        """
+        return np.where(self.predict_proba(X)[:, 1] >= 0.5,
+                        self.classes_[1],
+                        self.classes_[0])
+
+    def predict_proba(self, X):
+        """Predict the posterior probabilities of classification for X.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features)
+            The samples.
+
+        Returns
+        -------
+        probas : array, shape=(n_samples, n_classes)
+            The predicted probabilities.
+        """
+        p = np.zeros((len(X), 2))
+
+        for clf, calibrator in zip(self.classifiers_, self.calibrators_):
+            p[:, 1] += calibrator.predict(clf.predict_proba(X)[:, 1])
+
+        p[:, 1] /= len(self.classifiers_)
+        p[:, 0] = 1. - p[:, 1]
+
+        return p
+
+    def _clone(self):
+        estimator = clone(self, original=True)
+
+        if self.cv == "prefit":
+            estimator.base_estimator = self.base_estimator
+
+        return estimator
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#carl.learning.CalibratedClassifierCV">CalibratedClassifierCV</a></li>
+          <li>sklearn.base.BaseEstimator</li>
+          <li>sklearn.base.ClassifierMixin</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, method=&#39;histogram&#39;, cv=1)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<p>base_estimator : ClassifierMixin
+    The classifier whose output ecision function needs to be calibrated
+    to offer more accurate predict_proba outputs. If cv=prefit, the
+    classifier must have been fit already on data.</p>
+<p>method : string
+    The method to use for calibration. Supported methods include
+    "histogram", "kde", "isotonic", "interpolated-isotonic" and
+    "sigmoid".</p>
+<p>cv : integer, cross-validation generator, iterable or "prefit",
+    Determines the cross-validation splitting strategy.
+    Possible inputs for cv are:
+    - integer, to specify the number of folds.
+    - An object to be used as a cross-validation generator.
+    - An iterable yielding train/test splits.
+    If "prefit" is passed, it is assumed that base_estimator has been
+    fitted already and all data is used for calibration. If cv=1,
+    the training data is used for both training and calibration.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.__init__" class="source">
+    <pre><code>def __init__(self, base_estimator, method="histogram", cv=1):
+    """Constructor.
+    Parameters
+    ----------
+    base_estimator : ClassifierMixin
+        The classifier whose output ecision function needs to be calibrated
+        to offer more accurate predict_proba outputs. If cv=prefit, the
+        classifier must have been fit already on data.
+    method : string
+        The method to use for calibration. Supported methods include
+        "histogram", "kde", "isotonic", "interpolated-isotonic" and
+        "sigmoid".
+    cv : integer, cross-validation generator, iterable or "prefit",
+        Determines the cross-validation splitting strategy.
+        Possible inputs for cv are:
+        - integer, to specify the number of folds.
+        - An object to be used as a cross-validation generator.
+        - An iterable yielding train/test splits.
+        If "prefit" is passed, it is assumed that base_estimator has been
+        fitted already and all data is used for calibration. If cv=1,
+        the training data is used for both training and calibration.
+    """
+    self.base_estimator = base_estimator
+    self.method = method
+    self.cv = cv
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.fit">
+    <p>def <span class="ident">fit</span>(</p><p>self, X, y)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Fit the calibrated model.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features)
+    Training data.</p>
+<p>y : array-like, shape=(n_samples,)
+    Target values.</p>
+<h2>Returns</h2>
+<p>self : object
+    <code>self</code>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.fit', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.fit" class="source">
+    <pre><code>def fit(self, X, y):
+    """Fit the calibrated model.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features)
+        Training data.
+    y : array-like, shape=(n_samples,)
+        Target values.
+    Returns
+    -------
+    self : object
+        `self`.
+    """
+    # Check inputs
+    X, y = check_X_y(X, y)
+    # Convert y
+    label_encoder = LabelEncoder()
+    y = label_encoder.fit_transform(y).astype(np.float)
+    if len(label_encoder.classes_) != 2:
+        raise ValueError
+    self.classes_ = label_encoder.classes_
+    # Calibrator
+    if self.method == "histogram":
+        base_calibrator = HistogramCalibrator()
+    elif self.method == "kde":
+        base_calibrator = KernelDensityCalibrator()
+    elif self.method == "isotonic":
+        base_calibrator = IsotonicCalibrator()
+    elif self.method == "interpolated-isotonic":
+        base_calibrator = IsotonicCalibrator(interpolation=True)
+    elif self.method == "sigmoid":
+        base_calibrator = SigmoidCalibrator()
+    else:
+        base_calibrator = self.method
+    # Fit
+    if self.cv == "prefit" or self.cv == 1:
+        # Classifier
+        if self.cv == 1:
+            clf = clone(self.base_estimator)
+            if isinstance(clf, RegressorMixin):
+                clf = as_classifier(clf)
+            clf.fit(X, y)
+        else:
+            clf = self.base_estimator
+        self.classifiers_ = [clf]
+        # Calibrator
+        calibrator = clone(base_calibrator)
+        T = clf.predict_proba(X)[:, 1]
+        calibrator.fit(T, y)
+        self.calibrators_ = [calibrator]
+    else:
+        self.classifiers_ = []
+        self.calibrators_ = []
+        cv = check_cv(self.cv, X=X, y=y, classifier=True)
+        for train, calibrate in cv.split(X, y):
+            # Classifier
+            clf = clone(self.base_estimator)
+            if isinstance(clf, RegressorMixin):
+                clf = as_classifier(clf)
+            clf.fit(X[train], y[train])
+            self.classifiers_.append(clf)
+            # Calibrator
+            calibrator = clone(base_calibrator)
+            T = clf.predict_proba(X[calibrate])[:, 1]
+            calibrator.fit(T, y[calibrate])
+            self.calibrators_.append(calibrator)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.get_params">
+    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.get_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.get_params" class="source">
+    <pre><code>def get_params(self, deep=True):
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.predict">
+    <p>def <span class="ident">predict</span>(</p><p>self, X)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the targets for X.</p>
+<p>Can be different from the predictions of the uncalibrated classifier.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features)
+    The samples.</p>
+<h2>Returns</h2>
+<p>y : array, shape=(n_samples,)
+    The predicted class.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.predict', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.predict" class="source">
+    <pre><code>def predict(self, X):
+    """Predict the targets for X.
+    Can be different from the predictions of the uncalibrated classifier.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features)
+        The samples.
+    Returns
+    -------
+    y : array, shape=(n_samples,)
+        The predicted class.
+    """
+    return np.where(self.predict_proba(X)[:, 1] >= 0.5,
+                    self.classes_[1],
+                    self.classes_[0])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.predict_proba">
+    <p>def <span class="ident">predict_proba</span>(</p><p>self, X)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the posterior probabilities of classification for X.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features)
+    The samples.</p>
+<h2>Returns</h2>
+<p>probas : array, shape=(n_samples, n_classes)
+    The predicted probabilities.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.predict_proba', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.predict_proba" class="source">
+    <pre><code>def predict_proba(self, X):
+    """Predict the posterior probabilities of classification for X.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features)
+        The samples.
+    Returns
+    -------
+    probas : array, shape=(n_samples, n_classes)
+        The predicted probabilities.
+    """
+    p = np.zeros((len(X), 2))
+    for clf, calibrator in zip(self.classifiers_, self.calibrators_):
+        p[:, 1] += calibrator.predict(clf.predict_proba(X)[:, 1])
+    p[:, 1] /= len(self.classifiers_)
+    p[:, 0] = 1. - p[:, 1]
+    return p
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.score">
+    <p>def <span class="ident">score</span>(</p><p>self, X, y, sample_weight=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the mean accuracy on the given test data and labels.</p>
+<p>In multi-label classification, this is the subset accuracy
+which is a harsh metric since you require for each sample that
+each label set be correctly predicted.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape = (n_samples, n_features)
+    Test samples.</p>
+<p>y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+    True labels for X.</p>
+<p>sample_weight : array-like, shape = [n_samples], optional
+    Sample weights.</p>
+<h2>Returns</h2>
+<p>score : float
+    Mean accuracy of self.predict(X) wrt. y.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.score', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.score" class="source">
+    <pre><code>def score(self, X, y, sample_weight=None):
+    """Returns the mean accuracy on the given test data and labels.
+    In multi-label classification, this is the subset accuracy
+    which is a harsh metric since you require for each sample that
+    each label set be correctly predicted.
+    Parameters
+    ----------
+    X : array-like, shape = (n_samples, n_features)
+        Test samples.
+    y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+        True labels for X.
+    sample_weight : array-like, shape = [n_samples], optional
+        Sample weights.
+    Returns
+    -------
+    score : float
+        Mean accuracy of self.predict(X) wrt. y.
+    """
+    from .metrics import accuracy_score
+    return accuracy_score(y, self.predict(X), sample_weight=sample_weight)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.CalibratedClassifierCV.set_params">
+    <p>def <span class="ident">set_params</span>(</p><p>self, **params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.set_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.CalibratedClassifierCV.set_params" class="source">
+    <pre><code>def set_params(self, **params):
+    """Set the parameters of this estimator.
+    The method works on simple estimators as well as on nested objects
+    (such as pipelines). The former have parameters of the form
+    ``<component>__<parameter>`` so that it's possible to update each
+    component of a nested object.
+    Returns
+    -------
+    self
+    """
+    if not params:
+        # Simple optimisation to gain speed (inspect is slow)
+        return self
+    valid_params = self.get_params(deep=True)
+    for key, value in six.iteritems(params):
+        split = key.split('__', 1)
+        if len(split) > 1:
+            # nested objects case
+            name, sub_name = split
+            if name not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (name, self))
+            sub_object = valid_params[name]
+            sub_object.set_params(**{sub_name: value})
+        else:
+            # simple objects case
+            if key not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (key, self.__class__.__name__))
+            setattr(self, key, value)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.base_estimator" class="name">var <span class="ident">base_estimator</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.cv" class="name">var <span class="ident">cv</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.method" class="name">var <span class="ident">method</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="carl.learning.ParameterStacker" class="name">class <span class="ident">ParameterStacker</span></p>
+      
+  
+    <div class="desc"><p>Stack current parameter values as additional features.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker" class="source">
+    <pre><code>class ParameterStacker(BaseEstimator, TransformerMixin):
+    """Stack current parameter values as additional features."""
+
+    def __init__(self, params):
+        """Constructor.
+
+        Parameters
+        ----------
+        params : list of Theano shared variables
+            The parameters.
+        """
+        self.params = params
+
+    def transform(self, X, y=None):
+        """Stack current parameter values as additional features.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features)
+            The samples.
+
+        Returns
+        -------
+        Xt : array, shape=(n_samples, n_features+len(params))
+            The horizontal concatenation of X with the current parameter
+            values, added as new columns.
+        """
+        Xp = np.empty((len(X), len(self.params)))
+
+        for i, p in enumerate(self.params):
+            Xp[:, i] = p.eval()
+
+        return np.hstack((X, Xp))
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#carl.learning.ParameterStacker">ParameterStacker</a></li>
+          <li>sklearn.base.BaseEstimator</li>
+          <li>sklearn.base.TransformerMixin</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterStacker.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<p>params : list of Theano shared variables
+    The parameters.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker.__init__" class="source">
+    <pre><code>def __init__(self, params):
+    """Constructor.
+    Parameters
+    ----------
+    params : list of Theano shared variables
+        The parameters.
+    """
+    self.params = params
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterStacker.fit_transform">
+    <p>def <span class="ident">fit_transform</span>(</p><p>self, X, y=None, **fit_params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to X and y with optional parameters fit_params
+and returns a transformed version of X.</p>
+<h2>Parameters</h2>
+<p>X : numpy array of shape [n_samples, n_features]
+    Training set.</p>
+<p>y : numpy array of shape [n_samples]
+    Target values.</p>
+<h2>Returns</h2>
+<p>X_new : numpy array of shape [n_samples, n_features_new]
+    Transformed array.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.fit_transform', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker.fit_transform" class="source">
+    <pre><code>def fit_transform(self, X, y=None, **fit_params):
+    """Fit to data, then transform it.
+    Fits transformer to X and y with optional parameters fit_params
+    and returns a transformed version of X.
+    Parameters
+    ----------
+    X : numpy array of shape [n_samples, n_features]
+        Training set.
+    y : numpy array of shape [n_samples]
+        Target values.
+    Returns
+    -------
+    X_new : numpy array of shape [n_samples, n_features_new]
+        Transformed array.
+    """
+    # non-optimized default implementation; override when a better
+    # method is possible for a given clustering algorithm
+    if y is None:
+        # fit method of arity 1 (unsupervised transformation)
+        return self.fit(X, **fit_params).transform(X)
+    else:
+        # fit method of arity 2 (supervised transformation)
+        return self.fit(X, y, **fit_params).transform(X)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterStacker.get_params">
+    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.get_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker.get_params" class="source">
+    <pre><code>def get_params(self, deep=True):
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterStacker.set_params">
+    <p>def <span class="ident">set_params</span>(</p><p>self, **params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.set_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker.set_params" class="source">
+    <pre><code>def set_params(self, **params):
+    """Set the parameters of this estimator.
+    The method works on simple estimators as well as on nested objects
+    (such as pipelines). The former have parameters of the form
+    ``<component>__<parameter>`` so that it's possible to update each
+    component of a nested object.
+    Returns
+    -------
+    self
+    """
+    if not params:
+        # Simple optimisation to gain speed (inspect is slow)
+        return self
+    valid_params = self.get_params(deep=True)
+    for key, value in six.iteritems(params):
+        split = key.split('__', 1)
+        if len(split) > 1:
+            # nested objects case
+            name, sub_name = split
+            if name not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (name, self))
+            sub_object = valid_params[name]
+            sub_object.set_params(**{sub_name: value})
+        else:
+            # simple objects case
+            if key not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (key, self.__class__.__name__))
+            setattr(self, key, value)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterStacker.transform">
+    <p>def <span class="ident">transform</span>(</p><p>self, X, y=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Stack current parameter values as additional features.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features)
+    The samples.</p>
+<h2>Returns</h2>
+<p>Xt : array, shape=(n_samples, n_features+len(params))
+    The horizontal concatenation of X with the current parameter
+    values, added as new columns.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.transform', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterStacker.transform" class="source">
+    <pre><code>def transform(self, X, y=None):
+    """Stack current parameter values as additional features.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features)
+        The samples.
+    Returns
+    -------
+    Xt : array, shape=(n_samples, n_features+len(params))
+        The horizontal concatenation of X with the current parameter
+        values, added as new columns.
+    """
+    Xp = np.empty((len(X), len(self.params)))
+    for i, p in enumerate(self.params):
+        Xp[:, i] = p.eval()
+    return np.hstack((X, Xp))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="carl.learning.ParameterStacker.params" class="name">var <span class="ident">params</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="carl.learning.ParameterizedClassifier" class="name">class <span class="ident">ParameterizedClassifier</span></p>
+      
+  
+    <div class="desc"><p>Parameterize a Scikit-Learn classifier.</p>
+<p>This wrapper can be used to learn a parameterized classification problem,
+where parameter values are automatically added as additional features.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier" class="source">
+    <pre><code>class ParameterizedClassifier(_ParameterizedEstimator, ClassifierMixin):
+    """Parameterize a Scikit-Learn classifier.
+
+    This wrapper can be used to learn a parameterized classification problem,
+    where parameter values are automatically added as additional features.
+    """
+
+    def predict_proba(self, X):
+        """Predict the posterior probabilities of classification for X.
+
+        Parameter values are automatically appended from the current state
+        of the parameters if those are not provided with X.
+
+        Parameters
+        ----------
+        X : array-like, shape=(n_samples, n_features) or
+                        shape=(n_samples, n_features+len(params))
+            The samples.
+
+        Returns
+        -------
+        probas : array, shape=(n_samples, n_classes)
+            The predicted probabilities.
+        """
+        return self.estimator_.predict_proba(self._validate_X(X))
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#carl.learning.ParameterizedClassifier">ParameterizedClassifier</a></li>
+          <li>carl.learning.parameterize._ParameterizedEstimator</li>
+          <li>sklearn.base.BaseEstimator</li>
+          <li>sklearn.base.ClassifierMixin</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<p>base_estimator : BaseEstimator
+    The estimator to parameterize.</p>
+<p>params : list of Theano shared variables
+    The parameters.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.__init__" class="source">
+    <pre><code>def __init__(self, base_estimator, params):
+    """Constructor.
+    Parameters
+    ----------
+    base_estimator : BaseEstimator
+        The estimator to parameterize.
+    params : list of Theano shared variables
+        The parameters.
+    """
+    self.base_estimator = base_estimator
+    self.params = params
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.fit">
+    <p>def <span class="ident">fit</span>(</p><p>self, X, y)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Fit estimator on parameterized data.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features+len(params))
+    The samples, concatenated with the corresponding parameter values.</p>
+<p>y : array-like, shape=(n_samples,)
+    The output values.</p>
+<h2>Returns</h2>
+<p>self : object
+    <code>self</code>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.fit', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.fit" class="source">
+    <pre><code>def fit(self, X, y):
+    """Fit estimator on parameterized data.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features+len(params))
+        The samples, concatenated with the corresponding parameter values.
+    y : array-like, shape=(n_samples,)
+        The output values.
+    Returns
+    -------
+    self : object
+        `self`.
+    """
+    self.stacker_ = ParameterStacker(self.params)
+    # XXX: this assumes that X is extended with parameters
+    self.n_features_ = X.shape[1] - len(self.params)
+    self.estimator_ = clone(self.base_estimator).fit(X, y)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.get_params">
+    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.get_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.get_params" class="source">
+    <pre><code>def get_params(self, deep=True):
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.predict">
+    <p>def <span class="ident">predict</span>(</p><p>self, X)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the targets for X.</p>
+<p>Parameter values are automatically appended from the current state
+of the parameters if those are not provided with X.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features) or
+                shape=(n_samples, n_features+len(params))
+    The samples.</p>
+<h2>Returns</h2>
+<p>y : array, shape=(n_samples,)
+    The predicted output values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.predict', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.predict" class="source">
+    <pre><code>def predict(self, X):
+    """Predict the targets for X.
+    Parameter values are automatically appended from the current state
+    of the parameters if those are not provided with X.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features) or
+                    shape=(n_samples, n_features+len(params))
+        The samples.
+    Returns
+    -------
+    y : array, shape=(n_samples,)
+        The predicted output values.
+    """
+    return self.estimator_.predict(self._validate_X(X))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.predict_proba">
+    <p>def <span class="ident">predict_proba</span>(</p><p>self, X)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the posterior probabilities of classification for X.</p>
+<p>Parameter values are automatically appended from the current state
+of the parameters if those are not provided with X.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features) or
+                shape=(n_samples, n_features+len(params))
+    The samples.</p>
+<h2>Returns</h2>
+<p>probas : array, shape=(n_samples, n_classes)
+    The predicted probabilities.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.predict_proba', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.predict_proba" class="source">
+    <pre><code>def predict_proba(self, X):
+    """Predict the posterior probabilities of classification for X.
+    Parameter values are automatically appended from the current state
+    of the parameters if those are not provided with X.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features) or
+                    shape=(n_samples, n_features+len(params))
+        The samples.
+    Returns
+    -------
+    probas : array, shape=(n_samples, n_classes)
+        The predicted probabilities.
+    """
+    return self.estimator_.predict_proba(self._validate_X(X))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.score">
+    <p>def <span class="ident">score</span>(</p><p>self, X, y, sample_weight=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the mean accuracy on the given test data and labels.</p>
+<p>In multi-label classification, this is the subset accuracy
+which is a harsh metric since you require for each sample that
+each label set be correctly predicted.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape = (n_samples, n_features)
+    Test samples.</p>
+<p>y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+    True labels for X.</p>
+<p>sample_weight : array-like, shape = [n_samples], optional
+    Sample weights.</p>
+<h2>Returns</h2>
+<p>score : float
+    Mean accuracy of self.predict(X) wrt. y.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.score', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.score" class="source">
+    <pre><code>def score(self, X, y, sample_weight=None):
+    """Returns the mean accuracy on the given test data and labels.
+    In multi-label classification, this is the subset accuracy
+    which is a harsh metric since you require for each sample that
+    each label set be correctly predicted.
+    Parameters
+    ----------
+    X : array-like, shape = (n_samples, n_features)
+        Test samples.
+    y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+        True labels for X.
+    sample_weight : array-like, shape = [n_samples], optional
+        Sample weights.
+    Returns
+    -------
+    score : float
+        Mean accuracy of self.predict(X) wrt. y.
+    """
+    from .metrics import accuracy_score
+    return accuracy_score(y, self.predict(X), sample_weight=sample_weight)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedClassifier.set_params">
+    <p>def <span class="ident">set_params</span>(</p><p>self, **params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.set_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedClassifier.set_params" class="source">
+    <pre><code>def set_params(self, **params):
+    """Set the parameters of this estimator.
+    The method works on simple estimators as well as on nested objects
+    (such as pipelines). The former have parameters of the form
+    ``<component>__<parameter>`` so that it's possible to update each
+    component of a nested object.
+    Returns
+    -------
+    self
+    """
+    if not params:
+        # Simple optimisation to gain speed (inspect is slow)
+        return self
+    valid_params = self.get_params(deep=True)
+    for key, value in six.iteritems(params):
+        split = key.split('__', 1)
+        if len(split) > 1:
+            # nested objects case
+            name, sub_name = split
+            if name not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (name, self))
+            sub_object = valid_params[name]
+            sub_object.set_params(**{sub_name: value})
+        else:
+            # simple objects case
+            if key not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (key, self.__class__.__name__))
+            setattr(self, key, value)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="carl.learning.ParameterizedRegressor" class="name">class <span class="ident">ParameterizedRegressor</span></p>
+      
+  
+    <div class="desc"><p>Parameterize a Scikit-Learn regressor.</p>
+<p>This wrapper can be used to learn a parameterized regression problem,
+where parameter values are automatically added as additional features.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor" class="source">
+    <pre><code>class ParameterizedRegressor(_ParameterizedEstimator, RegressorMixin):
+    """Parameterize a Scikit-Learn regressor.
+
+    This wrapper can be used to learn a parameterized regression problem,
+    where parameter values are automatically added as additional features.
+    """
+
+    pass
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#carl.learning.ParameterizedRegressor">ParameterizedRegressor</a></li>
+          <li>carl.learning.parameterize._ParameterizedEstimator</li>
+          <li>sklearn.base.BaseEstimator</li>
+          <li>sklearn.base.RegressorMixin</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<p>base_estimator : BaseEstimator
+    The estimator to parameterize.</p>
+<p>params : list of Theano shared variables
+    The parameters.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.__init__" class="source">
+    <pre><code>def __init__(self, base_estimator, params):
+    """Constructor.
+    Parameters
+    ----------
+    base_estimator : BaseEstimator
+        The estimator to parameterize.
+    params : list of Theano shared variables
+        The parameters.
+    """
+    self.base_estimator = base_estimator
+    self.params = params
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.fit">
+    <p>def <span class="ident">fit</span>(</p><p>self, X, y)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Fit estimator on parameterized data.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features+len(params))
+    The samples, concatenated with the corresponding parameter values.</p>
+<p>y : array-like, shape=(n_samples,)
+    The output values.</p>
+<h2>Returns</h2>
+<p>self : object
+    <code>self</code>.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.fit', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.fit" class="source">
+    <pre><code>def fit(self, X, y):
+    """Fit estimator on parameterized data.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features+len(params))
+        The samples, concatenated with the corresponding parameter values.
+    y : array-like, shape=(n_samples,)
+        The output values.
+    Returns
+    -------
+    self : object
+        `self`.
+    """
+    self.stacker_ = ParameterStacker(self.params)
+    # XXX: this assumes that X is extended with parameters
+    self.n_features_ = X.shape[1] - len(self.params)
+    self.estimator_ = clone(self.base_estimator).fit(X, y)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.get_params">
+    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.get_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.get_params" class="source">
+    <pre><code>def get_params(self, deep=True):
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.predict">
+    <p>def <span class="ident">predict</span>(</p><p>self, X)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the targets for X.</p>
+<p>Parameter values are automatically appended from the current state
+of the parameters if those are not provided with X.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape=(n_samples, n_features) or
+                shape=(n_samples, n_features+len(params))
+    The samples.</p>
+<h2>Returns</h2>
+<p>y : array, shape=(n_samples,)
+    The predicted output values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.predict', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.predict" class="source">
+    <pre><code>def predict(self, X):
+    """Predict the targets for X.
+    Parameter values are automatically appended from the current state
+    of the parameters if those are not provided with X.
+    Parameters
+    ----------
+    X : array-like, shape=(n_samples, n_features) or
+                    shape=(n_samples, n_features+len(params))
+        The samples.
+    Returns
+    -------
+    y : array, shape=(n_samples,)
+        The predicted output values.
+    """
+    return self.estimator_.predict(self._validate_X(X))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.score">
+    <p>def <span class="ident">score</span>(</p><p>self, X, y, sample_weight=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the coefficient of determination R^2 of the prediction.</p>
+<p>The coefficient R^2 is defined as (1 - u/v), where u is the regression
+sum of squares ((y_true - y_pred) <strong> 2).sum() and v is the residual
+sum of squares ((y_true - y_true.mean()) </strong> 2).sum().
+Best possible score is 1.0 and it can be negative (because the
+model can be arbitrarily worse). A constant model that always
+predicts the expected value of y, disregarding the input features,
+would get a R^2 score of 0.0.</p>
+<h2>Parameters</h2>
+<p>X : array-like, shape = (n_samples, n_features)
+    Test samples.</p>
+<p>y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+    True values for X.</p>
+<p>sample_weight : array-like, shape = [n_samples], optional
+    Sample weights.</p>
+<h2>Returns</h2>
+<p>score : float
+    R^2 of self.predict(X) wrt. y.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.score', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.score" class="source">
+    <pre><code>def score(self, X, y, sample_weight=None):
+    """Returns the coefficient of determination R^2 of the prediction.
+    The coefficient R^2 is defined as (1 - u/v), where u is the regression
+    sum of squares ((y_true - y_pred) ** 2).sum() and v is the residual
+    sum of squares ((y_true - y_true.mean()) ** 2).sum().
+    Best possible score is 1.0 and it can be negative (because the
+    model can be arbitrarily worse). A constant model that always
+    predicts the expected value of y, disregarding the input features,
+    would get a R^2 score of 0.0.
+    Parameters
+    ----------
+    X : array-like, shape = (n_samples, n_features)
+        Test samples.
+    y : array-like, shape = (n_samples) or (n_samples, n_outputs)
+        True values for X.
+    sample_weight : array-like, shape = [n_samples], optional
+        Sample weights.
+    Returns
+    -------
+    score : float
+        R^2 of self.predict(X) wrt. y.
+    """
+    from .metrics import r2_score
+    return r2_score(y, self.predict(X), sample_weight=sample_weight,
+                    multioutput='variance_weighted')
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.learning.ParameterizedRegressor.set_params">
+    <p>def <span class="ident">set_params</span>(</p><p>self, **params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.set_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.learning.ParameterizedRegressor.set_params" class="source">
+    <pre><code>def set_params(self, **params):
+    """Set the parameters of this estimator.
+    The method works on simple estimators as well as on nested objects
+    (such as pipelines). The former have parameters of the form
+    ``<component>__<parameter>`` so that it's possible to update each
+    component of a nested object.
+    Returns
+    -------
+    self
+    """
+    if not params:
+        # Simple optimisation to gain speed (inspect is slow)
+        return self
+    valid_params = self.get_params(deep=True)
+    for key, value in six.iteritems(params):
+        split = key.split('__', 1)
+        if len(split) > 1:
+            # nested objects case
+            name, sub_name = split
+            if name not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (name, self))
+            sub_object = valid_params[name]
+            sub_object.set_params(**{sub_name: value})
+        else:
+            # simple objects case
+            if key not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (key, self.__class__.__name__))
+            setattr(self, key, value)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>
