@@ -1415,7 +1415,7 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
       
   
     <div class="desc"><p>Probability calibration.</p>
-<p>With this class, the base_estimator is fit on the train set of the
+<p>With this class, the <code>base_estimator</code> is fit on the train set of the
 cross-validation generator and the test set is used for calibration. The
 probabilities for each of the folds are then averaged for prediction.</p></div>
   <div class="source_cont">
@@ -1424,7 +1424,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
     <pre><code>class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     """Probability calibration.
 
-    With this class, the base_estimator is fit on the train set of the
+    With this class, the `base_estimator` is fit on the train set of the
     cross-validation generator and the test set is used for calibration. The
     probabilities for each of the folds are then averaged for prediction.
     """
