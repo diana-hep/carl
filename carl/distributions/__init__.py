@@ -1,13 +1,14 @@
-# Carl is free software; you can redistribute it and/or modify it
-# under the terms of the Revised BSD License; see LICENSE file for
-# more details.
-
-"""Distributions.
+"""
+Tools for composing and fitting statistical distributions.
 
 Note: This module is only meant to be a minimally working prototype for
       composing and fitting distributions. It is not meant to be a full fledged
       replacement of RooFit or alikes.
 """
+
+# Carl is free software; you can redistribute it and/or modify it
+# under the terms of the Revised BSD License; see LICENSE file for
+# more details.
 
 from .base import DistributionMixin
 from .base import TheanoDistribution
