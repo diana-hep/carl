@@ -1105,11 +1105,15 @@ regression problem, where output labels {0,1} are treated as real values.
 The wrapped regressor exhibits the classifier API, with the corresponding
 <code>predict</code>, <code>predict_proba</code> and <code>score</code> methods.</p>
 <h2>Parameters</h2>
-<p>regressor : RegressorMixin
-    The regressor object.</p>
+<ul>
+<li><code>regressor</code> [<code>RegressorMixin</code>]:
+    The regressor object.</li>
+</ul>
 <h2>Returns</h2>
-<p>clf : ClassifierMixin.
-    The wrapped regressor, but with a classifier API.</p></div>
+<ul>
+<li><code>clf</code> [<code>ClassifierMixin</code>]:
+    The wrapped regressor, but with a classifier API.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.as_classifier', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.as_classifier" class="source">
@@ -1123,12 +1127,12 @@ The wrapped regressor exhibits the classifier API, with the corresponding
 
     Parameters
     ----------
-    regressor : RegressorMixin
+    * `regressor` [`RegressorMixin`]:
         The regressor object.
 
     Returns
     -------
-    clf : ClassifierMixin.
+    * `clf` [`ClassifierMixin`]:
         The wrapped regressor, but with a classifier API.
     """
     class Wrapper(BaseEstimator, ClassifierMixin):
@@ -1190,24 +1194,36 @@ The wrapped regressor exhibits the classifier API, with the corresponding
   
     <div class="desc"><p>Input checker utility for building a cross-validator.</p>
 <h2>Parameters</h2>
-<p>cv : int, cross-validation generator or an iterable, optional, default=3
+<ul>
+<li>
+<p><code>cv</code> [integer, cross-validation generator or an iterable, default=<code>3</code>]:
     Determines the cross-validation splitting strategy.
-    Possible inputs for cv are:
-      - integer, to specify the number of folds.
-      - An object to be used as a cross-validation generator.
-      - An iterable yielding train/test splits.
-    For integer/None inputs, if classifier is True and <code>y</code> is either
-    binary or multiclass, :class:<code>StratifiedKFold</code> used. In all other
-    cases, :class:<code>KFold</code> is used.</p>
-<p>y : array-like, optional
+    Possible inputs for cv are:</p>
+<ul>
+<li>integer, to specify the number of folds.</li>
+<li>An object to be used as a cross-validation generator.</li>
+<li>An iterable yielding train/test splits.</li>
+</ul>
+<p>For integer/None inputs, if classifier is True and <code>y</code> is either
+binary or multiclass, <code>StratifiedKFold</code> used. In all other
+cases, <code>KFold</code> is used.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, optional]:
     The target variable for supervised learning problems.</p>
-<p>classifier : boolean, default=False
+</li>
+<li>
+<p><code>classifier</code> [boolean, default=<code>False</code>]:
     Whether the task is a classification task, in which case
-    stratified KFold will be used.</p>
+    stratified <code>KFold</code> will be used.</p>
+</li>
+</ul>
 <h2>Returns</h2>
-<p>checked_cv : a cross-validator instance.
+<ul>
+<li><code>checked_cv</code> [a cross-validator instance]:
     The return value is a cross-validator which generates the train/test
-    splits via the <code>split</code> method.</p>
+    splits via the <code>split</code> method.</li>
+</ul>
 <h2>Note</h2>
 <p>This method is backported from scikit-learn 0.18.</p></div>
   <div class="source_cont">
@@ -1218,28 +1234,30 @@ The wrapped regressor exhibits the classifier API, with the corresponding
 
     Parameters
     ----------
-    cv : int, cross-validation generator or an iterable, optional, default=3
+    * `cv` [integer, cross-validation generator or an iterable, default=`3`]:
         Determines the cross-validation splitting strategy.
         Possible inputs for cv are:
+
           - integer, to specify the number of folds.
           - An object to be used as a cross-validation generator.
           - An iterable yielding train/test splits.
-        For integer/None inputs, if classifier is True and ``y`` is either
-        binary or multiclass, :class:`StratifiedKFold` used. In all other
-        cases, :class:`KFold` is used.
 
-    y : array-like, optional
+        For integer/None inputs, if classifier is True and `y` is either
+        binary or multiclass, `StratifiedKFold` used. In all other
+        cases, `KFold` is used.
+
+    * `y` [array-like, optional]:
         The target variable for supervised learning problems.
 
-    classifier : boolean, default=False
+    * `classifier` [boolean, default=`False`]:
         Whether the task is a classification task, in which case
-        stratified KFold will be used.
+        stratified `KFold` will be used.
 
     Returns
     -------
-    checked_cv : a cross-validator instance.
+    * `checked_cv` [a cross-validator instance]:
         The return value is a cross-validator which generates the train/test
-        splits via the ``split`` method.
+        splits via the `split` method.
 
     Note
     ----
@@ -1273,23 +1291,41 @@ The wrapped regressor exhibits the classifier API, with the corresponding
 all possible combinations of provided parameter values and producing
 samples in equal number from <code>p0</code> and <code>p1</code>.</p>
 <h2>Parameters</h2>
-<p>p0 : DistributionMixin
+<ul>
+<li>
+<p><code>p0</code> [<code>DistributionMixin</code>]:
     The distribution to draw samples from class 0.</p>
-<p>p1 : DistributionMixin
+</li>
+<li>
+<p><code>p1</code> [DistributionMixin`]:
     The distribution to draw sample from class 1.</p>
-<p>n_samples : int
+</li>
+<li>
+<p><code>n_samples</code> [integer]:
     The total number of samples to generate.</p>
-<p>params : list of pairs (theano shared variables, list of values)
+</li>
+<li>
+<p><code>params</code> [list of pairs (theano shared variables, list of values)]:
     The list of parameters along with the corresponding values to generate
     samples for.</p>
-<p>random_state : int or RandomState object
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
     The random seed.</p>
+</li>
+</ul>
 <h2>Returns</h2>
-<p>X : array, shape=(n_samples, n_features+len(params))
+<ul>
+<li>
+<p><code>X</code> [array, shape=(n_samples, n_features+len(params))]:
     The generated training data, as sample features and concatenated
     parameter values.</p>
-<p>y : array, shape=(n_samples,)
-    The labels.</p></div>
+</li>
+<li>
+<p><code>y</code> [array, shape=(n_samples,)]:
+    The labels.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.make_parameterized_classification', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.make_parameterized_classification" class="source">
@@ -1303,29 +1339,29 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
 
     Parameters
     ----------
-    p0 : DistributionMixin
+    * `p0` [`DistributionMixin`]:
         The distribution to draw samples from class 0.
 
-    p1 : DistributionMixin
+    * `p1` [DistributionMixin`]:
         The distribution to draw sample from class 1.
 
-    n_samples : int
+    * `n_samples` [integer]:
         The total number of samples to generate.
 
-    params : list of pairs (theano shared variables, list of values)
+    * `params` [list of pairs (theano shared variables, list of values)]:
         The list of parameters along with the corresponding values to generate
         samples for.
 
-    random_state : int or RandomState object
+    * `random_state` [integer or RandomState object]:
         The random seed.
 
     Returns
     -------
-    X : array, shape=(n_samples, n_features+len(params))
+    * `X` [array, shape=(n_samples, n_features+len(params))]:
         The generated training data, as sample features and concatenated
         parameter values.
 
-    y : array, shape=(n_samples,)
+    * `y` [array, shape=(n_samples,)]:
         The labels.
     """
     rng = check_random_state(random_state)
@@ -1398,24 +1434,26 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
         Parameters
         ----------
-        base_estimator : ClassifierMixin
-            The classifier whose output ecision function needs to be calibrated
-            to offer more accurate predict_proba outputs. If cv=prefit, the
-            classifier must have been fit already on data.
+        * `base_estimator` [`ClassifierMixin`]:
+            The classifier whose output decision function needs to be
+            calibrated to offer more accurate predict_proba outputs. If
+            `cv=prefit`, the classifier must have been fit already on data.
 
-        method : string
+        * `method` [string]:
             The method to use for calibration. Supported methods include
-            "histogram", "kde", "isotonic", "interpolated-isotonic" and
-            "sigmoid".
+            `"histogram"`, `"kde"`, `"isotonic"`, `"interpolated-isotonic"` and
+            `"sigmoid"`.
 
-        cv : integer, cross-validation generator, iterable or "prefit",
+        * `cv` [integer, cross-validation generator, iterable or `"prefit"`]:
             Determines the cross-validation splitting strategy.
             Possible inputs for cv are:
+
             - integer, to specify the number of folds.
             - An object to be used as a cross-validation generator.
             - An iterable yielding train/test splits.
-            If "prefit" is passed, it is assumed that base_estimator has been
-            fitted already and all data is used for calibration. If cv=1,
+
+            If `"prefit"` is passed, it is assumed that base_estimator has been
+            fitted already and all data is used for calibration. If `cv=1`,
             the training data is used for both training and calibration.
         """
         self.base_estimator = base_estimator
@@ -1427,15 +1465,15 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             Training data.
 
-        y : array-like, shape=(n_samples,)
+        * `y` [array-like, shape=(n_samples,)]:
             Target values.
 
         Returns
         -------
-        self : object
+        * `self` [object]:
             `self`.
         """
         # Check inputs
@@ -1511,18 +1549,18 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
         return self
 
     def predict(self, X):
-        """Predict the targets for X.
+        """Predict the targets for `X`.
 
         Can be different from the predictions of the uncalibrated classifier.
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        y : array, shape=(n_samples,)
+        * `y` [array, shape=(n_samples,)]:
             The predicted class.
         """
         return np.where(self.predict_proba(X)[:, 1] >= 0.5,
@@ -1530,16 +1568,16 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
                         self.classes_[0])
 
     def predict_proba(self, X):
-        """Predict the posterior probabilities of classification for X.
+        """Predict the posterior probabilities of classification for `X`.
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        probas : array, shape=(n_samples, n_classes)
+        * `probas` [array, shape=(n_samples, n_classes)]:
             The predicted probabilities.
         """
         p = np.zeros((len(X), 2))
@@ -1584,23 +1622,33 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
   
     <div class="desc"><p>Constructor.</p>
 <h2>Parameters</h2>
-<p>base_estimator : ClassifierMixin
-    The classifier whose output ecision function needs to be calibrated
-    to offer more accurate predict_proba outputs. If cv=prefit, the
-    classifier must have been fit already on data.</p>
-<p>method : string
+<ul>
+<li>
+<p><code>base_estimator</code> [<code>ClassifierMixin</code>]:
+    The classifier whose output decision function needs to be
+    calibrated to offer more accurate predict_proba outputs. If
+    <code>cv=prefit</code>, the classifier must have been fit already on data.</p>
+</li>
+<li>
+<p><code>method</code> [string]:
     The method to use for calibration. Supported methods include
-    "histogram", "kde", "isotonic", "interpolated-isotonic" and
-    "sigmoid".</p>
-<p>cv : integer, cross-validation generator, iterable or "prefit",
+    <code>"histogram"</code>, <code>"kde"</code>, <code>"isotonic"</code>, <code>"interpolated-isotonic"</code> and
+    <code>"sigmoid"</code>.</p>
+</li>
+<li>
+<p><code>cv</code> [integer, cross-validation generator, iterable or <code>"prefit"</code>]:
     Determines the cross-validation splitting strategy.
-    Possible inputs for cv are:
-    - integer, to specify the number of folds.
-    - An object to be used as a cross-validation generator.
-    - An iterable yielding train/test splits.
-    If "prefit" is passed, it is assumed that base_estimator has been
-    fitted already and all data is used for calibration. If cv=1,
-    the training data is used for both training and calibration.</p></div>
+    Possible inputs for cv are:</p>
+<ul>
+<li>integer, to specify the number of folds.</li>
+<li>An object to be used as a cross-validation generator.</li>
+<li>An iterable yielding train/test splits.</li>
+</ul>
+<p>If <code>"prefit"</code> is passed, it is assumed that base_estimator has been
+fitted already and all data is used for calibration. If <code>cv=1</code>,
+the training data is used for both training and calibration.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.__init__" class="source">
@@ -1608,22 +1656,22 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
     """Constructor.
     Parameters
     ----------
-    base_estimator : ClassifierMixin
-        The classifier whose output ecision function needs to be calibrated
-        to offer more accurate predict_proba outputs. If cv=prefit, the
-        classifier must have been fit already on data.
-    method : string
+    * `base_estimator` [`ClassifierMixin`]:
+        The classifier whose output decision function needs to be
+        calibrated to offer more accurate predict_proba outputs. If
+        `cv=prefit`, the classifier must have been fit already on data.
+    * `method` [string]:
         The method to use for calibration. Supported methods include
-        "histogram", "kde", "isotonic", "interpolated-isotonic" and
-        "sigmoid".
-    cv : integer, cross-validation generator, iterable or "prefit",
+        `"histogram"`, `"kde"`, `"isotonic"`, `"interpolated-isotonic"` and
+        `"sigmoid"`.
+    * `cv` [integer, cross-validation generator, iterable or `"prefit"`]:
         Determines the cross-validation splitting strategy.
         Possible inputs for cv are:
         - integer, to specify the number of folds.
         - An object to be used as a cross-validation generator.
         - An iterable yielding train/test splits.
-        If "prefit" is passed, it is assumed that base_estimator has been
-        fitted already and all data is used for calibration. If cv=1,
+        If `"prefit"` is passed, it is assumed that base_estimator has been
+        fitted already and all data is used for calibration. If `cv=1`,
         the training data is used for both training and calibration.
     """
     self.base_estimator = base_estimator
@@ -1646,13 +1694,21 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
   
     <div class="desc"><p>Fit the calibrated model.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features)
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
     Training data.</p>
-<p>y : array-like, shape=(n_samples,)
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
     Target values.</p>
+</li>
+</ul>
 <h2>Returns</h2>
-<p>self : object
-    <code>self</code>.</p></div>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.fit" class="source">
@@ -1660,13 +1716,13 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
     """Fit the calibrated model.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features)
+    * `X` [array-like, shape=(n_samples, n_features)]:
         Training data.
-    y : array-like, shape=(n_samples,)
+    * `y` [array-like, shape=(n_samples,)]:
         Target values.
     Returns
     -------
-    self : object
+    * `self` [object]:
         `self`.
     """
     # Check inputs
@@ -1797,27 +1853,31 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
     
   
-    <div class="desc"><p>Predict the targets for X.</p>
+    <div class="desc"><p>Predict the targets for <code>X</code>.</p>
 <p>Can be different from the predictions of the uncalibrated classifier.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features)
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>y : array, shape=(n_samples,)
-    The predicted class.</p></div>
+<ul>
+<li><code>y</code> [array, shape=(n_samples,)]:
+    The predicted class.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.predict" class="source">
     <pre><code>def predict(self, X):
-    """Predict the targets for X.
+    """Predict the targets for `X`.
     Can be different from the predictions of the uncalibrated classifier.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features)
+    * `X` [array-like, shape=(n_samples, n_features)]:
         The samples.
     Returns
     -------
-    y : array, shape=(n_samples,)
+    * `y` [array, shape=(n_samples,)]:
         The predicted class.
     """
     return np.where(self.predict_proba(X)[:, 1] >= 0.5,
@@ -1838,25 +1898,29 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
     
   
-    <div class="desc"><p>Predict the posterior probabilities of classification for X.</p>
+    <div class="desc"><p>Predict the posterior probabilities of classification for <code>X</code>.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features)
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>probas : array, shape=(n_samples, n_classes)
-    The predicted probabilities.</p></div>
+<ul>
+<li><code>probas</code> [array, shape=(n_samples, n_classes)]:
+    The predicted probabilities.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.predict_proba', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.predict_proba" class="source">
     <pre><code>def predict_proba(self, X):
-    """Predict the posterior probabilities of classification for X.
+    """Predict the posterior probabilities of classification for `X`.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features)
+    * `X` [array-like, shape=(n_samples, n_features)]:
         The samples.
     Returns
     -------
-    probas : array, shape=(n_samples, n_classes)
+    * `probas` [array, shape=(n_samples, n_classes)]:
         The predicted probabilities.
     """
     p = np.zeros((len(X), 2))
@@ -2033,7 +2097,7 @@ component of a nested object.</p>
 
         Parameters
         ----------
-        params : list of Theano shared variables
+        * `params` [list of Theano shared variables]:
             The parameters.
         """
         self.params = params
@@ -2043,12 +2107,12 @@ component of a nested object.</p>
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features)
+        * `X` [array-like, shape=(n_samples, n_features)]:
             The samples.
 
         Returns
         -------
-        Xt : array, shape=(n_samples, n_features+len(params))
+        * `Xt` [array, shape=(n_samples, n_features+len(params))]:
             The horizontal concatenation of X with the current parameter
             values, added as new columns.
         """
@@ -2083,8 +2147,10 @@ component of a nested object.</p>
   
     <div class="desc"><p>Constructor.</p>
 <h2>Parameters</h2>
-<p>params : list of Theano shared variables
-    The parameters.</p></div>
+<ul>
+<li><code>params</code> [list of Theano shared variables]:
+    The parameters.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterStacker.__init__" class="source">
@@ -2092,7 +2158,7 @@ component of a nested object.</p>
     """Constructor.
     Parameters
     ----------
-    params : list of Theano shared variables
+    * `params` [list of Theano shared variables]:
         The parameters.
     """
     self.params = params
@@ -2284,12 +2350,16 @@ component of a nested object.</p>
   
     <div class="desc"><p>Stack current parameter values as additional features.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features)
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>Xt : array, shape=(n_samples, n_features+len(params))
+<ul>
+<li><code>Xt</code> [array, shape=(n_samples, n_features+len(params))]:
     The horizontal concatenation of X with the current parameter
-    values, added as new columns.</p></div>
+    values, added as new columns.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterStacker.transform', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterStacker.transform" class="source">
@@ -2297,11 +2367,11 @@ component of a nested object.</p>
     """Stack current parameter values as additional features.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features)
+    * `X` [array-like, shape=(n_samples, n_features)]:
         The samples.
     Returns
     -------
-    Xt : array, shape=(n_samples, n_features+len(params))
+    * `Xt` [array, shape=(n_samples, n_features+len(params))]:
         The horizontal concatenation of X with the current parameter
         values, added as new columns.
     """
@@ -2354,13 +2424,13 @@ where parameter values are automatically added as additional features.</p></div>
 
         Parameters
         ----------
-        X : array-like, shape=(n_samples, n_features) or
-                        shape=(n_samples, n_features+len(params))
+        * `X` [array-like, shape=(n_samples, n_features) or
+                           shape=(n_samples, n_features+len(params))]:
             The samples.
 
         Returns
         -------
-        probas : array, shape=(n_samples, n_classes)
+        * `probas` [array, shape=(n_samples, n_classes)]:
             The predicted probabilities.
         """
         return self.estimator_.predict_proba(self._validate_X(X))
@@ -2390,10 +2460,16 @@ where parameter values are automatically added as additional features.</p></div>
   
     <div class="desc"><p>Constructor.</p>
 <h2>Parameters</h2>
-<p>base_estimator : BaseEstimator
+<ul>
+<li>
+<p><code>base_estimator</code> [<code>BaseEstimator</code>]:
     The estimator to parameterize.</p>
-<p>params : list of Theano shared variables
-    The parameters.</p></div>
+</li>
+<li>
+<p><code>params</code> [list of Theano shared variables]:
+    The parameters.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedClassifier.__init__" class="source">
@@ -2401,9 +2477,9 @@ where parameter values are automatically added as additional features.</p></div>
     """Constructor.
     Parameters
     ----------
-    base_estimator : BaseEstimator
+    * `base_estimator` [`BaseEstimator`]:
         The estimator to parameterize.
-    params : list of Theano shared variables
+    * `params` [list of Theano shared variables]:
         The parameters.
     """
     self.base_estimator = base_estimator
@@ -2425,13 +2501,21 @@ where parameter values are automatically added as additional features.</p></div>
   
     <div class="desc"><p>Fit estimator on parameterized data.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features+len(params))
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features+len(params))]:
     The samples, concatenated with the corresponding parameter values.</p>
-<p>y : array-like, shape=(n_samples,)
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
     The output values.</p>
+</li>
+</ul>
 <h2>Returns</h2>
-<p>self : object
-    <code>self</code>.</p></div>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedClassifier.fit" class="source">
@@ -2439,13 +2523,13 @@ where parameter values are automatically added as additional features.</p></div>
     """Fit estimator on parameterized data.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features+len(params))
+    * `X` [array-like, shape=(n_samples, n_features+len(params))]:
         The samples, concatenated with the corresponding parameter values.
-    y : array-like, shape=(n_samples,)
+    * `y` [array-like, shape=(n_samples,)]:
         The output values.
     Returns
     -------
-    self : object
+    * `self` [object]:
         `self`.
     """
     self.stacker_ = ParameterStacker(self.params)
@@ -2527,31 +2611,35 @@ where parameter values are automatically added as additional features.</p></div>
 
     
   
-    <div class="desc"><p>Predict the targets for X.</p>
+    <div class="desc"><p>Predict the targets for <code>X</code>.</p>
 <p>Parameter values are automatically appended from the current state
-of the parameters if those are not provided with X.</p>
+of the parameters if those are not provided with <code>X</code>.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features) or
-                shape=(n_samples, n_features+len(params))
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features) or
+                   shape=(n_samples, n_features+len(params))]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>y : array, shape=(n_samples,)
-    The predicted output values.</p></div>
+<ul>
+<li><code>y</code> [array, shape=(n_samples,)]:
+    The predicted output values.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedClassifier.predict" class="source">
     <pre><code>def predict(self, X):
-    """Predict the targets for X.
+    """Predict the targets for `X`.
     Parameter values are automatically appended from the current state
-    of the parameters if those are not provided with X.
+    of the parameters if those are not provided with `X`.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features) or
-                    shape=(n_samples, n_features+len(params))
+    * `X` [array-like, shape=(n_samples, n_features) or
+                       shape=(n_samples, n_features+len(params))]:
         The samples.
     Returns
     -------
-    y : array, shape=(n_samples,)
+    * `y` [array, shape=(n_samples,)]:
         The predicted output values.
     """
     return self.estimator_.predict(self._validate_X(X))
@@ -2574,12 +2662,16 @@ of the parameters if those are not provided with X.</p>
 <p>Parameter values are automatically appended from the current state
 of the parameters if those are not provided with X.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features) or
-                shape=(n_samples, n_features+len(params))
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features) or
+                   shape=(n_samples, n_features+len(params))]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>probas : array, shape=(n_samples, n_classes)
-    The predicted probabilities.</p></div>
+<ul>
+<li><code>probas</code> [array, shape=(n_samples, n_classes)]:
+    The predicted probabilities.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedClassifier.predict_proba', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedClassifier.predict_proba" class="source">
@@ -2589,12 +2681,12 @@ of the parameters if those are not provided with X.</p>
     of the parameters if those are not provided with X.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features) or
-                    shape=(n_samples, n_features+len(params))
+    * `X` [array-like, shape=(n_samples, n_features) or
+                       shape=(n_samples, n_features+len(params))]:
         The samples.
     Returns
     -------
-    probas : array, shape=(n_samples, n_classes)
+    * `probas` [array, shape=(n_samples, n_classes)]:
         The predicted probabilities.
     """
     return self.estimator_.predict_proba(self._validate_X(X))
@@ -2763,10 +2855,16 @@ where parameter values are automatically added as additional features.</p></div>
   
     <div class="desc"><p>Constructor.</p>
 <h2>Parameters</h2>
-<p>base_estimator : BaseEstimator
+<ul>
+<li>
+<p><code>base_estimator</code> [<code>BaseEstimator</code>]:
     The estimator to parameterize.</p>
-<p>params : list of Theano shared variables
-    The parameters.</p></div>
+</li>
+<li>
+<p><code>params</code> [list of Theano shared variables]:
+    The parameters.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedRegressor.__init__" class="source">
@@ -2774,9 +2872,9 @@ where parameter values are automatically added as additional features.</p></div>
     """Constructor.
     Parameters
     ----------
-    base_estimator : BaseEstimator
+    * `base_estimator` [`BaseEstimator`]:
         The estimator to parameterize.
-    params : list of Theano shared variables
+    * `params` [list of Theano shared variables]:
         The parameters.
     """
     self.base_estimator = base_estimator
@@ -2798,13 +2896,21 @@ where parameter values are automatically added as additional features.</p></div>
   
     <div class="desc"><p>Fit estimator on parameterized data.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features+len(params))
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features+len(params))]:
     The samples, concatenated with the corresponding parameter values.</p>
-<p>y : array-like, shape=(n_samples,)
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
     The output values.</p>
+</li>
+</ul>
 <h2>Returns</h2>
-<p>self : object
-    <code>self</code>.</p></div>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedRegressor.fit" class="source">
@@ -2812,13 +2918,13 @@ where parameter values are automatically added as additional features.</p></div>
     """Fit estimator on parameterized data.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features+len(params))
+    * `X` [array-like, shape=(n_samples, n_features+len(params))]:
         The samples, concatenated with the corresponding parameter values.
-    y : array-like, shape=(n_samples,)
+    * `y` [array-like, shape=(n_samples,)]:
         The output values.
     Returns
     -------
-    self : object
+    * `self` [object]:
         `self`.
     """
     self.stacker_ = ParameterStacker(self.params)
@@ -2900,31 +3006,35 @@ where parameter values are automatically added as additional features.</p></div>
 
     
   
-    <div class="desc"><p>Predict the targets for X.</p>
+    <div class="desc"><p>Predict the targets for <code>X</code>.</p>
 <p>Parameter values are automatically appended from the current state
-of the parameters if those are not provided with X.</p>
+of the parameters if those are not provided with <code>X</code>.</p>
 <h2>Parameters</h2>
-<p>X : array-like, shape=(n_samples, n_features) or
-                shape=(n_samples, n_features+len(params))
-    The samples.</p>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features) or
+                   shape=(n_samples, n_features+len(params))]:
+    The samples.</li>
+</ul>
 <h2>Returns</h2>
-<p>y : array, shape=(n_samples,)
-    The predicted output values.</p></div>
+<ul>
+<li><code>y</code> [array, shape=(n_samples,)]:
+    The predicted output values.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.ParameterizedRegressor.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.ParameterizedRegressor.predict" class="source">
     <pre><code>def predict(self, X):
-    """Predict the targets for X.
+    """Predict the targets for `X`.
     Parameter values are automatically appended from the current state
-    of the parameters if those are not provided with X.
+    of the parameters if those are not provided with `X`.
     Parameters
     ----------
-    X : array-like, shape=(n_samples, n_features) or
-                    shape=(n_samples, n_features+len(params))
+    * `X` [array-like, shape=(n_samples, n_features) or
+                       shape=(n_samples, n_features+len(params))]:
         The samples.
     Returns
     -------
-    y : array, shape=(n_samples,)
+    * `y` [array, shape=(n_samples,)]:
         The predicted output values.
     """
     return self.estimator_.predict(self._validate_X(X))
