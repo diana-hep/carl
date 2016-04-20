@@ -1414,6 +1414,53 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
   
             
   <div class="item">
+    <div class="name def" id="carl.ratios.ClassifierRatio.nllr">
+    <p>def <span class="ident">nllr</span>(</p><p>self, X, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative log-likelihood ratio.</p>
+<p>This method is a shortcut for <code>-ratio.predict(X, log=True).sum()</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nllr</code> [float]:
+    The negative log-likelihood ratio.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.nllr', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.ClassifierRatio.nllr" class="source">
+    <pre><code>def nllr(self, X, **kwargs):
+    """Negative log-likelihood ratio.
+    This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nllr` [float]:
+        The negative log-likelihood ratio.
+    """
+    ratios = self.predict(X, log=True, **kwargs)
+    mask = np.isfinite(ratios)
+    if mask.sum() < len(ratios):
+        warnings.warn("r(X) contains non-finite values.")
+    return -np.sum(ratios[mask])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
     <div class="name def" id="carl.ratios.ClassifierRatio.predict">
     <p>def <span class="ident">predict</span>(</p><p>self, X, log=False, **kwargs)</p>
     </div>
@@ -1976,6 +2023,53 @@ distributions, using <code>fit(numerator=p0, denominator=p1, n_samples=N)</code>
   
             
   <div class="item">
+    <div class="name def" id="carl.ratios.DecomposedRatio.nllr">
+    <p>def <span class="ident">nllr</span>(</p><p>self, X, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative log-likelihood ratio.</p>
+<p>This method is a shortcut for <code>-ratio.predict(X, log=True).sum()</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nllr</code> [float]:
+    The negative log-likelihood ratio.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio.nllr', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.DecomposedRatio.nllr" class="source">
+    <pre><code>def nllr(self, X, **kwargs):
+    """Negative log-likelihood ratio.
+    This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nllr` [float]:
+        The negative log-likelihood ratio.
+    """
+    ratios = self.predict(X, log=True, **kwargs)
+    mask = np.isfinite(ratios)
+    if mask.sum() < len(ratios):
+        warnings.warn("r(X) contains non-finite values.")
+    return -np.sum(ratios[mask])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
     <div class="name def" id="carl.ratios.DecomposedRatio.predict">
     <p>def <span class="ident">predict</span>(</p><p>self, X, log=False, **kwargs)</p>
     </div>
@@ -2244,6 +2338,29 @@ component of a nested object.</p>
         """
         raise NotImplementedError
 
+    def nllr(self, X, **kwargs):
+        """Negative log-likelihood ratio.
+
+        This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `nllr` [float]:
+            The negative log-likelihood ratio.
+        """
+        ratios = self.predict(X, log=True, **kwargs)
+        mask = np.isfinite(ratios)
+
+        if mask.sum() < len(ratios):
+            warnings.warn("r(X) contains non-finite values.")
+
+        return -np.sum(ratios[mask])
+
     def score(self, X, y, finite_only=True, **kwargs):
         """Negative MSE between predicted and known ratios.
 
@@ -2361,6 +2478,53 @@ component of a nested object.</p>
         `self`.
     """
     return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.DensityRatioMixin.nllr">
+    <p>def <span class="ident">nllr</span>(</p><p>self, X, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative log-likelihood ratio.</p>
+<p>This method is a shortcut for <code>-ratio.predict(X, log=True).sum()</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nllr</code> [float]:
+    The negative log-likelihood ratio.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DensityRatioMixin.nllr', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.DensityRatioMixin.nllr" class="source">
+    <pre><code>def nllr(self, X, **kwargs):
+    """Negative log-likelihood ratio.
+    This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nllr` [float]:
+        The negative log-likelihood ratio.
+    """
+    ratios = self.predict(X, log=True, **kwargs)
+    mask = np.isfinite(ratios)
+    if mask.sum() < len(ratios):
+        warnings.warn("r(X) contains non-finite values.")
+    return -np.sum(ratios[mask])
 </code></pre>
   </div>
 </div>
@@ -2776,6 +2940,53 @@ is already fit.</p>
   
             
   <div class="item">
+    <div class="name def" id="carl.ratios.InverseRatio.nllr">
+    <p>def <span class="ident">nllr</span>(</p><p>self, X, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative log-likelihood ratio.</p>
+<p>This method is a shortcut for <code>-ratio.predict(X, log=True).sum()</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nllr</code> [float]:
+    The negative log-likelihood ratio.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio.nllr', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.InverseRatio.nllr" class="source">
+    <pre><code>def nllr(self, X, **kwargs):
+    """Negative log-likelihood ratio.
+    This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nllr` [float]:
+        The negative log-likelihood ratio.
+    """
+    ratios = self.predict(X, log=True, **kwargs)
+    mask = np.isfinite(ratios)
+    if mask.sum() < len(ratios):
+        warnings.warn("r(X) contains non-finite values.")
+    return -np.sum(ratios[mask])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
     <div class="name def" id="carl.ratios.InverseRatio.predict">
     <p>def <span class="ident">predict</span>(</p><p>self, X, log=False, **kwargs)</p>
     </div>
@@ -3174,6 +3385,53 @@ methods.</p></div>
             out.update((key + '__' + k, val) for k, val in deep_items)
         out[key] = value
     return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.nllr">
+    <p>def <span class="ident">nllr</span>(</p><p>self, X, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative log-likelihood ratio.</p>
+<p>This method is a shortcut for <code>-ratio.predict(X, log=True).sum()</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nllr</code> [float]:
+    The negative log-likelihood ratio.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.nllr', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.nllr" class="source">
+    <pre><code>def nllr(self, X, **kwargs):
+    """Negative log-likelihood ratio.
+    This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nllr` [float]:
+        The negative log-likelihood ratio.
+    """
+    ratios = self.predict(X, log=True, **kwargs)
+    mask = np.isfinite(ratios)
+    if mask.sum() < len(ratios):
+        warnings.warn("r(X) contains non-finite values.")
+    return -np.sum(ratios[mask])
 </code></pre>
   </div>
 </div>
