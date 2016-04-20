@@ -1,5 +1,6 @@
 """
-Machine learning algorithms and utilities, complementary to Scikit-Learn.
+This module implements machine learning algorithms and utilities,
+complementary to Scikit-Learn.
 """
 
 # Carl is free software; you can redistribute it and/or modify it

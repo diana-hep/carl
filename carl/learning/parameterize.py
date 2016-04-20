@@ -1,4 +1,4 @@
-"""`carl.learning.parameterize` defines tools for parameterized learning."""
+"""This module implements tools for parameterized supervised learning."""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for

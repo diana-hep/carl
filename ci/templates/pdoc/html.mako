@@ -339,16 +339,6 @@
       </div>
     % endfor
     % endif
-
-    % if len(submodules) > 0:
-    <h2 class="section-title" id="header-submodules">Sub-modules</h2>
-    % for m in submodules:
-      <div class="item">
-      <p class="name">${link(m.refname)}</p>
-      ${show_desc(m, limit=300)}
-      </div>
-    % endfor
-    % endif
   </section>
 </%def>
 
@@ -360,7 +350,7 @@
   submodules = module.submodules()
   %>
   <div id="sidebar">
-    <h1>Index</h1>
+    <h1>API</h1>
     <ul id="index">
     % if len(variables) > 0:
     <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
@@ -380,12 +370,6 @@
       % for c in classes:
         <li class="mono">
         <span class="class_name">${link(c.refname)}</span>
-        <%
-          methods = c.functions() + c.methods()
-        %>
-        % if len(methods) > 0:
-          ${show_column_list(map(lambda f: link(f.refname), methods))}
-        % endif
         </li>
       % endfor
       </ul>
@@ -399,6 +383,11 @@
         <li class="mono">${link(m.refname)}</li>
       % endfor
       </ul>
+    </li>
+    % endif
+
+    % if len(submodules) == 0:
+    <li class="set"><h3><a href="../index.html">Top module</a></h3>
     </li>
     % endif
     </ul>

@@ -1,4 +1,4 @@
-"""Density ratio estimators."""
+"""This module implements density ratio estimators."""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
