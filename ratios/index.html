@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>carl.ratios API documentation</title>
-    <meta name="description" content="Density ratio estimators." />
+    <meta name="description" content="This module implements density ratio estimators." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -967,7 +967,7 @@ table {
     
   
   <div id="sidebar">
-    <h1>Index</h1>
+    <h1>API</h1>
     <ul id="index">
 
 
@@ -975,60 +975,22 @@ table {
       <ul>
         <li class="mono">
         <span class="class_name"><a href="#carl.ratios.ClassifierRatio">ClassifierRatio</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.__init__">__init__</a></li>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.fit">fit</a></li>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.get_params">get_params</a></li>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.predict">predict</a></li>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.score">score</a></li>
-    <li class="mono"><a href="#carl.ratios.ClassifierRatio.set_params">set_params</a></li>
-  </ul>
-
         </li>
         <li class="mono">
         <span class="class_name"><a href="#carl.ratios.DecomposedRatio">DecomposedRatio</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.__init__">__init__</a></li>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.fit">fit</a></li>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.get_params">get_params</a></li>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.predict">predict</a></li>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.score">score</a></li>
-    <li class="mono"><a href="#carl.ratios.DecomposedRatio.set_params">set_params</a></li>
-  </ul>
-
         </li>
         <li class="mono">
         <span class="class_name"><a href="#carl.ratios.DensityRatioMixin">DensityRatioMixin</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#carl.ratios.DensityRatioMixin.fit">fit</a></li>
-    <li class="mono"><a href="#carl.ratios.DensityRatioMixin.predict">predict</a></li>
-    <li class="mono"><a href="#carl.ratios.DensityRatioMixin.score">score</a></li>
-  </ul>
-
         </li>
         <li class="mono">
         <span class="class_name"><a href="#carl.ratios.InverseRatio">InverseRatio</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.__init__">__init__</a></li>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.fit">fit</a></li>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.get_params">get_params</a></li>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.predict">predict</a></li>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.score">score</a></li>
-    <li class="mono"><a href="#carl.ratios.InverseRatio.set_params">set_params</a></li>
-  </ul>
-
         </li>
       </ul>
     </li>
 
+
+    <li class="set"><h3><a href="../index.html">Top module</a></h3>
+    </li>
     </ul>
   </div>
 
@@ -1041,11 +1003,11 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">carl.ratios</span> module</h1>
-  <p>Density ratio estimators.</p>
+  <p>This module implements density ratio estimators.</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios" class="source">
-    <pre><code>"""Density ratio estimators."""
+    <pre><code>"""This module implements density ratio estimators."""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
@@ -1074,16 +1036,72 @@ __all__ = ("DensityRatioMixin",
       <p id="carl.ratios.ClassifierRatio" class="name">class <span class="ident">ClassifierRatio</span></p>
       
   
+    <div class="desc"><p>Classifier-based density ratio estimator.</p>
+<p>This class approximates a density ratio <code>r(x) = p0(x) / p1(x)</code> as
+<code>s(x) / 1 - s(x)</code>, where <code>s</code> is a classifier trained to distinguish
+samples <code>x ~ p0</code> from samples <code>x ~ p1</code>, and where <code>s(x)</code> is the
+approximated probability of <code>p0(x) / (p0(x) + p1(x))</code>.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio" class="source">
     <pre><code>class ClassifierRatio(BaseEstimator, DensityRatioMixin):
+    """Classifier-based density ratio estimator.
+
+    This class approximates a density ratio `r(x) = p0(x) / p1(x)` as
+    `s(x) / 1 - s(x)`, where `s` is a classifier trained to distinguish
+    samples `x ~ p0` from samples `x ~ p1`, and where `s(x)` is the
+    approximated probability of `p0(x) / (p0(x) + p1(x))`.
+    """
+
     def __init__(self, base_estimator, random_state=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `base_estimator` [`BaseEstimator`]:
+            A scikit-learn classifier or regressor.
+
+        * `random_state` [integer or RandomState object]:
+            The random seed.
+        """
         self.base_estimator = base_estimator
         self.random_state = random_state
 
     def fit(self, X=None, y=None, numerator=None, denominator=None,
             n_samples=None, **kwargs):
+        """Fit the density ratio estimator.
+
+        The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either
+
+        - from data, using `fit(X, y)` or
+        - from distributions, using
+          `fit(numerator=p0, denominator=p1, n_samples=N)`
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features), optional]:
+            Training data.
+
+        * `y` [array-like, shape=(n_samples,), optional]:
+            Labels. Samples labeled with `y=0` correspond to data from the
+            numerator distribution, while samples labeled with `y=1` correspond
+            data from the denominator distribution.
+
+        * `numerator` [`DistributionMixin`, optional]:
+            The numerator distribution `p0`, if `X` and `y` are not provided.
+
+        * `denominator` [`DistributionMixin`, optional]:
+            The denominator distribution `p1`, if `X` and `y` are not provided.
+
+        * `n_samples` [integer, optional]
+            The total number of samples to draw from the numerator and
+            denominator distributions, if `X` and `y` are not provided.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         # Check for identity
         self.identity_ = (numerator is not None) and (numerator is denominator)
 
@@ -1120,6 +1138,21 @@ __all__ = ("DensityRatioMixin",
         return self
 
     def predict(self, X, log=False, **kwargs):
+        """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted ratio `r(X)`.
+        """
         if self.identity_:
             if log:
                 return np.zeros(len(X))
@@ -1156,10 +1189,30 @@ __all__ = ("DensityRatioMixin",
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>base_estimator</code> [<code>BaseEstimator</code>]:
+    A scikit-learn classifier or regressor.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio.__init__" class="source">
     <pre><code>def __init__(self, base_estimator, random_state=None):
+    """Constructor.
+    Parameters
+    ----------
+    * `base_estimator` [`BaseEstimator`]:
+        A scikit-learn classifier or regressor.
+    * `random_state` [integer or RandomState object]:
+        The random seed.
+    """
     self.base_estimator = base_estimator
     self.random_state = random_state
 </code></pre>
@@ -1177,11 +1230,74 @@ __all__ = ("DensityRatioMixin",
 
     
   
+    <div class="desc"><p>Fit the density ratio estimator.</p>
+<p>The density ratio estimator <code>r(x) = p0(x) / p1(x)</code> can be fit either</p>
+<ul>
+<li>from data, using <code>fit(X, y)</code> or</li>
+<li>from distributions, using
+  <code>fit(numerator=p0, denominator=p1, n_samples=N)</code></li>
+</ul>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features), optional]:
+    Training data.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,), optional]:
+    Labels. Samples labeled with <code>y=0</code> correspond to data from the
+    numerator distribution, while samples labeled with <code>y=1</code> correspond
+    data from the denominator distribution.</p>
+</li>
+<li>
+<p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
+    The numerator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>denominator</code> [<code>DistributionMixin</code>, optional]:
+    The denominator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>n_samples</code> [integer, optional]
+    The total number of samples to draw from the numerator and
+    denominator distributions, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio.fit" class="source">
     <pre><code>def fit(self, X=None, y=None, numerator=None, denominator=None,
         n_samples=None, **kwargs):
+    """Fit the density ratio estimator.
+    The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either
+    - from data, using `fit(X, y)` or
+    - from distributions, using
+      `fit(numerator=p0, denominator=p1, n_samples=N)`
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features), optional]:
+        Training data.
+    * `y` [array-like, shape=(n_samples,), optional]:
+        Labels. Samples labeled with `y=0` correspond to data from the
+        numerator distribution, while samples labeled with `y=1` correspond
+        data from the denominator distribution.
+    * `numerator` [`DistributionMixin`, optional]:
+        The numerator distribution `p0`, if `X` and `y` are not provided.
+    * `denominator` [`DistributionMixin`, optional]:
+        The denominator distribution `p1`, if `X` and `y` are not provided.
+    * `n_samples` [integer, optional]
+        The total number of samples to draw from the numerator and
+        denominator distributions, if `X` and `y` are not provided.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Check for identity
     self.identity_ = (numerator is not None) and (numerator is denominator)
     if self.identity_:
@@ -1281,10 +1397,39 @@ __all__ = ("DensityRatioMixin",
 
     
   
+    <div class="desc"><p>Predict the density ratio <code>r(x_i)</code> for all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>log</code> [boolean, default=False]:
+    If true, return the log-ratio <code>log r(x) = log(p0(x)) - log(p1(x))</code>.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>r</code> [array, shape=(n_samples,)]:
+    The predicted ratio <code>r(X)</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio.predict" class="source">
     <pre><code>def predict(self, X, log=False, **kwargs):
+    """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `log` [boolean, default=False]:
+        If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+    Returns
+    -------
+    * `r` [array, shape=(n_samples,)]:
+        The predicted ratio `r(X)`.
+    """
     if self.identity_:
         if log:
             return np.zeros(len(X))
@@ -1311,10 +1456,45 @@ __all__ = ("DensityRatioMixin",
 
     
   
+    <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
+    The known ratios for <code>X</code>.</p>
+</li>
+<li>
+<p><code>finite_only</code> [boolean, default=True]:
+    Evaluate the MSE only over finite ratios.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The negative MSE.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
+    """Negative MSE between predicted and known ratios.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `y` [array-like, shape=(n_samples,)]:
+        The known ratios for `X`.
+    * `finite_only` [boolean, default=True]:
+        Evaluate the MSE only over finite ratios.
+    Returns
+    -------
+    * `score` [float]:
+        The negative MSE.
+    """
     ratios = self.predict(X, **kwargs)
     if finite_only:
         mask = np.isfinite(ratios)
@@ -1415,15 +1595,75 @@ component of a nested object.</p>
       <p id="carl.ratios.DecomposedRatio" class="name">class <span class="ident">DecomposedRatio</span></p>
       
   
+    <div class="desc"><p>Decompose a ratio of mixtures into a weighted sum of sub-ratios.</p>
+<p>If numerator <code>p0</code> and denominator <code>p1</code> distributions are known to be
+mixtures <code>p0(x) = \sum_i w_i p0_i(x)</code> and <code>p1(x) = \sum_j w_i p1_j(x)</code>,
+then this  class can be used to decompose the ratio <code>r(x) = p0(x) / p1(x)</code>
+into the equivalent form <code>r(x) = \sum_i [\sum_j r_ji(x)]^-1</code> where
+<code>r_ji(x)</code> are sub-ratios for <code>p1_j(x) / p0_i(x)</code>. This usually allows
+for more accurate estimates.</p>
+<p>The given numerator and denominator distributions are expected to
+follow the <code>Mixture</code> API.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DecomposedRatio" class="source">
     <pre><code>class DecomposedRatio(DensityRatioMixin, BaseEstimator):
+    """Decompose a ratio of mixtures into a weighted sum of sub-ratios.
+
+    If numerator `p0` and denominator `p1` distributions are known to be
+    mixtures `p0(x) = \sum_i w_i p0_i(x)` and `p1(x) = \sum_j w_i p1_j(x)`,
+    then this  class can be used to decompose the ratio `r(x) = p0(x) / p1(x)`
+    into the equivalent form `r(x) = \sum_i [\sum_j r_ji(x)]^-1` where
+    `r_ji(x)` are sub-ratios for `p1_j(x) / p0_i(x)`. This usually allows
+    for more accurate estimates.
+
+    The given numerator and denominator distributions are expected to
+    follow the `Mixture` API.
+    """
+
     def __init__(self, base_ratio):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `base_ratio` [`DensityRatioMixin`]:
+            The base ratio to use for modeling the sub-ratios `r_ji(x)`.
+        """
         self.base_ratio = base_ratio
 
     def fit(self, X=None, y=None, numerator=None,
             denominator=None, n_samples=None, **kwargs):
+        """Fit the decomposed density ratio estimator.
+
+        The decomposed density ratio estimator can be fit only from
+        distributions, using `fit(numerator=p0, denominator=p1, n_samples=N)`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features), optional]:
+            Not supported.
+
+        * `y` [array-like, shape=(n_samples,), optional]:
+            Not supported
+
+        * `numerator` [`Mixture`, optional]:
+            The numerator mixture `p0`.
+
+        * `denominator` [`Mixture`, optional]:
+            The denominator mixture `p1`.
+
+        * `n_samples` [integer, optional]
+            The total number of samples to draw from the numerator and
+            denominator distributions.
+            If numerator and denominator are made of `p` and `q` components,
+            then `n_samples // (p * q)` samples are drawn per sub-ratio
+            `r_ji(x)` to fit.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         self.identity_ = (numerator is not None) and (numerator is denominator)
 
         if self.identity_:
@@ -1461,6 +1701,21 @@ component of a nested object.</p>
         return self
 
     def predict(self, X, log=False, **kwargs):
+        """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted ratio `r(X)`.
+        """
         if self.identity_:
             if log:
                 return np.zeros(len(X))
@@ -1508,10 +1763,22 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>base_ratio</code> [<code>DensityRatioMixin</code>]:
+    The base ratio to use for modeling the sub-ratios <code>r_ji(x)</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DecomposedRatio.__init__" class="source">
     <pre><code>def __init__(self, base_ratio):
+    """Constructor.
+    Parameters
+    ----------
+    * `base_ratio` [`DensityRatioMixin`]:
+        The base ratio to use for modeling the sub-ratios `r_ji(x)`.
+    """
     self.base_ratio = base_ratio
 </code></pre>
   </div>
@@ -1528,11 +1795,70 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the decomposed density ratio estimator.</p>
+<p>The decomposed density ratio estimator can be fit only from
+distributions, using <code>fit(numerator=p0, denominator=p1, n_samples=N)</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features), optional]:
+    Not supported.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,), optional]:
+    Not supported</p>
+</li>
+<li>
+<p><code>numerator</code> [<code>Mixture</code>, optional]:
+    The numerator mixture <code>p0</code>.</p>
+</li>
+<li>
+<p><code>denominator</code> [<code>Mixture</code>, optional]:
+    The denominator mixture <code>p1</code>.</p>
+</li>
+<li>
+<p><code>n_samples</code> [integer, optional]
+    The total number of samples to draw from the numerator and
+    denominator distributions.
+    If numerator and denominator are made of <code>p</code> and <code>q</code> components,
+    then <code>n_samples // (p * q)</code> samples are drawn per sub-ratio
+    <code>r_ji(x)</code> to fit.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DecomposedRatio.fit" class="source">
     <pre><code>def fit(self, X=None, y=None, numerator=None,
         denominator=None, n_samples=None, **kwargs):
+    """Fit the decomposed density ratio estimator.
+    The decomposed density ratio estimator can be fit only from
+    distributions, using `fit(numerator=p0, denominator=p1, n_samples=N)`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features), optional]:
+        Not supported.
+    * `y` [array-like, shape=(n_samples,), optional]:
+        Not supported
+    * `numerator` [`Mixture`, optional]:
+        The numerator mixture `p0`.
+    * `denominator` [`Mixture`, optional]:
+        The denominator mixture `p1`.
+    * `n_samples` [integer, optional]
+        The total number of samples to draw from the numerator and
+        denominator distributions.
+        If numerator and denominator are made of `p` and `q` components,
+        then `n_samples // (p * q)` samples are drawn per sub-ratio
+        `r_ji(x)` to fit.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     self.identity_ = (numerator is not None) and (numerator is denominator)
     if self.identity_:
         return self
@@ -1633,10 +1959,39 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Predict the density ratio <code>r(x_i)</code> for all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>log</code> [boolean, default=False]:
+    If true, return the log-ratio <code>log r(x) = log(p0(x)) - log(p1(x))</code>.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>r</code> [array, shape=(n_samples,)]:
+    The predicted ratio <code>r(X)</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DecomposedRatio.predict" class="source">
     <pre><code>def predict(self, X, log=False, **kwargs):
+    """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `log` [boolean, default=False]:
+        If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+    Returns
+    -------
+    * `r` [array, shape=(n_samples,)]:
+        The predicted ratio `r(X)`.
+    """
     if self.identity_:
         if log:
             return np.zeros(len(X))
@@ -1670,10 +2025,45 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
+    The known ratios for <code>X</code>.</p>
+</li>
+<li>
+<p><code>finite_only</code> [boolean, default=True]:
+    Evaluate the MSE only over finite ratios.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The negative MSE.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DecomposedRatio.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DecomposedRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
+    """Negative MSE between predicted and known ratios.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `y` [array-like, shape=(n_samples,)]:
+        The known ratios for `X`.
+    * `finite_only` [boolean, default=True]:
+        Evaluate the MSE only over finite ratios.
+    Returns
+    -------
+    * `score` [float]:
+        The negative MSE.
+    """
     ratios = self.predict(X, **kwargs)
     if finite_only:
         mask = np.isfinite(ratios)
@@ -1764,18 +2154,91 @@ component of a nested object.</p>
       <p id="carl.ratios.DensityRatioMixin" class="name">class <span class="ident">DensityRatioMixin</span></p>
       
   
+    <div class="desc"><p>Density ratio mixin.</p>
+<p>This class defines the common API for density ratio estimators.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DensityRatioMixin', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DensityRatioMixin" class="source">
     <pre><code>class DensityRatioMixin:
+    """Density ratio mixin.
+
+    This class defines the common API for density ratio estimators.
+    """
+
     def fit(self, X=None, y=None, numerator=None,
             denominator=None, n_samples=None, **kwargs):
+        """Fit the density ratio estimator.
+
+        The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either
+
+        - from data, using `fit(X, y)` or
+        - from distributions, using
+          `fit(numerator=p0, denominator=p1, n_samples=N)`
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features), optional]:
+            Training data.
+
+        * `y` [array-like, shape=(n_samples,), optional]:
+            Labels. Samples labeled with `y=0` correspond to data from the
+            numerator distribution, while samples labeled with `y=1` correspond
+            data from the denominator distribution.
+
+        * `numerator` [`DistributionMixin`, optional]:
+            The numerator distribution `p0`, if `X` and `y` are not provided.
+
+        * `denominator` [`DistributionMixin`, optional]:
+            The denominator distribution `p1`, if `X` and `y` are not provided.
+
+        * `n_samples` [integer, optional]
+            The total number of samples to draw from the numerator and
+            denominator distributions, if `X` and `y` are not provided.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         return self
 
     def predict(self, X, log=False, **kwargs):
+        """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted ratio `r(X)`.
+        """
         raise NotImplementedError
 
     def score(self, X, y, finite_only=True, **kwargs):
+        """Negative MSE between predicted and known ratios.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `y` [array-like, shape=(n_samples,)]:
+            The known ratios for `X`.
+
+        * `finite_only` [boolean, default=True]:
+            Evaluate the MSE only over finite ratios.
+
+        Returns
+        -------
+        * `score` [float]:
+            The negative MSE.
+        """
         ratios = self.predict(X, **kwargs)
 
         if finite_only:
@@ -1805,11 +2268,74 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the density ratio estimator.</p>
+<p>The density ratio estimator <code>r(x) = p0(x) / p1(x)</code> can be fit either</p>
+<ul>
+<li>from data, using <code>fit(X, y)</code> or</li>
+<li>from distributions, using
+  <code>fit(numerator=p0, denominator=p1, n_samples=N)</code></li>
+</ul>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features), optional]:
+    Training data.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,), optional]:
+    Labels. Samples labeled with <code>y=0</code> correspond to data from the
+    numerator distribution, while samples labeled with <code>y=1</code> correspond
+    data from the denominator distribution.</p>
+</li>
+<li>
+<p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
+    The numerator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>denominator</code> [<code>DistributionMixin</code>, optional]:
+    The denominator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>n_samples</code> [integer, optional]
+    The total number of samples to draw from the numerator and
+    denominator distributions, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DensityRatioMixin.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DensityRatioMixin.fit" class="source">
     <pre><code>def fit(self, X=None, y=None, numerator=None,
         denominator=None, n_samples=None, **kwargs):
+    """Fit the density ratio estimator.
+    The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either
+    - from data, using `fit(X, y)` or
+    - from distributions, using
+      `fit(numerator=p0, denominator=p1, n_samples=N)`
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features), optional]:
+        Training data.
+    * `y` [array-like, shape=(n_samples,), optional]:
+        Labels. Samples labeled with `y=0` correspond to data from the
+        numerator distribution, while samples labeled with `y=1` correspond
+        data from the denominator distribution.
+    * `numerator` [`DistributionMixin`, optional]:
+        The numerator distribution `p0`, if `X` and `y` are not provided.
+    * `denominator` [`DistributionMixin`, optional]:
+        The denominator distribution `p1`, if `X` and `y` are not provided.
+    * `n_samples` [integer, optional]
+        The total number of samples to draw from the numerator and
+        denominator distributions, if `X` and `y` are not provided.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     return self
 </code></pre>
   </div>
@@ -1826,10 +2352,39 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Predict the density ratio <code>r(x_i)</code> for all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>log</code> [boolean, default=False]:
+    If true, return the log-ratio <code>log r(x) = log(p0(x)) - log(p1(x))</code>.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>r</code> [array, shape=(n_samples,)]:
+    The predicted ratio <code>r(X)</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DensityRatioMixin.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DensityRatioMixin.predict" class="source">
     <pre><code>def predict(self, X, log=False, **kwargs):
+    """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `log` [boolean, default=False]:
+        If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+    Returns
+    -------
+    * `r` [array, shape=(n_samples,)]:
+        The predicted ratio `r(X)`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1846,10 +2401,45 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
+    The known ratios for <code>X</code>.</p>
+</li>
+<li>
+<p><code>finite_only</code> [boolean, default=True]:
+    Evaluate the MSE only over finite ratios.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The negative MSE.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.DensityRatioMixin.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.DensityRatioMixin.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
+    """Negative MSE between predicted and known ratios.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `y` [array-like, shape=(n_samples,)]:
+        The known ratios for `X`.
+    * `finite_only` [boolean, default=True]:
+        Evaluate the MSE only over finite ratios.
+    Returns
+    -------
+    * `score` [float]:
+        The negative MSE.
+    """
     ratios = self.predict(X, **kwargs)
     if finite_only:
         mask = np.isfinite(ratios)
@@ -1869,18 +2459,90 @@ component of a nested object.</p>
       <p id="carl.ratios.InverseRatio" class="name">class <span class="ident">InverseRatio</span></p>
       
   
+    <div class="desc"><p>Inverse a density ratio.</p>
+<p>This class can be used to model the inverse <code>1 / r(x) = p1(x) / p0(x)</code>
+of a given base ratio <code>r(x) = p0(x) / p1(x)</code>.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.InverseRatio" class="source">
     <pre><code>class InverseRatio(DensityRatioMixin, BaseEstimator):
+    """Inverse a density ratio.
+
+    This class can be used to model the inverse `1 / r(x) = p1(x) / p0(x)`
+    of a given base ratio `r(x) = p0(x) / p1(x)`.
+    """
+
     def __init__(self, base_ratio):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `base_ratio` [`DensityRatioMixin`]:
+            The base ratio to inverse.
+        """
         self.base_ratio = base_ratio
 
     def fit(self, X=None, y=None, numerator=None,
             denominator=None, n_samples=None, **kwargs):
-        raise NotImplementedError
+        """Fit the inversed density ratio estimator.
+
+        The inversed density ratio estimator `1 / r(x) = p1(x) / p0(x)` can be
+        fit either
+
+        - from data, using `fit(X, y)` or
+        - from distributions, using
+          `fit(numerator=p1, denominator=p0, n_samples=N)`
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features), optional]:
+            Training data.
+
+        * `y` [array-like, shape=(n_samples,), optional]:
+            Labels. Samples labeled with `y=1` correspond to data from the
+            numerator distribution, while samples labeled with `y=0` correspond
+            data from the denominator distribution.
+
+        * `numerator` [`DistributionMixin`, optional]:
+            The numerator distribution `p1`, if `X` and `y` are not provided.
+
+        * `denominator` [`DistributionMixin`, optional]:
+            The denominator distribution `p0`, if `X` and `y` are not provided.
+
+        * `n_samples` [integer, optional]
+            The total number of samples to draw from the numerator and
+            denominator distributions, if `X` and `y` are not provided.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
+        if X is not None and y is not None:
+            self.base_ratio.fit(X=X, y=1 - y)
+        else:
+            self.base_ratio.fit(numerator=numerator, denominator=denominator,
+                                n_samples=n_samples)
+
+        return self
 
     def predict(self, X, log=False, **kwargs):
+        """Predict the inverse density ratio `1 / r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the negative log-ratio
+            `-log r(x) = log(p1(x)) - log(p0(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted inverse ratio `1 / r(X)`.
+        """
         if log:
             return -self.base_ratio.predict(X, log=True, **kwargs)
         else:
@@ -1908,10 +2570,22 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>base_ratio</code> [<code>DensityRatioMixin</code>]:
+    The base ratio to inverse.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.InverseRatio.__init__" class="source">
     <pre><code>def __init__(self, base_ratio):
+    """Constructor.
+    Parameters
+    ----------
+    * `base_ratio` [`DensityRatioMixin`]:
+        The base ratio to inverse.
+    """
     self.base_ratio = base_ratio
 </code></pre>
   </div>
@@ -1928,12 +2602,82 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the inversed density ratio estimator.</p>
+<p>The inversed density ratio estimator <code>1 / r(x) = p1(x) / p0(x)</code> can be
+fit either</p>
+<ul>
+<li>from data, using <code>fit(X, y)</code> or</li>
+<li>from distributions, using
+  <code>fit(numerator=p1, denominator=p0, n_samples=N)</code></li>
+</ul>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features), optional]:
+    Training data.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,), optional]:
+    Labels. Samples labeled with <code>y=1</code> correspond to data from the
+    numerator distribution, while samples labeled with <code>y=0</code> correspond
+    data from the denominator distribution.</p>
+</li>
+<li>
+<p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
+    The numerator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>denominator</code> [<code>DistributionMixin</code>, optional]:
+    The denominator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+<li>
+<p><code>n_samples</code> [integer, optional]
+    The total number of samples to draw from the numerator and
+    denominator distributions, if <code>X</code> and <code>y</code> are not provided.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.InverseRatio.fit" class="source">
     <pre><code>def fit(self, X=None, y=None, numerator=None,
         denominator=None, n_samples=None, **kwargs):
-    raise NotImplementedError
+    """Fit the inversed density ratio estimator.
+    The inversed density ratio estimator `1 / r(x) = p1(x) / p0(x)` can be
+    fit either
+    - from data, using `fit(X, y)` or
+    - from distributions, using
+      `fit(numerator=p1, denominator=p0, n_samples=N)`
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features), optional]:
+        Training data.
+    * `y` [array-like, shape=(n_samples,), optional]:
+        Labels. Samples labeled with `y=1` correspond to data from the
+        numerator distribution, while samples labeled with `y=0` correspond
+        data from the denominator distribution.
+    * `numerator` [`DistributionMixin`, optional]:
+        The numerator distribution `p1`, if `X` and `y` are not provided.
+    * `denominator` [`DistributionMixin`, optional]:
+        The denominator distribution `p0`, if `X` and `y` are not provided.
+    * `n_samples` [integer, optional]
+        The total number of samples to draw from the numerator and
+        denominator distributions, if `X` and `y` are not provided.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
+    if X is not None and y is not None:
+        self.base_ratio.fit(X=X, y=1 - y)
+    else:
+        self.base_ratio.fit(numerator=numerator, denominator=denominator,
+                            n_samples=n_samples)
+    return self
 </code></pre>
   </div>
 </div>
@@ -2008,10 +2752,41 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Predict the inverse density ratio <code>1 / r(x_i)</code> for all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>log</code> [boolean, default=False]:
+    If true, return the negative log-ratio
+    <code>-log r(x) = log(p1(x)) - log(p0(x))</code>.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>r</code> [array, shape=(n_samples,)]:
+    The predicted inverse ratio <code>1 / r(X)</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio.predict', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.InverseRatio.predict" class="source">
     <pre><code>def predict(self, X, log=False, **kwargs):
+    """Predict the inverse density ratio `1 / r(x_i)` for all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `log` [boolean, default=False]:
+        If true, return the negative log-ratio
+        `-log r(x) = log(p1(x)) - log(p0(x))`.
+    Returns
+    -------
+    * `r` [array, shape=(n_samples,)]:
+        The predicted inverse ratio `1 / r(X)`.
+    """
     if log:
         return -self.base_ratio.predict(X, log=True, **kwargs)
     else:
@@ -2031,10 +2806,45 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
+    The known ratios for <code>X</code>.</p>
+</li>
+<li>
+<p><code>finite_only</code> [boolean, default=True]:
+    Evaluate the MSE only over finite ratios.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The negative MSE.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.InverseRatio.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.InverseRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
+    """Negative MSE between predicted and known ratios.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `y` [array-like, shape=(n_samples,)]:
+        The known ratios for `X`.
+    * `finite_only` [boolean, default=True]:
+        Evaluate the MSE only over finite ratios.
+    Returns
+    -------
+    * `score` [float]:
+        The negative MSE.
+    """
     ratios = self.predict(X, **kwargs)
     if finite_only:
         mask = np.isfinite(ratios)
@@ -2120,7 +2930,6 @@ component of a nested object.</p>
             </div>
       </div>
       </div>
-
   </section>
 
     </article>
