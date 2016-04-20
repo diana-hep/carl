@@ -1089,9 +1089,11 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 
         * `numerator` [`DistributionMixin`, optional]:
             The numerator distribution `p0`, if `X` and `y` are not provided.
+            This object is required to implement the `rvs` method.
 
         * `denominator` [`DistributionMixin`, optional]:
             The denominator distribution `p1`, if `X` and `y` are not provided.
+            This object is required to implement the `rvs` method.
 
         * `n_samples` [integer, optional]
             The total number of samples to draw from the numerator and
@@ -1251,11 +1253,13 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 </li>
 <li>
 <p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
-    The numerator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+    The numerator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.
+    This object is required to implement the <code>rvs</code> method.</p>
 </li>
 <li>
 <p><code>denominator</code> [<code>DistributionMixin</code>, optional]:
-    The denominator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.</p>
+    The denominator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.
+    This object is required to implement the <code>rvs</code> method.</p>
 </li>
 <li>
 <p><code>n_samples</code> [integer, optional]
@@ -1288,8 +1292,10 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
         data from the denominator distribution.
     * `numerator` [`DistributionMixin`, optional]:
         The numerator distribution `p0`, if `X` and `y` are not provided.
+        This object is required to implement the `rvs` method.
     * `denominator` [`DistributionMixin`, optional]:
         The denominator distribution `p1`, if `X` and `y` are not provided.
+        This object is required to implement the `rvs` method.
     * `n_samples` [integer, optional]
         The total number of samples to draw from the numerator and
         denominator distributions, if `X` and `y` are not provided.
