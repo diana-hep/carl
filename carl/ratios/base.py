@@ -101,6 +101,64 @@ class DensityRatioMixin:
         return -mean_squared_error(y, ratios)
 
 
+class KnownDensityRatio(DensityRatioMixin, BaseEstimator):
+    """Density ratio for known densities `p0` and `p1`.
+
+    This class cannot be used in the likelihood-free setup. It requires
+    numerator and denominator distributions to implement the `pdf` and `nll`
+    methods.
+    """
+
+    def __init__(self, numerator, denominator):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `numerator` [`DistributionMixin`]:
+            The numerator distribution.
+            This object is required to implement the `pdf` and `nll` methods.
+
+        * `denominator` [`DistributionMixin`]:
+            The denominator distribution.
+            This object is required to implement the `pdf` and `nll` methods.
+        """
+        self.numerator = numerator
+        self.denominator = denominator
+
+    def fit(self, X=None, y=None, numerator=None,
+            denominator=None, n_samples=None, **kwargs):
+        """Do nothing.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
+        return self
+
+    def predict(self, X, log=False, **kwargs):
+        """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted ratio `r(X)`.
+        """
+        if not log:
+            return self.numerator.pdf(X) / self.denominator.pdf(X)
+
+        else:
+            return -self.numerator.nll(X) + self.denominator.nll(X)
+
+
 class InverseRatio(DensityRatioMixin, BaseEstimator):
     """Inverse a density ratio.
 
@@ -128,6 +186,9 @@ class InverseRatio(DensityRatioMixin, BaseEstimator):
         - from data, using `fit(X, y)` or
         - from distributions, using
           `fit(numerator=p1, denominator=p0, n_samples=N)`
+
+        Note that this object does not need to be fit if `base_ratio`
+        is already fit.
 
         Parameters
         ----------
@@ -189,7 +250,7 @@ class DecomposedRatio(DensityRatioMixin, BaseEstimator):
     """Decompose a ratio of mixtures into a weighted sum of sub-ratios.
 
     If numerator `p0` and denominator `p1` distributions are known to be
-    mixtures `p0(x) = \sum_i w_i p0_i(x)` and `p1(x) = \sum_j w_i p1_j(x)`,
+    mixtures `p0(x) = \sum_i w_i p0_i(x)` and `p1(x) = \sum_j w_j p1_j(x)`,
     then this  class can be used to decompose the ratio `r(x) = p0(x) / p1(x)`
     into the equivalent form `r(x) = \sum_i [\sum_j r_ji(x)]^-1` where
     `r_ji(x)` are sub-ratios for `p1_j(x) / p0_i(x)`. This usually allows

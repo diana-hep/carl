@@ -22,6 +22,10 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
     `s(x) / 1 - s(x)`, where `s` is a classifier trained to distinguish
     samples `x ~ p0` from samples `x ~ p1`, and where `s(x)` is the
     classifier approximate of the probability `p0(x) / (p0(x) + p1(x))`.
+
+    This class can be used in the likelihood-free setup, i.e. either
+    - with known data `X` drawn from `p0` and `p1`, or
+    - with generators `p0` and `p1` implementing sampling through `rvs`.
     """
 
     def __init__(self, base_estimator, random_state=None):
@@ -60,11 +64,13 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         * `numerator` [`DistributionMixin`, optional]:
             The numerator distribution `p0`, if `X` and `y` are not provided.
-            This object is required to implement the `rvs` method.
+            This object is required to implement sampling through the `rvs`
+            method.
 
         * `denominator` [`DistributionMixin`, optional]:
             The denominator distribution `p1`, if `X` and `y` are not provided.
-            This object is required to implement the `rvs` method.
+            This object is required to implement sampling through the `rvs`
+            method.
 
         * `n_samples` [integer, optional]
             The total number of samples to draw from the numerator and

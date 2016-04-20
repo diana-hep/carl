@@ -10,12 +10,26 @@ from carl.distributions import Normal
 from carl.distributions import Mixture
 
 from carl.ratios import DensityRatioMixin
+from carl.ratios import KnownDensityRatio
 from carl.ratios import InverseRatio
 from carl.ratios import DecomposedRatio
 from carl.ratios import ClassifierRatio
 from carl.learning import CalibratedClassifierCV
 
 from sklearn.linear_model import ElasticNetCV
+
+
+def test_known_density():
+    components = [Normal(mu=0.0), Normal(mu=0.25), Normal(mu=0.5)]
+    p0 = Mixture(components=components, weights=[0.45, 0.1, 0.45])
+    p1 = Mixture(components=[components[0]] + [components[2]])
+
+    ratio = KnownDensityRatio(numerator=p0, denominator=p1)
+
+    reals = np.linspace(-0.5, 1.0, num=100).reshape(-1, 1)
+    assert ratio.score(reals, p0.pdf(reals) / p1.pdf(reals)) > -0.01
+    assert np.mean(np.abs(np.log(ratio.predict(reals)) -
+                          ratio.predict(reals, log=True))) < 0.01
 
 
 def check_inverse(constant):

@@ -5,11 +5,13 @@
 # more details.
 
 from .base import DensityRatioMixin
+from .base import KnownDensityRatio
 from .base import InverseRatio
 from .base import DecomposedRatio
 from .classifier import ClassifierRatio
 
 __all__ = ("DensityRatioMixin",
+           "KnownDensityRatio",
            "InverseRatio",
            "DecomposedRatio",
            "ClassifierRatio")
