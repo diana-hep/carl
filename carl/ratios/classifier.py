@@ -60,9 +60,11 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
 
         * `numerator` [`DistributionMixin`, optional]:
             The numerator distribution `p0`, if `X` and `y` are not provided.
+            This object is required to implement the `rvs` method.
 
         * `denominator` [`DistributionMixin`, optional]:
             The denominator distribution `p1`, if `X` and `y` are not provided.
+            This object is required to implement the `rvs` method.
 
         * `n_samples` [integer, optional]
             The total number of samples to draw from the numerator and
