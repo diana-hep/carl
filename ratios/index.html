@@ -961,6 +961,7 @@ table {
   </script>
 </head>
 <body>
+<a href="https://github.com/diana-hep/carl"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 <a href="#" id="top">Top</a>
 
 <div id="container">
@@ -1531,6 +1532,7 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
     
   
     <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<p>The higher, the better.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -1556,6 +1558,7 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
   <div id="source-carl.ratios.ClassifierRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
     """Negative MSE between predicted and known ratios.
+    The higher, the better.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features)]:
@@ -2147,6 +2150,7 @@ distributions, using <code>fit(numerator=p0, denominator=p1, n_samples=N)</code>
     
   
     <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<p>The higher, the better.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -2172,6 +2176,7 @@ distributions, using <code>fit(numerator=p0, denominator=p1, n_samples=N)</code>
   <div id="source-carl.ratios.DecomposedRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
     """Negative MSE between predicted and known ratios.
+    The higher, the better.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features)]:
@@ -2366,6 +2371,8 @@ component of a nested object.</p>
 
     def score(self, X, y, finite_only=True, **kwargs):
         """Negative MSE between predicted and known ratios.
+
+        The higher, the better.
 
         Parameters
         ----------
@@ -2593,6 +2600,7 @@ component of a nested object.</p>
     
   
     <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<p>The higher, the better.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -2618,6 +2626,7 @@ component of a nested object.</p>
   <div id="source-carl.ratios.DensityRatioMixin.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
     """Negative MSE between predicted and known ratios.
+    The higher, the better.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features)]:
@@ -3052,6 +3061,7 @@ is already fit.</p>
     
   
     <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<p>The higher, the better.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -3077,6 +3087,7 @@ is already fit.</p>
   <div id="source-carl.ratios.InverseRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
     """Negative MSE between predicted and known ratios.
+    The higher, the better.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features)]:
@@ -3503,6 +3514,7 @@ methods.</p></div>
     
   
     <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<p>The higher, the better.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -3528,6 +3540,7 @@ methods.</p></div>
   <div id="source-carl.ratios.KnownDensityRatio.score" class="source">
     <pre><code>def score(self, X, y, finite_only=True, **kwargs):
     """Negative MSE between predicted and known ratios.
+    The higher, the better.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features)]:

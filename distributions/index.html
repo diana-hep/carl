@@ -4,9 +4,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>carl.distributions API documentation</title>
-    <meta name="description" content="Tools for composing and fitting statistical distributions.
+    <meta name="description" content="This module implements tools for composing and fitting statistical
+distributions.
 
-Note: This module is only meant to be a ..." />
+Note
+----
+This mo..." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -963,6 +966,7 @@ table {
   </script>
 </head>
 <body>
+<a href="https://github.com/diana-hep/carl"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 <a href="#" id="top">Top</a>
 
 <div id="container">
@@ -1029,19 +1033,24 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">carl.distributions</span> module</h1>
-  <p>Tools for composing and fitting statistical distributions.</p>
-<p>Note: This module is only meant to be a minimally working prototype for
-      composing and fitting distributions. It is not meant to be a full fledged
-      replacement of RooFit or alikes.</p>
+  <p>This module implements tools for composing and fitting statistical
+distributions.</p>
+<h2>Note</h2>
+<p>This module is only meant to be a minimally working prototype for
+composing and fitting distributions. It is not meant to be a full fledged
+replacement of RooFit or alikes.</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions" class="source">
     <pre><code>"""
-Tools for composing and fitting statistical distributions.
+This module implements tools for composing and fitting statistical
+distributions.
 
-Note: This module is only meant to be a minimally working prototype for
-      composing and fitting distributions. It is not meant to be a full fledged
-      replacement of RooFit or alikes.
+Note
+----
+This module is only meant to be a minimally working prototype for
+composing and fitting distributions. It is not meant to be a full fledged
+replacement of RooFit or alikes.
 """
 
 # Carl is free software; you can redistribute it and/or modify it
@@ -1625,11 +1634,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -1761,7 +1809,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -2317,6 +2365,10 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.Histogram.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
+    </p>
 
             
   
@@ -2566,11 +2618,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -2717,7 +2808,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -3118,10 +3209,6 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.KernelDensity.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
-    </p>
 
             
   
@@ -3342,11 +3429,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -3478,7 +3604,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -3863,11 +3989,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -4012,7 +4177,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -4315,11 +4480,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -4451,7 +4655,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -4490,10 +4694,6 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.MultivariateNormal.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
@@ -4758,11 +4958,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -4894,7 +5133,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -5368,9 +5607,6 @@ component of a nested object.</p>
         return self.ppf(p, **kwargs)
 
     # Scikit-Learn estimator interface
-    def get_params(self, deep=True):
-        return super(DistributionMixin, self).get_params(deep=deep)
-
     def set_params(self, **params):
         for name, value in params.items():
             var = getattr(self, name, None)
@@ -5473,7 +5709,7 @@ component of a nested object.</p>
         return self
 
     def score(self, X, **kwargs):
-        return self.nll(X, **kwargs).sum()
+        return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -5656,11 +5892,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -5792,7 +6067,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
@@ -6103,11 +6378,50 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.get_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.get_params" class="source">
     <pre><code>def get_params(self, deep=True):
-    return super(DistributionMixin, self).get_params(deep=deep)
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
 </code></pre>
   </div>
 </div>
@@ -6239,7 +6553,7 @@ component of a nested object.</p>
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.score" class="source">
     <pre><code>def score(self, X, **kwargs):
-    return self.nll(X, **kwargs).sum()
+    return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
 </div>
