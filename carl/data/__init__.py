@@ -1,4 +1,6 @@
-"""Generators for likelihood-free inference benchmarks."""
+"""
+This module implements generators for likelihood-free inference benchmarks.
+"""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for

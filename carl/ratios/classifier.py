@@ -24,6 +24,7 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
     classifier approximate of the probability `p0(x) / (p0(x) + p1(x))`.
 
     This class can be used in the likelihood-free setup, i.e. either
+
     - with known data `X` drawn from `p0` and `p1`, or
     - with generators `p0` and `p1` implementing sampling through `rvs`.
     """
