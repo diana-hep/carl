@@ -1533,7 +1533,7 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
         super(Ricker, self).__init__(log_r=log_r, sigma=sigma, phi=phi)
 
     def rvs(self, n_samples, random_state=None, **kwargs):
-        """Generate random samples.
+        """Generate random samples `Y_t`, for `t = 1:n_samples`.
 
         Parameters
         ----------
@@ -1855,7 +1855,7 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
-    <div class="desc"><p>Generate random samples.</p>
+    <div class="desc"><p>Generate random samples <code>Y_t</code>, for <code>t = 1:n_samples</code>.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -1871,7 +1871,7 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.rvs" class="source">
     <pre><code>def rvs(self, n_samples, random_state=None, **kwargs):
-    """Generate random samples.
+    """Generate random samples `Y_t`, for `t = 1:n_samples`.
     Parameters
     ----------
     * `n_samples` [int]:

@@ -1046,9 +1046,11 @@ __all__ = ("DensityRatioMixin",
 <code>s(x) / 1 - s(x)</code>, where <code>s</code> is a classifier trained to distinguish
 samples <code>x ~ p0</code> from samples <code>x ~ p1</code>, and where <code>s(x)</code> is the
 classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.</p>
-<p>This class can be used in the likelihood-free setup, i.e. either
-- with known data <code>X</code> drawn from <code>p0</code> and <code>p1</code>, or
-- with generators <code>p0</code> and <code>p1</code> implementing sampling through <code>rvs</code>.</p></div>
+<p>This class can be used in the likelihood-free setup, i.e. either</p>
+<ul>
+<li>with known data <code>X</code> drawn from <code>p0</code> and <code>p1</code>, or</li>
+<li>with generators <code>p0</code> and <code>p1</code> implementing sampling through <code>rvs</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio" class="source">
@@ -1061,6 +1063,7 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
     classifier approximate of the probability `p0(x) / (p0(x) + p1(x))`.
 
     This class can be used in the likelihood-free setup, i.e. either
+
     - with known data `X` drawn from `p0` and `p1`, or
     - with generators `p0` and `p1` implementing sampling through `rvs`.
     """
