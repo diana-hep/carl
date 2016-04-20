@@ -173,14 +173,14 @@ def make_parameterized_classification(p0, p1, n_samples, params,
     * `p0` [`DistributionMixin`]:
         The distribution to draw samples from class 0.
 
-    * `p1` [DistributionMixin`]:
-        The distribution to draw sample from class 1.
+    * `p1` [`DistributionMixin`]:
+        The distribution to draw samples from class 1.
 
     * `n_samples` [integer]:
         The total number of samples to generate.
 
     * `params` [list of pairs (theano shared variables, list of values)]:
-        The list of parameters along with the corresponding values to generate
+        The list of parameters and the corresponding values to generate
         samples for.
 
     * `random_state` [integer or RandomState object]:

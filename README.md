@@ -5,6 +5,9 @@
 
 Carl is a toolbox for likelihood-free inference in Python.
 
+This project is still in its early stage of development. Join us if you feel
+like contributing!
+
 Supported features currently include:
 
 - Composition and fitting of distributions;
@@ -12,16 +15,13 @@ Supported features currently include:
 - Parameterized supervised learning;
 - Calibration tools.
 
-Note: `carl` is still in its early stage of development. Join us if you feel
-like contributing!
-
 
 ## Documentation
 
 * [Static documentation](http://diana-hep.org/carl).
 
-* Illustrative examples serving as documentation can also be found under the
-  [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
+* Illustrative examples complementing the online reference can be found under
+  the [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
   directory.
 
 * Extended details regarding likelihood-free inference with calibrated

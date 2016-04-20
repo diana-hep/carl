@@ -4,6 +4,7 @@ echo "Running deployment script..."
 cd ~
 pip install pdoc
 
+export XDG_CONFIG_HOME=${TRAVIS_BUILD_DIR}/ci/templates
 pdoc --html --html-dir ./doc carl
 git clone -b gh-pages "https://${GH_TOKEN}@github.com/diana-hep/carl.git" deploy > /dev/null 2>&1 || exit 1
 

@@ -12,7 +12,8 @@ contributing!
 
 ## Documentation
 
-* Illustrative examples serving as documentation can be found under the
+* Illustrative examples complementing the online reference
+  can be found under the
   [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
   directory.
 

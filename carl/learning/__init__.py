@@ -1,5 +1,5 @@
 """
-Machine learning algorithms and utils, complementary to Scikit-Learn.
+Machine learning algorithms and utilities, complementary to Scikit-Learn.
 """
 
 # Carl is free software; you can redistribute it and/or modify it
