@@ -21,7 +21,7 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
     This class approximates a density ratio `r(x) = p0(x) / p1(x)` as
     `s(x) / 1 - s(x)`, where `s` is a classifier trained to distinguish
     samples `x ~ p0` from samples `x ~ p1`, and where `s(x)` is the
-    approximated probability of `p0(x) / (p0(x) + p1(x))`.
+    classifier approximate of the probability `p0(x) / (p0(x) + p1(x))`.
     """
 
     def __init__(self, base_estimator, random_state=None):

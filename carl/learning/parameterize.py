@@ -179,9 +179,11 @@ def make_parameterized_classification(p0, p1, n_samples, params,
     * `n_samples` [integer]:
         The total number of samples to generate.
 
-    * `params` [list of pairs (theano shared variables, list of values)]:
+    * `params` [list of pairs (theano shared variables, list of values) or
+                list of theano shared variables]:
         The list of parameters and the corresponding values to generate
-        samples for.
+        samples for. If only a list of theano shared variables is given, then
+        generate samples using the current parameter values.
 
     * `random_state` [integer or RandomState object]:
         The random seed.
