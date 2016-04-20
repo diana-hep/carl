@@ -132,9 +132,6 @@ class TheanoDistribution(DistributionMixin):
         return self.ppf(p, **kwargs)
 
     # Scikit-Learn estimator interface
-    def get_params(self, deep=True):
-        return super(DistributionMixin, self).get_params(deep=deep)
-
     def set_params(self, **params):
         for name, value in params.items():
             var = getattr(self, name, None)
@@ -237,4 +234,4 @@ class TheanoDistribution(DistributionMixin):
         return self
 
     def score(self, X, **kwargs):
-        return self.nll(X, **kwargs).sum()
+        return -self.nll(X, **kwargs).sum()

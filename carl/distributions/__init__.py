@@ -1,9 +1,12 @@
 """
-Tools for composing and fitting statistical distributions.
+This module implements tools for composing and fitting statistical
+distributions.
 
-Note: This module is only meant to be a minimally working prototype for
-      composing and fitting distributions. It is not meant to be a full fledged
-      replacement of RooFit or alikes.
+Note
+----
+This module is only meant to be a minimally working prototype for
+composing and fitting distributions. It is not meant to be a full fledged
+replacement of RooFit or alikes.
 """
 
 # Carl is free software; you can redistribute it and/or modify it

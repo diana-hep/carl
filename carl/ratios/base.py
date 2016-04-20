@@ -99,6 +99,8 @@ class DensityRatioMixin:
     def score(self, X, y, finite_only=True, **kwargs):
         """Negative MSE between predicted and known ratios.
 
+        The higher, the better.
+
         Parameters
         ----------
         * `X` [array-like, shape=(n_samples, n_features)]:

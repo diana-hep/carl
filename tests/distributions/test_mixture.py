@@ -104,7 +104,7 @@ def test_fit():
 
     m.fit(X)
     assert np.abs(g.eval() - 1. / 3.) < 0.05
-    assert m.score(X) <= s0
+    assert m.score(X) >= s0
 
 
 def test_likelihood_free_mixture():
