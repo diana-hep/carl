@@ -1266,9 +1266,11 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
     The total number of samples to generate.</p>
 </li>
 <li>
-<p><code>params</code> [list of pairs (theano shared variables, list of values)]:
+<p><code>params</code> [list of pairs (theano shared variables, list of values) or
+            list of theano shared variables]:
     The list of parameters and the corresponding values to generate
-    samples for.</p>
+    samples for. If only a list of theano shared variables is given, then
+    generate samples using the current parameter values.</p>
 </li>
 <li>
 <p><code>random_state</code> [integer or RandomState object]:
@@ -1309,9 +1311,11 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
     * `n_samples` [integer]:
         The total number of samples to generate.
 
-    * `params` [list of pairs (theano shared variables, list of values)]:
+    * `params` [list of pairs (theano shared variables, list of values) or
+                list of theano shared variables]:
         The list of parameters and the corresponding values to generate
-        samples for.
+        samples for. If only a list of theano shared variables is given, then
+        generate samples using the current parameter values.
 
     * `random_state` [integer or RandomState object]:
         The random seed.
