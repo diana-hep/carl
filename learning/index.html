@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>carl.learning API documentation</title>
-    <meta name="description" content="Machine learning algorithms and utils, complementary to Scikit-Learn." />
+    <meta name="description" content="Machine learning algorithms and utilities, complementary to Scikit-Learn." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -1054,12 +1054,12 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">carl.learning</span> module</h1>
-  <p>Machine learning algorithms and utils, complementary to Scikit-Learn.</p>
+  <p>Machine learning algorithms and utilities, complementary to Scikit-Learn.</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning" class="source">
     <pre><code>"""
-Machine learning algorithms and utils, complementary to Scikit-Learn.
+Machine learning algorithms and utilities, complementary to Scikit-Learn.
 """
 
 # Carl is free software; you can redistribute it and/or modify it
@@ -1297,8 +1297,8 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
     The distribution to draw samples from class 0.</p>
 </li>
 <li>
-<p><code>p1</code> [DistributionMixin`]:
-    The distribution to draw sample from class 1.</p>
+<p><code>p1</code> [<code>DistributionMixin</code>]:
+    The distribution to draw samples from class 1.</p>
 </li>
 <li>
 <p><code>n_samples</code> [integer]:
@@ -1306,7 +1306,7 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
 </li>
 <li>
 <p><code>params</code> [list of pairs (theano shared variables, list of values)]:
-    The list of parameters along with the corresponding values to generate
+    The list of parameters and the corresponding values to generate
     samples for.</p>
 </li>
 <li>
@@ -1342,14 +1342,14 @@ samples in equal number from <code>p0</code> and <code>p1</code>.</p>
     * `p0` [`DistributionMixin`]:
         The distribution to draw samples from class 0.
 
-    * `p1` [DistributionMixin`]:
-        The distribution to draw sample from class 1.
+    * `p1` [`DistributionMixin`]:
+        The distribution to draw samples from class 1.
 
     * `n_samples` [integer]:
         The total number of samples to generate.
 
     * `params` [list of pairs (theano shared variables, list of values)]:
-        The list of parameters along with the corresponding values to generate
+        The list of parameters and the corresponding values to generate
         samples for.
 
     * `random_state` [integer or RandomState object]:
