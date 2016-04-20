@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>carl.data API documentation</title>
-    <meta name="description" content="Generators for likelihood-free inference benchmarks." />
+    <meta name="description" content="This module implements generators for likelihood-free inference benchmarks." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -997,11 +997,13 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">carl.data</span> module</h1>
-  <p>Generators for likelihood-free inference benchmarks.</p>
+  <p>This module implements generators for likelihood-free inference benchmarks.</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data', this);">Show source &equiv;</a></p>
   <div id="source-carl.data" class="source">
-    <pre><code>"""Generators for likelihood-free inference benchmarks."""
+    <pre><code>"""
+This module implements generators for likelihood-free inference benchmarks.
+"""
 
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
@@ -1025,14 +1027,59 @@ __all__ = ("GK", "Ricker")
       <p id="carl.data.GK" class="name">class <span class="ident">GK</span></p>
       
   
+    <div class="desc"><p>g-and-k distribution generator.</p>
+<p>The g-and-k distribution is defined as <code>x = A + B *
+(1 + c * (1 - exp(-g * z)) / (1 + exp(-g * z))) * ((1 + z ** 2) ** k) * z</code>,
+where <code>z ~ N(0, 1)</code>.</p>
+<h2>Reference</h2>
+<ul>
+<li>Haynes, Michele A., H. L. MacGillivray, and K. L. Mengersen.
+  "Robustness of ranking and selection rules using generalised g-and-k
+  distributions." Journal of Statistical Planning and Inference 65.1
+  (1997): 45-66.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK" class="source">
     <pre><code>class GK(TheanoDistribution):
+    """g-and-k distribution generator.
+
+    The g-and-k distribution is defined as `x = A + B *
+    (1 + c * (1 - exp(-g * z)) / (1 + exp(-g * z))) * ((1 + z ** 2) ** k) * z`,
+    where `z ~ N(0, 1)`.
+
+    Reference
+    ---------
+    * Haynes, Michele A., H. L. MacGillivray, and K. L. Mengersen.
+      "Robustness of ranking and selection rules using generalised g-and-k
+      distributions." Journal of Statistical Planning and Inference 65.1
+      (1997): 45-66.
+    """
+
     def __init__(self, A, B, g, k, c=0.8):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `A` [float or theano shared variable]
+        * `B` [float or theano shared variable]
+        * `g` [float or theano shared variable]
+        * `k` [float or theano shared variable]
+        * `c` [float or theano shared variable, default=0.8]
+        """
         super(GK, self).__init__(A=A, B=B, g=g, k=k, c=c)
 
     def rvs(self, n_samples, random_state=None, **kwargs):
+        """Generate random samples.
+
+        Parameters
+        ----------
+        * `n_samples` [int]:
+            The number of samples to generate.
+
+        * `random_state` [integer or RandomState object]:
+            The random seed.
+        """
         rng = check_random_state(random_state)
 
         A = self.A.eval()
@@ -1092,10 +1139,28 @@ __all__ = ("GK", "Ricker")
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>A</code> [float or theano shared variable]</li>
+<li><code>B</code> [float or theano shared variable]</li>
+<li><code>g</code> [float or theano shared variable]</li>
+<li><code>k</code> [float or theano shared variable]</li>
+<li><code>c</code> [float or theano shared variable, default=0.8]</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.__init__" class="source">
     <pre><code>def __init__(self, A, B, g, k, c=0.8):
+    """Constructor.
+    Parameters
+    ----------
+    * `A` [float or theano shared variable]
+    * `B` [float or theano shared variable]
+    * `g` [float or theano shared variable]
+    * `k` [float or theano shared variable]
+    * `c` [float or theano shared variable, default=0.8]
+    """
     super(GK, self).__init__(A=A, B=B, g=g, k=k, c=c)
 </code></pre>
   </div>
@@ -1327,10 +1392,30 @@ __all__ = ("GK", "Ricker")
 
     
   
+    <div class="desc"><p>Generate random samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to generate.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.rvs" class="source">
     <pre><code>def rvs(self, n_samples, random_state=None, **kwargs):
+    """Generate random samples.
+    Parameters
+    ----------
+    * `n_samples` [int]:
+        The number of samples to generate.
+    * `random_state` [integer or RandomState object]:
+        The random seed.
+    """
     rng = check_random_state(random_state)
     A = self.A.eval()
     B = self.B.eval()
@@ -1413,14 +1498,51 @@ __all__ = ("GK", "Ricker")
       <p id="carl.data.Ricker" class="name">class <span class="ident">Ricker</span></p>
       
   
+    <div class="desc"><p>Ricker model.</p>
+<p><code>N_t+1 = r * N_t * exp(-N_t + e_t); Y_t+1 ~ Poisson(phi * N_t+1)</code>,
+where <code>e_t</code> are iid normal deviates with zero mean and variance <code>sigma^2</code>.</p>
+<h2>Reference</h2>
+<ul>
+<li>Ricker, William E. "Stock and recruitment." Journal of the Fisheries
+  Board of Canada 11.5 (1954): 559-623..</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker" class="source">
     <pre><code>class Ricker(TheanoDistribution):
+    """Ricker model.
+
+    `N_t+1 = r * N_t * exp(-N_t + e_t); Y_t+1 ~ Poisson(phi * N_t+1)`,
+    where `e_t` are iid normal deviates with zero mean and variance `sigma^2`.
+
+    Reference
+    ---------
+    * Ricker, William E. "Stock and recruitment." Journal of the Fisheries
+      Board of Canada 11.5 (1954): 559-623..
+    """
+
     def __init__(self, log_r=3.8, sigma=0.3, phi=10.0):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `log_r` [float or theano shared variable, default=3.8]
+        * `sigma` [float or theano shared variable, default=0.3]
+        * `phi` [float or theano shared variable, phi=10.0]
+        """
         super(Ricker, self).__init__(log_r=log_r, sigma=sigma, phi=phi)
 
     def rvs(self, n_samples, random_state=None, **kwargs):
+        """Generate random samples.
+
+        Parameters
+        ----------
+        * `n_samples` [int]:
+            The number of samples to generate.
+
+        * `random_state` [integer or RandomState object]:
+            The random seed.
+        """
         rng = check_random_state(random_state)
 
         log_r = self.log_r.eval()
@@ -1484,10 +1606,24 @@ __all__ = ("GK", "Ricker")
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>log_r</code> [float or theano shared variable, default=3.8]</li>
+<li><code>sigma</code> [float or theano shared variable, default=0.3]</li>
+<li><code>phi</code> [float or theano shared variable, phi=10.0]</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.__init__" class="source">
     <pre><code>def __init__(self, log_r=3.8, sigma=0.3, phi=10.0):
+    """Constructor.
+    Parameters
+    ----------
+    * `log_r` [float or theano shared variable, default=3.8]
+    * `sigma` [float or theano shared variable, default=0.3]
+    * `phi` [float or theano shared variable, phi=10.0]
+    """
     super(Ricker, self).__init__(log_r=log_r, sigma=sigma, phi=phi)
 </code></pre>
   </div>
@@ -1719,10 +1855,30 @@ __all__ = ("GK", "Ricker")
 
     
   
+    <div class="desc"><p>Generate random samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to generate.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.rvs" class="source">
     <pre><code>def rvs(self, n_samples, random_state=None, **kwargs):
+    """Generate random samples.
+    Parameters
+    ----------
+    * `n_samples` [int]:
+        The number of samples to generate.
+    * `random_state` [integer or RandomState object]:
+        The random seed.
+    """
     rng = check_random_state(random_state)
     log_r = self.log_r.eval()
     sigma = self.sigma.eval()
