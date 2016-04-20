@@ -985,6 +985,9 @@ table {
         <li class="mono">
         <span class="class_name"><a href="#carl.ratios.InverseRatio">InverseRatio</a></span>
         </li>
+        <li class="mono">
+        <span class="class_name"><a href="#carl.ratios.KnownDensityRatio">KnownDensityRatio</a></span>
+        </li>
       </ul>
     </li>
 
@@ -1014,11 +1017,13 @@ table {
 # more details.
 
 from .base import DensityRatioMixin
+from .base import KnownDensityRatio
 from .base import InverseRatio
 from .base import DecomposedRatio
 from .classifier import ClassifierRatio
 
 __all__ = ("DensityRatioMixin",
+           "KnownDensityRatio",
            "InverseRatio",
            "DecomposedRatio",
            "ClassifierRatio")
@@ -1040,7 +1045,10 @@ __all__ = ("DensityRatioMixin",
 <p>This class approximates a density ratio <code>r(x) = p0(x) / p1(x)</code> as
 <code>s(x) / 1 - s(x)</code>, where <code>s</code> is a classifier trained to distinguish
 samples <code>x ~ p0</code> from samples <code>x ~ p1</code>, and where <code>s(x)</code> is the
-classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.</p></div>
+classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.</p>
+<p>This class can be used in the likelihood-free setup, i.e. either
+- with known data <code>X</code> drawn from <code>p0</code> and <code>p1</code>, or
+- with generators <code>p0</code> and <code>p1</code> implementing sampling through <code>rvs</code>.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio" class="source">
@@ -1051,6 +1059,10 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
     `s(x) / 1 - s(x)`, where `s` is a classifier trained to distinguish
     samples `x ~ p0` from samples `x ~ p1`, and where `s(x)` is the
     classifier approximate of the probability `p0(x) / (p0(x) + p1(x))`.
+
+    This class can be used in the likelihood-free setup, i.e. either
+    - with known data `X` drawn from `p0` and `p1`, or
+    - with generators `p0` and `p1` implementing sampling through `rvs`.
     """
 
     def __init__(self, base_estimator, random_state=None):
@@ -1089,11 +1101,13 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 
         * `numerator` [`DistributionMixin`, optional]:
             The numerator distribution `p0`, if `X` and `y` are not provided.
-            This object is required to implement the `rvs` method.
+            This object is required to implement sampling through the `rvs`
+            method.
 
         * `denominator` [`DistributionMixin`, optional]:
             The denominator distribution `p1`, if `X` and `y` are not provided.
-            This object is required to implement the `rvs` method.
+            This object is required to implement sampling through the `rvs`
+            method.
 
         * `n_samples` [integer, optional]
             The total number of samples to draw from the numerator and
@@ -1254,12 +1268,14 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 <li>
 <p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
     The numerator distribution <code>p0</code>, if <code>X</code> and <code>y</code> are not provided.
-    This object is required to implement the <code>rvs</code> method.</p>
+    This object is required to implement sampling through the <code>rvs</code>
+    method.</p>
 </li>
 <li>
 <p><code>denominator</code> [<code>DistributionMixin</code>, optional]:
     The denominator distribution <code>p1</code>, if <code>X</code> and <code>y</code> are not provided.
-    This object is required to implement the <code>rvs</code> method.</p>
+    This object is required to implement sampling through the <code>rvs</code>
+    method.</p>
 </li>
 <li>
 <p><code>n_samples</code> [integer, optional]
@@ -1292,10 +1308,12 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
         data from the denominator distribution.
     * `numerator` [`DistributionMixin`, optional]:
         The numerator distribution `p0`, if `X` and `y` are not provided.
-        This object is required to implement the `rvs` method.
+        This object is required to implement sampling through the `rvs`
+        method.
     * `denominator` [`DistributionMixin`, optional]:
         The denominator distribution `p1`, if `X` and `y` are not provided.
-        This object is required to implement the `rvs` method.
+        This object is required to implement sampling through the `rvs`
+        method.
     * `n_samples` [integer, optional]
         The total number of samples to draw from the numerator and
         denominator distributions, if `X` and `y` are not provided.
@@ -1603,7 +1621,7 @@ component of a nested object.</p>
   
     <div class="desc"><p>Decompose a ratio of mixtures into a weighted sum of sub-ratios.</p>
 <p>If numerator <code>p0</code> and denominator <code>p1</code> distributions are known to be
-mixtures <code>p0(x) = \sum_i w_i p0_i(x)</code> and <code>p1(x) = \sum_j w_i p1_j(x)</code>,
+mixtures <code>p0(x) = \sum_i w_i p0_i(x)</code> and <code>p1(x) = \sum_j w_j p1_j(x)</code>,
 then this  class can be used to decompose the ratio <code>r(x) = p0(x) / p1(x)</code>
 into the equivalent form <code>r(x) = \sum_i [\sum_j r_ji(x)]^-1</code> where
 <code>r_ji(x)</code> are sub-ratios for <code>p1_j(x) / p0_i(x)</code>. This usually allows
@@ -1617,7 +1635,7 @@ follow the <code>Mixture</code> API.</p></div>
     """Decompose a ratio of mixtures into a weighted sum of sub-ratios.
 
     If numerator `p0` and denominator `p1` distributions are known to be
-    mixtures `p0(x) = \sum_i w_i p0_i(x)` and `p1(x) = \sum_j w_i p1_j(x)`,
+    mixtures `p0(x) = \sum_i w_i p0_i(x)` and `p1(x) = \sum_j w_j p1_j(x)`,
     then this  class can be used to decompose the ratio `r(x) = p0(x) / p1(x)`
     into the equivalent form `r(x) = \sum_i [\sum_j r_ji(x)]^-1` where
     `r_ji(x)` are sub-ratios for `p1_j(x) / p0_i(x)`. This usually allows
@@ -2499,6 +2517,9 @@ of a given base ratio <code>r(x) = p0(x) / p1(x)</code>.</p></div>
         - from distributions, using
           `fit(numerator=p1, denominator=p0, n_samples=N)`
 
+        Note that this object does not need to be fit if `base_ratio`
+        is already fit.
+
         Parameters
         ----------
         * `X` [array-like, shape=(n_samples, n_features), optional]:
@@ -2616,6 +2637,8 @@ fit either</p>
 <li>from distributions, using
   <code>fit(numerator=p1, denominator=p0, n_samples=N)</code></li>
 </ul>
+<p>Note that this object does not need to be fit if <code>base_ratio</code>
+is already fit.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
@@ -2658,6 +2681,8 @@ fit either</p>
     - from data, using `fit(X, y)` or
     - from distributions, using
       `fit(numerator=p1, denominator=p0, n_samples=N)`
+    Note that this object does not need to be fit if `base_ratio`
+    is already fit.
     Parameters
     ----------
     * `X` [array-like, shape=(n_samples, n_features), optional]:
@@ -2926,6 +2951,420 @@ component of a nested object.</p>
           <h3>Instance variables</h3>
             <div class="item">
             <p id="carl.ratios.InverseRatio.base_ratio" class="name">var <span class="ident">base_ratio</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="carl.ratios.KnownDensityRatio" class="name">class <span class="ident">KnownDensityRatio</span></p>
+      
+  
+    <div class="desc"><p>Density ratio for known densities <code>p0</code> and <code>p1</code>.</p>
+<p>This class cannot be used in the likelihood-free setup. It requires
+numerator and denominator distributions to implement the <code>pdf</code> and <code>nll</code>
+methods.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio" class="source">
+    <pre><code>class KnownDensityRatio(DensityRatioMixin, BaseEstimator):
+    """Density ratio for known densities `p0` and `p1`.
+
+    This class cannot be used in the likelihood-free setup. It requires
+    numerator and denominator distributions to implement the `pdf` and `nll`
+    methods.
+    """
+
+    def __init__(self, numerator, denominator):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `numerator` [`DistributionMixin`]:
+            The numerator distribution.
+            This object is required to implement the `pdf` and `nll` methods.
+
+        * `denominator` [`DistributionMixin`]:
+            The denominator distribution.
+            This object is required to implement the `pdf` and `nll` methods.
+        """
+        self.numerator = numerator
+        self.denominator = denominator
+
+    def fit(self, X=None, y=None, numerator=None,
+            denominator=None, n_samples=None, **kwargs):
+        """Do nothing.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
+        return self
+
+    def predict(self, X, log=False, **kwargs):
+        """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `log` [boolean, default=False]:
+            If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+
+        Returns
+        -------
+        * `r` [array, shape=(n_samples,)]:
+            The predicted ratio `r(X)`.
+        """
+        if not log:
+            return self.numerator.pdf(X) / self.denominator.pdf(X)
+
+        else:
+            return -self.numerator.nll(X) + self.denominator.nll(X)
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#carl.ratios.KnownDensityRatio">KnownDensityRatio</a></li>
+          <li><a href="#carl.ratios.DensityRatioMixin">DensityRatioMixin</a></li>
+          <li>sklearn.base.BaseEstimator</li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, numerator, denominator)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>numerator</code> [<code>DistributionMixin</code>]:
+    The numerator distribution.
+    This object is required to implement the <code>pdf</code> and <code>nll</code> methods.</p>
+</li>
+<li>
+<p><code>denominator</code> [<code>DistributionMixin</code>]:
+    The denominator distribution.
+    This object is required to implement the <code>pdf</code> and <code>nll</code> methods.</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.__init__" class="source">
+    <pre><code>def __init__(self, numerator, denominator):
+    """Constructor.
+    Parameters
+    ----------
+    * `numerator` [`DistributionMixin`]:
+        The numerator distribution.
+        This object is required to implement the `pdf` and `nll` methods.
+    * `denominator` [`DistributionMixin`]:
+        The denominator distribution.
+        This object is required to implement the `pdf` and `nll` methods.
+    """
+    self.numerator = numerator
+    self.denominator = denominator
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.fit">
+    <p>def <span class="ident">fit</span>(</p><p>self, X=None, y=None, numerator=None, denominator=None, n_samples=None, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Do nothing.</p>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.fit', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.fit" class="source">
+    <pre><code>def fit(self, X=None, y=None, numerator=None,
+        denominator=None, n_samples=None, **kwargs):
+    """Do nothing.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.get_params">
+    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Get parameters for this estimator.</p>
+<h2>Parameters</h2>
+<p>deep: boolean, optional
+    If True, will return the parameters for this estimator and
+    contained subobjects that are estimators.</p>
+<h2>Returns</h2>
+<p>params : mapping of string to any
+    Parameter names mapped to their values.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.get_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.get_params" class="source">
+    <pre><code>def get_params(self, deep=True):
+    """Get parameters for this estimator.
+    Parameters
+    ----------
+    deep: boolean, optional
+        If True, will return the parameters for this estimator and
+        contained subobjects that are estimators.
+    Returns
+    -------
+    params : mapping of string to any
+        Parameter names mapped to their values.
+    """
+    out = dict()
+    for key in self._get_param_names():
+        # We need deprecation warnings to always be on in order to
+        # catch deprecated param values.
+        # This is set in utils/__init__.py but it gets overwritten
+        # when running under python3 somehow.
+        warnings.simplefilter("always", DeprecationWarning)
+        try:
+            with warnings.catch_warnings(record=True) as w:
+                value = getattr(self, key, None)
+            if len(w) and w[0].category == DeprecationWarning:
+                # if the parameter is deprecated, don't show it
+                continue
+        finally:
+            warnings.filters.pop(0)
+        # XXX: should we rather test if instance of estimator?
+        if deep and hasattr(value, 'get_params'):
+            deep_items = value.get_params().items()
+            out.update((key + '__' + k, val) for k, val in deep_items)
+        out[key] = value
+    return out
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.predict">
+    <p>def <span class="ident">predict</span>(</p><p>self, X, log=False, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Predict the density ratio <code>r(x_i)</code> for all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>log</code> [boolean, default=False]:
+    If true, return the log-ratio <code>log r(x) = log(p0(x)) - log(p1(x))</code>.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>r</code> [array, shape=(n_samples,)]:
+    The predicted ratio <code>r(X)</code>.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.predict', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.predict" class="source">
+    <pre><code>def predict(self, X, log=False, **kwargs):
+    """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `log` [boolean, default=False]:
+        If true, return the log-ratio `log r(x) = log(p0(x)) - log(p1(x))`.
+    Returns
+    -------
+    * `r` [array, shape=(n_samples,)]:
+        The predicted ratio `r(X)`.
+    """
+    if not log:
+        return self.numerator.pdf(X) / self.denominator.pdf(X)
+    else:
+        return -self.numerator.nll(X) + self.denominator.nll(X)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.score">
+    <p>def <span class="ident">score</span>(</p><p>self, X, y, finite_only=True, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Negative MSE between predicted and known ratios.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>y</code> [array-like, shape=(n_samples,)]:
+    The known ratios for <code>X</code>.</p>
+</li>
+<li>
+<p><code>finite_only</code> [boolean, default=True]:
+    Evaluate the MSE only over finite ratios.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The negative MSE.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.score', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.score" class="source">
+    <pre><code>def score(self, X, y, finite_only=True, **kwargs):
+    """Negative MSE between predicted and known ratios.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `y` [array-like, shape=(n_samples,)]:
+        The known ratios for `X`.
+    * `finite_only` [boolean, default=True]:
+        Evaluate the MSE only over finite ratios.
+    Returns
+    -------
+    * `score` [float]:
+        The negative MSE.
+    """
+    ratios = self.predict(X, **kwargs)
+    if finite_only:
+        mask = np.isfinite(ratios)
+        y = y[mask]
+        ratios = ratios[mask]
+    return -mean_squared_error(y, ratios)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="carl.ratios.KnownDensityRatio.set_params">
+    <p>def <span class="ident">set_params</span>(</p><p>self, **params)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.KnownDensityRatio.set_params', this);">Show source &equiv;</a></p>
+  <div id="source-carl.ratios.KnownDensityRatio.set_params" class="source">
+    <pre><code>def set_params(self, **params):
+    """Set the parameters of this estimator.
+    The method works on simple estimators as well as on nested objects
+    (such as pipelines). The former have parameters of the form
+    ``<component>__<parameter>`` so that it's possible to update each
+    component of a nested object.
+    Returns
+    -------
+    self
+    """
+    if not params:
+        # Simple optimisation to gain speed (inspect is slow)
+        return self
+    valid_params = self.get_params(deep=True)
+    for key, value in six.iteritems(params):
+        split = key.split('__', 1)
+        if len(split) > 1:
+            # nested objects case
+            name, sub_name = split
+            if name not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (name, self))
+            sub_object = valid_params[name]
+            sub_object.set_params(**{sub_name: value})
+        else:
+            # simple objects case
+            if key not in valid_params:
+                raise ValueError('Invalid parameter %s for estimator %s. '
+                                 'Check the list of available parameters '
+                                 'with `estimator.get_params().keys()`.' %
+                                 (key, self.__class__.__name__))
+            setattr(self, key, value)
+    return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="carl.ratios.KnownDensityRatio.denominator" class="name">var <span class="ident">denominator</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.ratios.KnownDensityRatio.numerator" class="name">var <span class="ident">numerator</span></p>
             
 
             
