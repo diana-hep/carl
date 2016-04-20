@@ -5,6 +5,7 @@
 # more details.
 
 import numpy as np
+import warnings
 
 from sklearn.base import BaseEstimator
 from sklearn.base import clone
@@ -71,6 +72,29 @@ class DensityRatioMixin:
             The predicted ratio `r(X)`.
         """
         raise NotImplementedError
+
+    def nllr(self, X, **kwargs):
+        """Negative log-likelihood ratio.
+
+        This method is a shortcut for `-ratio.predict(X, log=True).sum()`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `nllr` [float]:
+            The negative log-likelihood ratio.
+        """
+        ratios = self.predict(X, log=True, **kwargs)
+        mask = np.isfinite(ratios)
+
+        if mask.sum() < len(ratios):
+            warnings.warn("r(X) contains non-finite values.")
+
+        return -np.sum(ratios[mask])
 
     def score(self, X, y, finite_only=True, **kwargs):
         """Negative MSE between predicted and known ratios.

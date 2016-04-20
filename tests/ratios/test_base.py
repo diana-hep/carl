@@ -30,6 +30,7 @@ def test_known_density():
     assert ratio.score(reals, p0.pdf(reals) / p1.pdf(reals)) > -0.01
     assert np.mean(np.abs(np.log(ratio.predict(reals)) -
                           ratio.predict(reals, log=True))) < 0.01
+    assert ratio.nllr(reals) == -ratio.predict(reals, log=True).sum()
 
 
 def check_inverse(constant):
