@@ -1099,34 +1099,139 @@ __all__ = ("DistributionMixin",
       <p id="carl.distributions.DistributionMixin" class="name">class <span class="ident">DistributionMixin</span></p>
       
   
+    <div class="desc"><p>Distribution mixin.</p>
+<p>This class defines the common API for distribution objects.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin" class="source">
     <pre><code>class DistributionMixin(BaseEstimator):
-    # Mixin interface
+    """Distribution mixin.
+
+    This class defines the common API for distribution objects.
+    """
+
     def pdf(self, X, **kwargs):
+        """Probability density function.
+
+        This function returns the value of the probability density function
+        `p(x_i)`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `pdf` [array, shape=(n_samples,)]:
+            `p(x_i)` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def nll(self, X, **kwargs):
+        """Negative log-likelihood.
+
+        This function returns the value of the negative log-likelihood
+        `- log(p(x_i))`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `nll` [array, shape=(n_samples,)]:
+            `-log(p(x_i))` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def cdf(self, X, **kwargs):
+        """Cumulative distribution function.
+
+        This function returns the value of the cumulative distribution function
+        `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `cdf` [array, shape=(n_samples,)]:
+            `cdf(x_i)` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def ppf(self, X, **kwargs):
+        """Percent point function (inverse of cdf).
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `ppf` [array, shape=(n_samples,)]:
+            Percent point function for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def rvs(self, n_samples, random_state=None, **kwargs):
+        """Draw samples.
+
+        Parameters
+        ----------
+        * `n_samples` [int]:
+            The number of samples to draw.
+
+        * `random_state` [integer or RandomState object]:
+            The random seed.
+
+        Returns
+        -------
+        * `X` [array, shape=(n_samples, n_features)]:
+            The generated samples.
+        """
         raise NotImplementedError
 
     def fit(self, X, **kwargs):
+        """Fit the distribution parameters to data.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         return self
 
     def score(self, X, **kwargs):
+        """Evaluate the goodness of fit of the distribution w.r.t. `X`.
+
+        The higher, the better.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `score` [float]:
+            The goodness of fit.
+        """
         return NotImplementedError
 
     @property
     def ndim(self):
+        """The number of dimensions (or features) of the data."""
         return 1
 </code></pre>
   </div>
@@ -1150,10 +1255,35 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1170,10 +1300,31 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.fit" class="source">
     <pre><code>def fit(self, X, **kwargs):
+    """Fit the distribution parameters to data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     return self
 </code></pre>
   </div>
@@ -1249,10 +1400,35 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1269,10 +1445,35 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1289,10 +1490,31 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1309,10 +1531,39 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.rvs" class="source">
     <pre><code>def rvs(self, n_samples, random_state=None, **kwargs):
+    """Draw samples.
+    Parameters
+    ----------
+    * `n_samples` [int]:
+        The number of samples to draw.
+    * `random_state` [integer or RandomState object]:
+        The random seed.
+    Returns
+    -------
+    * `X` [array, shape=(n_samples, n_features)]:
+        The generated samples.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1329,10 +1580,33 @@ __all__ = ("DistributionMixin",
 
     
   
+    <div class="desc"><p>Evaluate the goodness of fit of the distribution w.r.t. <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The goodness of fit.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.DistributionMixin.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.DistributionMixin.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the goodness of fit of the distribution w.r.t. `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The goodness of fit.
+    """
     return NotImplementedError
 </code></pre>
   </div>
@@ -1407,6 +1681,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1418,11 +1693,25 @@ component of a nested object.</p>
       <p id="carl.distributions.Exponential" class="name">class <span class="ident">Exponential</span></p>
       
   
+    <div class="desc"><p>Exponential distribution.</p>
+<p>This distribution supports 1D data only.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential" class="source">
     <pre><code>class Exponential(TheanoDistribution):
+    """Exponential distribution.
+
+    This distribution supports 1D data only.
+    """
+
     def __init__(self, inverse_scale=1.0):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `inverse_scale` [float]:
+            The inverse scale.
+        """
         super(Exponential, self).__init__(inverse_scale=inverse_scale)
 
         # pdf
@@ -1430,22 +1719,22 @@ component of a nested object.</p>
             T.lt(self.X, 0.),
             0.,
             self.inverse_scale * T.exp(-self.inverse_scale * self.X)).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = bound(
             -T.log(self.inverse_scale) + self.inverse_scale * self.X,
             np.inf,
             self.inverse_scale > 0.).ravel()
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # cdf
         self.cdf_ = (1. - T.exp(-self.inverse_scale * self.X)).ravel()
-        self.make_(self.cdf_, "cdf")
+        self._make(self.cdf_, "cdf")
 
         # ppf
         self.ppf_ = -T.log(1. - self.p) / self.inverse_scale
-        self.make_(self.ppf_, "ppf", args=[self.p])
+        self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -1491,29 +1780,41 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>inverse_scale</code> [float]:
+    The inverse scale.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.__init__" class="source">
     <pre><code>def __init__(self, inverse_scale=1.0):
+    """Constructor.
+    Parameters
+    ----------
+    * `inverse_scale` [float]:
+        The inverse scale.
+    """
     super(Exponential, self).__init__(inverse_scale=inverse_scale)
     # pdf
     self.pdf_ = T.switch(
         T.lt(self.X, 0.),
         0.,
         self.inverse_scale * T.exp(-self.inverse_scale * self.X)).ravel()
-    self.make_(self.pdf_, "pdf")
+    self._make(self.pdf_, "pdf")
     # -log pdf
     self.nll_ = bound(
         -T.log(self.inverse_scale) + self.inverse_scale * self.X,
         np.inf,
         self.inverse_scale > 0.).ravel()
-    self.make_(self.nll_, "nll")
+    self._make(self.nll_, "nll")
     # cdf
     self.cdf_ = (1. - T.exp(-self.inverse_scale * self.X)).ravel()
-    self.make_(self.cdf_, "cdf")
+    self._make(self.cdf_, "cdf")
     # ppf
     self.ppf_ = -T.log(1. - self.p) / self.inverse_scale
-    self.make_(self.ppf_, "ppf", args=[self.p])
+    self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -1529,10 +1830,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1549,11 +1875,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -1686,36 +2063,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.Exponential.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.Exponential.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.Exponential.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -1723,10 +2070,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1743,10 +2115,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1763,10 +2160,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1805,10 +2223,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -1861,6 +2302,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -2040,10 +2482,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -2215,10 +2682,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -2419,7 +2907,7 @@ component of a nested object.</p>
                     c.pdf_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
         if all([hasattr(c, "nll_") for c in self.components]):
             # nll
@@ -2432,7 +2920,7 @@ component of a nested object.</p>
                     c.nll_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.nll_, "nll")
+            self._make(self.nll_, "nll")
 
     def pdf(self, X, **kwargs):
         out = np.ones(len(X))
@@ -2545,7 +3033,7 @@ component of a nested object.</p>
             self.pdf_ *= theano.clone(
                 c.pdf_, {c.X: self.X[:, start:start+c.ndim]})
             start += c.ndim
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
     if all([hasattr(c, "nll_") for c in self.components]):
         # nll
         c0 = self.components[0]
@@ -2555,7 +3043,7 @@ component of a nested object.</p>
             self.nll_ += theano.clone(
                 c.nll_, {c.X: self.X[:, start:start+c.ndim]})
             start += c.ndim
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 </code></pre>
   </div>
 </div>
@@ -2571,10 +3059,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -2666,36 +3179,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.Join.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.Join.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.Join.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -2753,10 +3236,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -2800,10 +3304,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -2853,9 +3380,14 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.Join.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -2936,10 +3468,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.KernelDensity.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.KernelDensity.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -3079,10 +3636,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.KernelDensity.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.KernelDensity.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -3212,6 +3790,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -3324,10 +3903,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -3344,11 +3948,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -3481,36 +4136,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.LinearTransform.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.LinearTransform.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.LinearTransform.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -3558,10 +4183,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -3600,10 +4246,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -3663,9 +4332,14 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.LinearTransform.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -3751,24 +4425,24 @@ component of a nested object.</p>
             self.pdf_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
                 self.pdf_ += self.weights[i] * self.components[i].pdf_
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
             # -log pdf
             self.nll_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
                 self.nll_ += self.weights[i] * self.components[i].pdf_
             self.nll_ = -T.log(self.nll_)
-            self.make_(self.nll_, "nll")
+            self._make(self.nll_, "nll")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
             # cdf
             self.cdf_ = self.weights[0] * self.components[0].cdf_
             for i in range(1, len(self.components)):
                 self.cdf_ += self.weights[i] * self.components[i].cdf_
-            self.make_(self.cdf_, "cdf")
+            self._make(self.cdf_, "cdf")
 
         # Weight evaluation function
-        self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
+        self._make(T.stack(self.weights, axis=0), "compute_weights", args=[])
 
     def pdf(self, X, **kwargs):
         weights = self.compute_weights(**kwargs)
@@ -3912,21 +4586,21 @@ component of a nested object.</p>
         self.pdf_ = self.weights[0] * self.components[0].pdf_
         for i in range(1, len(self.components)):
             self.pdf_ += self.weights[i] * self.components[i].pdf_
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
         # -log pdf
         self.nll_ = self.weights[0] * self.components[0].pdf_
         for i in range(1, len(self.components)):
             self.nll_ += self.weights[i] * self.components[i].pdf_
         self.nll_ = -T.log(self.nll_)
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
     if all([hasattr(c, "cdf_") for c in self.components]):
         # cdf
         self.cdf_ = self.weights[0] * self.components[0].cdf_
         for i in range(1, len(self.components)):
             self.cdf_ += self.weights[i] * self.components[i].cdf_
-        self.make_(self.cdf_, "cdf")
+        self._make(self.cdf_, "cdf")
     # Weight evaluation function
-    self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
+    self._make(T.stack(self.weights, axis=0), "compute_weights", args=[])
 </code></pre>
   </div>
 </div>
@@ -4041,36 +4715,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.Mixture.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.Mixture.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.Mixture.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -4122,10 +4766,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4173,10 +4838,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -4226,9 +4914,14 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.Mixture.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -4260,7 +4953,7 @@ component of a nested object.</p>
 
         # ndim
         self.ndim_ = self.mu.shape[0]
-        self.make_(self.ndim_, "ndim_func_", args=[])
+        self._make(self.ndim_, "ndim_func_", args=[])
 
         # pdf
         L = linalg.cholesky(self.sigma)
@@ -4273,14 +4966,14 @@ component of a nested object.</p>
                                            sigma_inv),
                                      self.X - self.mu),
                                axis=1))).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = -T.log(self.pdf_)  # XXX: for sure this can be better
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # self.rvs_
-        self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
+        self._make(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)
@@ -4343,7 +5036,7 @@ component of a nested object.</p>
     # XXX: The SDP-ness of sigma should be check upon changes
     # ndim
     self.ndim_ = self.mu.shape[0]
-    self.make_(self.ndim_, "ndim_func_", args=[])
+    self._make(self.ndim_, "ndim_func_", args=[])
     # pdf
     L = linalg.cholesky(self.sigma)
     sigma_det = linalg.det(self.sigma)  # XXX: compute from L instead
@@ -4354,12 +5047,12 @@ component of a nested object.</p>
                                        sigma_inv),
                                  self.X - self.mu),
                            axis=1))).ravel()
-    self.make_(self.pdf_, "pdf")
+    self._make(self.pdf_, "pdf")
     # -log pdf
     self.nll_ = -T.log(self.pdf_)  # XXX: for sure this can be better
-    self.make_(self.nll_, "nll")
+    self._make(self.nll_, "nll")
     # self.rvs_
-    self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
+    self._make(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
 </code></pre>
   </div>
 </div>
@@ -4375,10 +5068,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4395,11 +5113,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -4532,36 +5301,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.MultivariateNormal.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.MultivariateNormal.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.MultivariateNormal.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -4569,10 +5308,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4589,10 +5353,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4609,10 +5398,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4651,10 +5461,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -4694,9 +5527,14 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.MultivariateNormal.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -4738,18 +5576,35 @@ component of a nested object.</p>
       <p id="carl.distributions.Normal" class="name">class <span class="ident">Normal</span></p>
       
   
+    <div class="desc"><p>Normal distribution.</p>
+<p>This distribution supports 1D data only.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal" class="source">
     <pre><code>class Normal(TheanoDistribution):
+    """Normal distribution.
+
+    This distribution supports 1D data only.
+    """
+
     def __init__(self, mu=0.0, sigma=1.0):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `mu` [float]:
+            The distribution mean.
+
+        * `sigma` [float]:
+            The distribution standard deviation.
+        """
         super(Normal, self).__init__(mu=mu, sigma=sigma)
 
         # pdf
         self.pdf_ = (
             (1. / np.sqrt(2. * np.pi)) / self.sigma *
             T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = bound(
@@ -4757,17 +5612,17 @@ component of a nested object.</p>
             (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
             np.inf,
             self.sigma > 0.).ravel()
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # cdf
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
                                       (self.sigma * np.sqrt(2.)))).ravel()
-        self.make_(self.cdf_, "cdf")
+        self._make(self.cdf_, "cdf")
 
         # ppf
         self.ppf_ = (self.mu +
                      np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
-        self.make_(self.ppf_, "ppf", args=[self.p])
+        self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -4813,31 +5668,51 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>mu</code> [float]:
+    The distribution mean.</p>
+</li>
+<li>
+<p><code>sigma</code> [float]:
+    The distribution standard deviation.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.__init__" class="source">
     <pre><code>def __init__(self, mu=0.0, sigma=1.0):
+    """Constructor.
+    Parameters
+    ----------
+    * `mu` [float]:
+        The distribution mean.
+    * `sigma` [float]:
+        The distribution standard deviation.
+    """
     super(Normal, self).__init__(mu=mu, sigma=sigma)
     # pdf
     self.pdf_ = (
         (1. / np.sqrt(2. * np.pi)) / self.sigma *
         T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))).ravel()
-    self.make_(self.pdf_, "pdf")
+    self._make(self.pdf_, "pdf")
     # -log pdf
     self.nll_ = bound(
         T.log(self.sigma) + T.log(np.sqrt(2. * np.pi)) +
         (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
         np.inf,
         self.sigma > 0.).ravel()
-    self.make_(self.nll_, "nll")
+    self._make(self.nll_, "nll")
     # cdf
     self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
                                   (self.sigma * np.sqrt(2.)))).ravel()
-    self.make_(self.cdf_, "cdf")
+    self._make(self.cdf_, "cdf")
     # ppf
     self.ppf_ = (self.mu +
                  np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
-    self.make_(self.ppf_, "ppf", args=[self.p])
+    self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -4853,10 +5728,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -4873,11 +5773,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -5010,36 +5961,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.Normal.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.Normal.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.Normal.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -5047,10 +5968,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5067,10 +6013,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5087,10 +6058,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5129,10 +6121,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -5185,6 +6200,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -5276,10 +6292,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5378,10 +6419,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5398,10 +6464,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5418,10 +6509,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5465,10 +6577,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the goodness of fit of the distribution w.r.t. <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The goodness of fit.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the goodness of fit of the distribution w.r.t. `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The goodness of fit.
+    """
     return NotImplementedError
 </code></pre>
   </div>
@@ -5547,6 +6682,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -5558,15 +6694,50 @@ component of a nested object.</p>
       <p id="carl.distributions.TheanoDistribution" class="name">class <span class="ident">TheanoDistribution</span></p>
       
   
+    <div class="desc"><p>Base class for Theano-based distributions.</p>
+<p>Exposed attributes include:</p>
+<ul>
+<li>
+<p><code>parameters_</code>: the set of parameters on which the distribution depends.</p>
+</li>
+<li>
+<p><code>constants_</code>: the set of constants on which the distribution depends.</p>
+</li>
+<li>
+<p><code>observeds_</code>: the set of unset variables on which the distribution
+  depends. Values for these variables are required to be set using the
+  <code>**kwargs</code> argument.</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution" class="source">
     <pre><code>class TheanoDistribution(DistributionMixin):
+    """Base class for Theano-based distributions.
+
+    Exposed attributes include:
+
+    - `parameters_`: the set of parameters on which the distribution depends.
+
+    - `constants_`: the set of constants on which the distribution depends.
+
+    - `observeds_`: the set of unset variables on which the distribution
+      depends. Values for these variables are required to be set using the
+      `**kwargs` argument.
+    """
+
     # Mixin interface
     X = T.dmatrix(name="X")  # Input expression is shared by all distributions
     p = T.dmatrix(name="p")
 
     def __init__(self, **parameters):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `**parameters` [pairs of name/value]:
+            The list of parameter names with their values.
+        """
         # Validate parameters of the distribution
         self.parameters_ = set()        # base parameters
         self.constants_ = set()         # base constants
@@ -5585,7 +6756,7 @@ component of a nested object.</p>
             for o_i in o:
                 self.observeds_.add(o_i)
 
-    def make_(self, expression, name, args=None, kwargs=None):
+    def _make(self, expression, name, args=None, kwargs=None):
         if args is None:
             args = [self.X]
 
@@ -5624,6 +6795,32 @@ component of a nested object.</p>
 
     def fit(self, X, bounds=None, constraints=None, use_gradient=True,
             optimizer=None, **kwargs):
+        """Fit the distribution parameters to data by minimizing the negative
+        log-likelihood of the data.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `bounds` [list of (parameter, (low, high))]:
+            The parameter bounds.
+
+        * `constraints`:
+            The constraints on the parameters.
+
+        * `use_gradient` [boolean, default=True]:
+            Whether to use exact gradients (if `True`) or numerical gradients
+            (if `False`).
+
+        * `optimizer` [string]:
+            The optimization method.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         # Map parameters to placeholders
         param_to_placeholder = []
         param_to_index = {}
@@ -5709,6 +6906,20 @@ component of a nested object.</p>
         return self
 
     def score(self, X, **kwargs):
+        """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+
+        The higher, the better.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `score` [float]:
+            The log-likelihood of `X`.
+        """
         return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -5754,10 +6965,22 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>**parameters</code> [pairs of name/value]:
+    The list of parameter names with their values.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.__init__" class="source">
     <pre><code>def __init__(self, **parameters):
+    """Constructor.
+    Parameters
+    ----------
+    * `**parameters` [pairs of name/value]:
+        The list of parameter names with their values.
+    """
     # Validate parameters of the distribution
     self.parameters_ = set()        # base parameters
     self.constants_ = set()         # base constants
@@ -5787,10 +7010,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -5807,11 +7055,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -5944,36 +7243,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.TheanoDistribution.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.TheanoDistribution.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.TheanoDistribution.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -5981,10 +7250,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6001,10 +7295,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6021,10 +7340,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6063,10 +7403,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -6116,9 +7479,14 @@ component of a nested object.</p>
             <div class="item">
             <p id="carl.distributions.TheanoDistribution.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
+    </p>
 
             
   
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -6150,11 +7518,28 @@ component of a nested object.</p>
       <p id="carl.distributions.Uniform" class="name">class <span class="ident">Uniform</span></p>
       
   
+    <div class="desc"><p>Uniform distribution.</p>
+<p>This distribution supports 1D data only.</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform" class="source">
     <pre><code>class Uniform(TheanoDistribution):
+    """Uniform distribution.
+
+    This distribution supports 1D data only.
+    """
+
     def __init__(self, low=0.0, high=1.0):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `low` [float]:
+            The lower bound.
+
+        * `high` [float]:
+            The upper bound
+        """
         super(Uniform, self).__init__(low=low, high=high)
 
         # pdf
@@ -6162,14 +7547,14 @@ component of a nested object.</p>
             T.or_(T.lt(self.X, self.low), T.ge(self.X, self.high)),
             0.,
             1. / (self.high - self.low)).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = T.switch(
             T.or_(T.lt(self.X, self.low), T.ge(self.X, self.high)),
             np.inf,
             T.log(self.high - self.low)).ravel()
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # cdf
         self.cdf_ = T.switch(
@@ -6179,11 +7564,11 @@ component of a nested object.</p>
                 T.lt(self.X, self.high),
                 (self.X - self.low) / (self.high - self.low),
                 1.)).ravel()
-        self.make_(self.cdf_, "cdf")
+        self._make(self.cdf_, "cdf")
 
         # ppf
         self.ppf_ = self.p * (self.high - self.low) + self.low
-        self.make_(self.ppf_, "ppf", args=[self.p])
+        self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -6229,23 +7614,43 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Constructor.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>low</code> [float]:
+    The lower bound.</p>
+</li>
+<li>
+<p><code>high</code> [float]:
+    The upper bound</p>
+</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.__init__" class="source">
     <pre><code>def __init__(self, low=0.0, high=1.0):
+    """Constructor.
+    Parameters
+    ----------
+    * `low` [float]:
+        The lower bound.
+    * `high` [float]:
+        The upper bound
+    """
     super(Uniform, self).__init__(low=low, high=high)
     # pdf
     self.pdf_ = T.switch(
         T.or_(T.lt(self.X, self.low), T.ge(self.X, self.high)),
         0.,
         1. / (self.high - self.low)).ravel()
-    self.make_(self.pdf_, "pdf")
+    self._make(self.pdf_, "pdf")
     # -log pdf
     self.nll_ = T.switch(
         T.or_(T.lt(self.X, self.low), T.ge(self.X, self.high)),
         np.inf,
         T.log(self.high - self.low)).ravel()
-    self.make_(self.nll_, "nll")
+    self._make(self.nll_, "nll")
     # cdf
     self.cdf_ = T.switch(
         T.lt(self.X, self.low),
@@ -6254,10 +7659,10 @@ component of a nested object.</p>
             T.lt(self.X, self.high),
             (self.X - self.low) / (self.high - self.low),
             1.)).ravel()
-    self.make_(self.cdf_, "cdf")
+    self._make(self.cdf_, "cdf")
     # ppf
     self.ppf_ = self.p * (self.high - self.low) + self.low
-    self.make_(self.ppf_, "ppf", args=[self.p])
+    self._make(self.ppf_, "ppf", args=[self.p])
 </code></pre>
   </div>
 </div>
@@ -6273,10 +7678,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6293,11 +7723,62 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -6430,36 +7911,6 @@ component of a nested object.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.distributions.Uniform.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.distributions.Uniform.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.distributions.Uniform.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -6467,10 +7918,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6487,10 +7963,35 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6507,10 +8008,31 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -6549,10 +8071,33 @@ component of a nested object.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -6605,6 +8150,7 @@ component of a nested object.</p>
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 

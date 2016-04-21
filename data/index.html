@@ -1178,10 +1178,35 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1198,11 +1223,62 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -1335,36 +1411,6 @@ where <code>z ~ N(0, 1)</code>.</p>
   
             
   <div class="item">
-    <div class="name def" id="carl.data.GK.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.data.GK.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.data.GK.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -1372,10 +1418,35 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1392,10 +1463,35 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1412,10 +1508,31 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1481,10 +1598,33 @@ where <code>z ~ N(0, 1)</code>.</p>
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.GK.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -1527,6 +1667,7 @@ where <code>z ~ N(0, 1)</code>.</p>
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1680,10 +1821,35 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.cdf" class="source">
     <pre><code>def cdf(self, X, **kwargs):
+    """Cumulative distribution function.
+    This function returns the value of the cumulative distribution function
+    `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `cdf` [array, shape=(n_samples,)]:
+        `cdf(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1700,11 +1866,62 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.fit" class="source">
     <pre><code>def fit(self, X, bounds=None, constraints=None, use_gradient=True,
         optimizer=None, **kwargs):
+    """Fit the distribution parameters to data by minimizing the negative
+    log-likelihood of the data.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    * `bounds` [list of (parameter, (low, high))]:
+        The parameter bounds.
+    * `constraints`:
+        The constraints on the parameters.
+    * `use_gradient` [boolean, default=True]:
+        Whether to use exact gradients (if `True`) or numerical gradients
+        (if `False`).
+    * `optimizer` [string]:
+        The optimization method.
+    Returns
+    -------
+    * `self` [object]:
+        `self`.
+    """
     # Map parameters to placeholders
     param_to_placeholder = []
     param_to_index = {}
@@ -1837,36 +2054,6 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
   
             
   <div class="item">
-    <div class="name def" id="carl.data.Ricker.make_">
-    <p>def <span class="ident">make_</span>(</p><p>self, expression, name, args=None, kwargs=None)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.make_', this);">Show source &equiv;</a></p>
-  <div id="source-carl.data.Ricker.make_" class="source">
-    <pre><code>def make_(self, expression, name, args=None, kwargs=None):
-    if args is None:
-        args = [self.X]
-    if kwargs is None:
-        kwargs = self.observeds_
-    func = theano.function(
-        [theano.In(v, name=v.name) for v in args] +
-        [theano.In(v, name=v.name) for v in kwargs],
-        expression,
-        allow_input_downcast=True
-    )
-    setattr(self, name, func)
-</code></pre>
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
     <div class="name def" id="carl.data.Ricker.nll">
     <p>def <span class="ident">nll</span>(</p><p>self, X, **kwargs)</p>
     </div>
@@ -1874,10 +2061,35 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.nll" class="source">
     <pre><code>def nll(self, X, **kwargs):
+    """Negative log-likelihood.
+    This function returns the value of the negative log-likelihood
+    `- log(p(x_i))`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `nll` [array, shape=(n_samples,)]:
+        `-log(p(x_i))` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1894,10 +2106,35 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.pdf" class="source">
     <pre><code>def pdf(self, X, **kwargs):
+    """Probability density function.
+    This function returns the value of the probability density function
+    `p(x_i)`, at all `x_i` in `X`.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `pdf` [array, shape=(n_samples,)]:
+        `p(x_i)` for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1914,10 +2151,31 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Percent point function (inverse of cdf).</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>ppf</code> [array, shape=(n_samples,)]:
+    Percent point function for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.ppf', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.ppf" class="source">
     <pre><code>def ppf(self, X, **kwargs):
+    """Percent point function (inverse of cdf).
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `ppf` [array, shape=(n_samples,)]:
+        Percent point function for all `x_i` in `X`.
+    """
     raise NotImplementedError
 </code></pre>
   </div>
@@ -1986,10 +2244,33 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
     
   
+    <div class="desc"><p>Evaluate the log-likelihood <code>-self.nll(X).sum()</code> of <code>X</code>.</p>
+<p>The higher, the better.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>score</code> [float]:
+    The log-likelihood of <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.score', this);">Show source &equiv;</a></p>
   <div id="source-carl.data.Ricker.score" class="source">
     <pre><code>def score(self, X, **kwargs):
+    """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+    The higher, the better.
+    Parameters
+    ----------
+    * `X` [array-like, shape=(n_samples, n_features)]:
+        The samples.
+    Returns
+    -------
+    * `score` [float]:
+        The log-likelihood of `X`.
+    """
     return -self.nll(X, **kwargs).sum()
 </code></pre>
   </div>
@@ -2032,6 +2313,7 @@ where <code>e_t</code> are iid normal deviates with zero mean and variance <code
 
             
   
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
