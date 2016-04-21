@@ -37,7 +37,7 @@ class Join(TheanoDistribution):
                     c.pdf_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
         if all([hasattr(c, "nll_") for c in self.components]):
             # nll
@@ -50,7 +50,7 @@ class Join(TheanoDistribution):
                     c.nll_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.nll_, "nll")
+            self._make(self.nll_, "nll")
 
     def pdf(self, X, **kwargs):
         out = np.ones(len(X))

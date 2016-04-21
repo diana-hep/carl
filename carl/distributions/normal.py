@@ -13,14 +13,29 @@ from .base import bound
 
 
 class Normal(TheanoDistribution):
+    """Normal distribution.
+
+    This distribution supports 1D data only.
+    """
+
     def __init__(self, mu=0.0, sigma=1.0):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `mu` [float]:
+            The distribution mean.
+
+        * `sigma` [float]:
+            The distribution standard deviation.
+        """
         super(Normal, self).__init__(mu=mu, sigma=sigma)
 
         # pdf
         self.pdf_ = (
             (1. / np.sqrt(2. * np.pi)) / self.sigma *
             T.exp(-(self.X - self.mu) ** 2 / (2. * self.sigma ** 2))).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = bound(
@@ -28,17 +43,17 @@ class Normal(TheanoDistribution):
             (self.X - self.mu) ** 2 / (2. * self.sigma ** 2),
             np.inf,
             self.sigma > 0.).ravel()
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # cdf
         self.cdf_ = 0.5 * (1. + T.erf((self.X - self.mu) /
                                       (self.sigma * np.sqrt(2.)))).ravel()
-        self.make_(self.cdf_, "cdf")
+        self._make(self.cdf_, "cdf")
 
         # ppf
         self.ppf_ = (self.mu +
                      np.sqrt(2.) * self.sigma * T.erfinv(2. * self.p - 1.))
-        self.make_(self.ppf_, "ppf", args=[self.p])
+        self._make(self.ppf_, "ppf", args=[self.p])
 
 
 class MultivariateNormal(TheanoDistribution):
@@ -48,7 +63,7 @@ class MultivariateNormal(TheanoDistribution):
 
         # ndim
         self.ndim_ = self.mu.shape[0]
-        self.make_(self.ndim_, "ndim_func_", args=[])
+        self._make(self.ndim_, "ndim_func_", args=[])
 
         # pdf
         L = linalg.cholesky(self.sigma)
@@ -61,14 +76,14 @@ class MultivariateNormal(TheanoDistribution):
                                            sigma_inv),
                                      self.X - self.mu),
                                axis=1))).ravel()
-        self.make_(self.pdf_, "pdf")
+        self._make(self.pdf_, "pdf")
 
         # -log pdf
         self.nll_ = -T.log(self.pdf_)  # XXX: for sure this can be better
-        self.make_(self.nll_, "nll")
+        self._make(self.nll_, "nll")
 
         # self.rvs_
-        self.make_(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
+        self._make(T.dot(L, self.X.T).T + self.mu, "rvs_func_")
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)

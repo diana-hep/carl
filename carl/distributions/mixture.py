@@ -72,24 +72,24 @@ class Mixture(TheanoDistribution):
             self.pdf_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
                 self.pdf_ += self.weights[i] * self.components[i].pdf_
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
             # -log pdf
             self.nll_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
                 self.nll_ += self.weights[i] * self.components[i].pdf_
             self.nll_ = -T.log(self.nll_)
-            self.make_(self.nll_, "nll")
+            self._make(self.nll_, "nll")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
             # cdf
             self.cdf_ = self.weights[0] * self.components[0].cdf_
             for i in range(1, len(self.components)):
                 self.cdf_ += self.weights[i] * self.components[i].cdf_
-            self.make_(self.cdf_, "cdf")
+            self._make(self.cdf_, "cdf")
 
         # Weight evaluation function
-        self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
+        self._make(T.stack(self.weights, axis=0), "compute_weights", args=[])
 
     def pdf(self, X, **kwargs):
         weights = self.compute_weights(**kwargs)
