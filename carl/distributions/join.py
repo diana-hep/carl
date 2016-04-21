@@ -11,7 +11,21 @@ from . import TheanoDistribution
 
 
 class Join(TheanoDistribution):
+    """Joint distribution.
+
+    This class can be used to define a joint distribution
+    `p(x, y, z, ...) = p_0(x) * p_1(y) * p_2(z) * ...`, where `p_i` are
+    themselves distributions.
+    """
+
     def __init__(self, components):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `components` [list of `DistributionMixin`]:
+            The components to join together.
+        """
         super(Join, self).__init__()
         self.components = components
 
@@ -89,6 +103,14 @@ class Join(TheanoDistribution):
             return super(Join, self).fit(X, **kwargs)
         else:
             raise NotImplementedError
+
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     @property
     def ndim(self):

@@ -57,7 +57,19 @@ class Normal(TheanoDistribution):
 
 
 class MultivariateNormal(TheanoDistribution):
-    def __init__(self, mu, sigma, random_state=None):
+    """Multivariate normal distribution."""
+
+    def __init__(self, mu, sigma):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `mu` [1d array]:
+            The means.
+
+        * `sigma` [2d array]:
+            The covariance matrix.
+        """
         super(MultivariateNormal, self).__init__(mu=mu, sigma=sigma)
         # XXX: The SDP-ness of sigma should be check upon changes
 
@@ -89,6 +101,14 @@ class MultivariateNormal(TheanoDistribution):
         rng = check_random_state(random_state)
         X = rng.randn(n_samples, self.ndim)
         return self.rvs_func_(X, **kwargs)
+
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     @property
     def ndim(self):

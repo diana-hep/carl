@@ -10,7 +10,19 @@ from . import TheanoDistribution
 
 
 class LinearTransform(TheanoDistribution):
+    """Apply a linear transformation `u = A*x` to `x ~ p`."""
+
     def __init__(self, p, A):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `p` [`DistributionMixin`]:
+            The base distribution.
+
+        * `A` [array, shape=(p.ndim, p.ndim)]:
+            The linear operator.
+        """
         super(LinearTransform, self).__init__()
 
         self.p = p
@@ -33,6 +45,14 @@ class LinearTransform(TheanoDistribution):
 
     def nll(self, X, **kwargs):
         return self.p.nll(np.dot(self.inv_A, X.T).T, **kwargs)
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)

@@ -11,7 +11,19 @@ from .base import DistributionMixin
 
 
 class KernelDensity(DistributionMixin):
+    """Kernel density estimation.
+
+    This distribution supports 1D data only.
+    """
+
     def __init__(self, bandwidth=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `bandwidth` [string or float, optional]:
+            The method used to calculate the estimator bandwidth.
+        """
         self.bandwidth = bandwidth
 
     def pdf(self, X, **kwargs):
@@ -27,9 +39,26 @@ class KernelDensity(DistributionMixin):
         return self.kde_.resample(n_samples).T
 
     def fit(self, X, **kwargs):
+        """Fit the KDE estimator to data.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         X = check_array(X).T
         self.kde_ = gaussian_kde(X, bw_method=self.bandwidth)
         return self
 
-    def score(self, X, **kwargs):
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
         raise NotImplementedError

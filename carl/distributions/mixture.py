@@ -12,7 +12,25 @@ from .base import check_parameter
 
 
 class Mixture(TheanoDistribution):
+    """Mix components into a mixture distribution.
+
+    This class can be used to model a mixture distribution
+    `p(x) = \sum_i w_i p_i(x)`, where `p_i` are themselves
+    distributions and where `w_i` are the component weights.
+    """
+
     def __init__(self, components, weights=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `components` [list of `DistributionMixin`]:
+            The components to mix together.
+
+        * `weights` [list of floats or list of theano expressions]:
+            The component weights.
+        """
+
         super(Mixture, self).__init__()
         self.components = components
         self.weights = []
@@ -111,6 +129,10 @@ class Mixture(TheanoDistribution):
             c += weights[i] * self.components[i].cdf(X, **kwargs)
 
         return c
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)
