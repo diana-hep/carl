@@ -1046,6 +1046,8 @@ table {
   
   <div id="sidebar">
     <ul id="index">
+    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
+    
 
     <li class="set"><h3><a href="#header-functions">Functions</a></h3>
       
@@ -1092,8 +1094,6 @@ table {
         <li><a href="http://diana-hep.org/carl/notebooks/Parameterized inference with nuisance parameters.html">Parameterized inference with nuisance parameters</a></li>
       </ul>
     </li>
-
-    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
     </ul>
   </div>
 
@@ -1493,7 +1493,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 <span class="sd">    probabilities for each of the folds are then averaged for prediction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Parameters</span>
@@ -1507,6 +1507,9 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 <span class="sd">            The method to use for calibration. Supported methods include</span>
 <span class="sd">            `&quot;histogram&quot;`, `&quot;kde&quot;`, `&quot;isotonic&quot;`, `&quot;interpolated-isotonic&quot;` and</span>
 <span class="sd">            `&quot;sigmoid&quot;`.</span>
+
+<span class="sd">        * `bins` [int, default=&quot;auto&quot;]:</span>
+<span class="sd">            The number of bins, if `method` is `&quot;histogram&quot;`.</span>
 
 <span class="sd">        * `cv` [integer, cross-validation generator, iterable or `&quot;prefit&quot;`]:</span>
 <span class="sd">            Determines the cross-validation splitting strategy.</span>
@@ -1522,6 +1525,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">base_estimator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -1554,7 +1558,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
         <span class="c1"># Calibrator</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
-            <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">()</span>
+            <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
             <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">KernelDensityCalibrator</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;isotonic&quot;</span><span class="p">:</span>
@@ -1679,7 +1683,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
             
   <div class="item">
     <div class="name def" id="carl.learning.CalibratedClassifierCV.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, method=&#39;histogram&#39;, cv=1)</p>
+    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, method=&#39;histogram&#39;, bins=&#39;auto&#39;, cv=1)</p>
     </div>
     
 
@@ -1701,6 +1705,10 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
     <code>"sigmoid"</code>.</p>
 </li>
 <li>
+<p><code>bins</code> [int, default="auto"]:
+    The number of bins, if <code>method</code> is <code>"histogram"</code>.</p>
+</li>
+<li>
 <p><code>cv</code> [integer, cross-validation generator, iterable or <code>"prefit"</code>]:
     Determines the cross-validation splitting strategy.
     Possible inputs for cv are:</p>
@@ -1717,7 +1725,7 @@ the training data is used for both training and calibration.</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.__init__" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Constructor.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1729,6 +1737,8 @@ the training data is used for both training and calibration.</p>
 <span class="sd">        The method to use for calibration. Supported methods include</span>
 <span class="sd">        `&quot;histogram&quot;`, `&quot;kde&quot;`, `&quot;isotonic&quot;`, `&quot;interpolated-isotonic&quot;` and</span>
 <span class="sd">        `&quot;sigmoid&quot;`.</span>
+<span class="sd">    * `bins` [int, default=&quot;auto&quot;]:</span>
+<span class="sd">        The number of bins, if `method` is `&quot;histogram&quot;`.</span>
 <span class="sd">    * `cv` [integer, cross-validation generator, iterable or `&quot;prefit&quot;`]:</span>
 <span class="sd">        Determines the cross-validation splitting strategy.</span>
 <span class="sd">        Possible inputs for cv are:</span>
@@ -1741,6 +1751,7 @@ the training data is used for both training and calibration.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">base_estimator</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
 </pre></div>
 
@@ -1801,7 +1812,7 @@ the training data is used for both training and calibration.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span>
     <span class="c1"># Calibrator</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
-        <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">()</span>
+        <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
         <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">KernelDensityCalibrator</span><span class="p">()</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;isotonic&quot;</span><span class="p">:</span>
@@ -2122,6 +2133,16 @@ component of a nested object.</p>
           <h3>Instance variables</h3>
             <div class="item">
             <p id="carl.learning.CalibratedClassifierCV.base_estimator" class="name">var <span class="ident">base_estimator</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.bins" class="name">var <span class="ident">bins</span></p>
             
 
             

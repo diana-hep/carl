@@ -68,22 +68,17 @@ The density ratio $r(x)$ can be approximated using calibrated classifiers, eithe
 
 
 ```python
-from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.neural_network import MLPRegressor
-from sklearn.linear_model import ElasticNetCV
 from carl.ratios import ClassifierRatio
 from carl.ratios import DecomposedRatio
 from carl.learning import CalibratedClassifierCV
 
-# clf = ElasticNetCV()  # use 100 and 50 bins
+n_samples = 200000
 clf = MLPRegressor(tol=1e-05, activation="logistic", 
                    hidden_layer_sizes=(10, 10), learning_rate_init=1e-07, 
                    learning_rate="constant", algorithm="l-bfgs", random_state=1, 
-                   max_iter=75)  # use 15 and 12 bins
-# clf = ExtraTreesRegressor(n_estimators=250, max_leaf_nodes=15)  # use 15 and 15 bins
-
-n_samples = 200000
+                   max_iter=75)  
 
 # No calibration
 cc_none = ClassifierRatio(base_estimator=clf, random_state=1)
@@ -104,6 +99,7 @@ cc_decomposed.fit(numerator=p0, denominator=p1, n_samples=n_samples)
 ```
 
 Note: `CalibratedClassifierRatio` takes three arguments for controlling its execution:
+
 - `base_estimator` specifying the classifier to be used (note commented `ExtraTreesRegressor`),
 - `calibration` specifying the calibration algorithm (`"kde"`, `"histogram"`, or a user-defined distribution-like object),
 - `cv` specifying how to allocate data for training and calibration.
@@ -139,63 +135,14 @@ plt.scatter(-p0.nll(reals.reshape(-1, 1)) + p1.nll(reals.reshape(-1, 1)),
             cc_none.classifier_.predict_proba(reals.reshape(-1, 1))[:, 0], alpha=0.5)
 plt.xlabel("r(x)")
 plt.ylabel("s(x)")
-```
-
-
-
-
-    <matplotlib.text.Text at 0x113c9bcc0>
-
-
-
-
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_12_1.png)
-
-
-Let us inspect the individual pair-wise classifiers, their calibrating distributions, and the resulting estimate of $(1+r(x))^{-1}$ for the decomposed case.
-
-
-```python
-for n, (j, i) in enumerate([(0, 1), (0, 2), (1, 2)]):
-    try:
-        c = cc_decomposed.ratios_[(j, i)].classifier_
-    except:
-        c = cc_decomposed.ratios_[(i, j)].classifier_
-        
-    ax1 = plt.subplot(3, 1, n+1)
-    
-    h0 = c.calibrators_[0][0]
-    h1 = c.calibrators_[0][1]
-    r = np.linspace(0, 1, 100)
-    
-    ax1.plot(r, h0.pdf(r.reshape(-1, 1)), label=r"$p_{%d}(s_{%d%d}(x))$" % (i, i, j))
-    ax1.plot(r, h1.pdf(r.reshape(-1, 1)), label=r"$p_{%d}(s_{%d%d}(x))$" % (j, i, j))
-    ax1.legend(prop={"size": 8}, frameon=False, loc="upper left")    
-
-    ax2 = ax1.twinx()
-    s = h1.pdf(r.reshape(-1, 1)) / (h0.pdf(r.reshape(-1, 1)) + h1.pdf(r.reshape(-1, 1)))
-    ax2.plot(r, s, "r", label=r"$1 / (1 + r(s_{%d%d}(x)))$" % (i, j))
-    ax2.set_yticks([0, 0.5, 1.0])
-    ax2.legend(prop={"size": 8}, frameon=False, loc="upper right") 
-    
-    if n == 1:
-        ax1.set_ylabel(r"$\hat{p}(\hat{s}_{c,c'}(x))$")
-        ax2.set_ylabel(r"$1 / (1 + r(\hat{s}_{c,c'}(x)))$")
-    
-    if n < 2:
-        plt.xticks([])
-
-    plt.xlim(-.1, 1)
-           
-#plt.savefig("fig1b.pdf")
 plt.show()
 ```
 
 
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_14_0.png)
+![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_12_0.png)
 
 
-Now we inspect the distribution of the exact $\log {r}(x)$ and approximate $\log \hat{r}(x)$ 
+Now we inspect the distribution of the exact $\log {r}(x)$ and approximate $\log \hat{r}(x)$.
 
 
 ```python
@@ -210,7 +157,7 @@ plt.show()
 ```
 
 
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_16_0.png)
+![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_14_0.png)
 
 
 ## Using density ratios for maximum likelihood fit
@@ -241,7 +188,7 @@ plt.show()
 ```
 
 
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_19_0.png)
+![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_17_0.png)
 
 
 A nice approximation of the exact likelihood. 
@@ -296,7 +243,7 @@ np.mean(true_mles), np.mean(approx_mles)
 
 
 
-    (0.050114731288578115, 0.050111494213692112)
+    (0.050114731275088642, 0.050060529983498012)
 
 
 
@@ -311,7 +258,7 @@ plt.show()
 ```
 
 
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_23_0.png)
+![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_21_0.png)
 
 
 
@@ -329,5 +276,5 @@ plt.show()
 ```
 
 
-![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_24_0.png)
+![png](Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_22_0.png)
 

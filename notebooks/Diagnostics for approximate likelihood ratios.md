@@ -1,5 +1,5 @@
 
-## Diagnostics for approximate likelihood ratios
+# Diagnostics for approximate likelihood ratios
 
 Kyle Cranmer, Juan Pavez, Gilles Louppe, March 2016.
 
@@ -19,7 +19,6 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 ```python
 %matplotlib inline
 import matplotlib.pyplot as plt
-#plt.set_cmap("viridis")
 
 import numpy as np
 import theano
@@ -29,10 +28,7 @@ from itertools import product
 np.random.seed(314)
 ```
 
-    Couldn't import dot_parser, loading of dot files will not be possible.
-
-
-Create model and generate artificial dataset
+## Create model and generate artificial data
 
 
 ```python
@@ -42,8 +38,6 @@ from carl.distributions import Normal
 from carl.distributions import Exponential
 from carl.distributions import LinearTransform
 from sklearn.datasets import make_sparse_spd_matrix
-
-import pdb
 
 # Parameters
 true_A = 1.
@@ -72,17 +66,20 @@ for p1_p in p1_params:
         Exponential(inverse_scale=3.0),
         Exponential(inverse_scale=0.5)]), R))
 p1 = p1s[0]
+
 # Draw data
 X_true = p0.rvs(500, random_state=314) 
 ```
 
-# Known likelihood setup
+## Known likelihood setup
 
 
 ```python
 # Minimize the exact LR
 from scipy.optimize import minimize
+
 p1 = p1s[2]
+
 def nll_exact(theta, X):
     A.set_value(theta[0])
     return (p0.nll(X) - p1.nll(X)).sum()
@@ -121,7 +118,7 @@ plt.show()
 ![png](Diagnostics%20for%20approximate%20likelihood%20ratios_files/Diagnostics%20for%20approximate%20likelihood%20ratios_7_0.png)
 
 
-# Likelihood-free setup
+## Likelihood-free setup
 Here we create the data to train a parametrized classifier
 
 
@@ -131,11 +128,9 @@ from carl.learning import make_parameterized_classification
 
 bounds = [(-3, 3), (-3, 3)]
 
-clf_parameters = [(1000,100000),(1000000,500),(1000000,100000)]
+clf_parameters = [(1000, 100000), (1000000, 500), (1000000, 100000)]
 X = [0]*3*3
 y = [0]*3*3
-
-
 
 for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
     X[k], y[k] = make_parameterized_classification(
@@ -143,7 +138,6 @@ for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
         param[0], 
         [(A, np.linspace(bounds[0][0],bounds[0][1], num=30))],
         random_state=0)
-
 ```
 
 
@@ -155,9 +149,10 @@ from carl.learning import ParameterizedClassifier
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import RandomizedSearchCV
+
 clfs = []
-for k,_ in enumerate(product(clf_parameters,p1s)):
+
+for k, _ in enumerate(product(clf_parameters,p1s)):
     clfs.append(ParameterizedClassifier(
         make_pipeline(StandardScaler(), 
                   as_classifier(MLPRegressor(learning_rate="adaptive", 
@@ -167,10 +162,6 @@ for k,_ in enumerate(product(clf_parameters,p1s)):
         [A]))
     clfs[k].fit(X[k], y[k])
 ```
-
-    /Users/juanpavez/Library/Python/2.7/lib/python/site-packages/sklearn/cross_validation.py:43: DeprecationWarning: This module has been deprecated in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
-      "This module will be removed in 0.20.", DeprecationWarning)
-
 
 
 ```python
@@ -189,9 +180,9 @@ def vectorize(func,n_samples,clf,p1):
     return wrapper
 
 def objective(theta, random_state=0, n_samples=100000, clf=clfs[0],p1=p1s[0]):    
-    
     # Set parameter values   
     A.set_value(theta[0])
+    
     # Fit ratio
     ratio = ClassifierRatio(CalibratedClassifierCV(
         base_estimator=clf, 
@@ -219,8 +210,10 @@ Now we use a Bayesian optimization procedure to create a smooth surrogate of the
 
 ```python
 from GPyOpt.methods import BayesianOptimization
+
 solvers = []
-for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
+
+for k, (param, p1) in enumerate(product(clf_parameters,p1s)):
     clf = clfs[k]
     n_samples = param[1]
     bounds = [(-3, 3)]
@@ -228,30 +221,11 @@ for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
     solvers[k].run_optimization(max_iter=50, true_gradients=False)
 ```
 
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-    *Optimization completed:
-       -Maximum number of iterations reached.
-
-
 
 ```python
 approx_MLEs = []
-for k,_ in enumerate(product(clf_parameters,p1s)):
+
+for k, _ in enumerate(product(clf_parameters,p1s)):
     solver = solvers[k]
     approx_MLE = solver.x_opt
     approx_MLEs.append(approx_MLE)
@@ -293,7 +267,7 @@ solver.plot_convergence()
 rs = []
 solver = solvers[0]
 
-for k,_ in enumerate(product(clf_parameters,p1s)):
+for k, _ in enumerate(product(clf_parameters,p1s)):
     def gp_objective(theta):
         theta = theta.reshape(1, -1)
         return solvers[k].model.predict(theta)[0][0]
@@ -335,28 +309,18 @@ for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
     nll_gp, var_gp = solvers[k].model.predict(As.reshape(-1, 1))
     nll_gp = 2. * (nll_gp - rs[k].fun) * len(X_true)
     gp_ratios.append(nll_gp)
+    
     # STD
     std_gp = np.sqrt(4*var_gp*len(X_true)*len(X_true))
     std_gp[np.isnan(std_gp)] = 0.
     gp_std.append(std_gp)
+    
     # 95% CI
     q1_gp, q2_gp = solvers[k].model.predict_quantiles(As.reshape(-1, 1))
     q1_gp = 2. * (q1_gp - rs[k].fun) * len(X_true)
     q2_gp = 2. * (q2_gp - rs[k].fun) * len(X_true)
     gp_q1.append(q1_gp)
     gp_q2.append(q2_gp)
-
-    #nll_approx = np.zeros(n_points)
-
-    #approx = [objective([a]) for a in np.linspace(*bounds[0], n_points)]
-    #approx = [objective([a],n_samples=n_samples,clf=clf,p1=p1) for a 
-    #          in np.linspace(bounds[0][0],bounds[0][1], n_points)]
-
-    #approx = np.array(approx)
-    #approx = 2. * (approx - approx.min()) * len(X_true)
-    #nll_approx = approx
-    #approx_ratios.append(nll_approx)
-
 ```
 
 ## Plots for the first diagonstic: $\theta_1$-independence
@@ -364,7 +328,8 @@ for k,(param,p1) in enumerate(product(clf_parameters,p1s)):
 
 ```python
 bounds = [(true_A - 0.30, true_A + 0.30)]
-for k,_ in enumerate(clf_parameters):
+
+for k, _ in enumerate(clf_parameters):
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
     ax.plot(As, nll, label="Exact")
@@ -423,16 +388,16 @@ the estimated uncertainty band of the Gaussian process.
 
 ```python
 from sklearn.metrics import roc_curve, auc
-def makeROC(predictions,targetdata):
+
+def makeROC(predictions ,targetdata):
     fpr, tpr, _  = roc_curve(targetdata.ravel(),predictions.ravel())
     roc_auc = auc(fpr, tpr)
+    
     return fpr,tpr,roc_auc
 ```
 
 
 ```python
-#fig = plt.figure(figsize=(15,15))
-
 # I obtain data from r*p1 by resampling data from p1 using r as weights
 def weight_data(x0,x1,weights):
     x1_len = x1.shape[0]
@@ -534,8 +499,3 @@ approximate likelihood ratio  $\hat{r}(\hat{s}(\mathbf{x}; \theta_0,
 \theta_1))$. Finally, third example shows that the ROC curve in the well
 trained, well calibrated case is almost identical with the exact likelihood
 ratio, confirming the quality of the approximation.
-
-
-```python
-
-```

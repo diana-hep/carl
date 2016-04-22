@@ -1047,6 +1047,8 @@ table {
   
   <div id="sidebar">
     <ul id="index">
+    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
+    
 
 
 
@@ -1074,14 +1076,12 @@ table {
         <li><a href="http://diana-hep.org/carl/notebooks/Parameterized inference with nuisance parameters.html">Parameterized inference with nuisance parameters</a></li>
       </ul>
     </li>
-
-    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
     </ul>
   </div>
 
     <article id="content">
           
-          <h2>Diagnostics for approximate likelihood ratios</h2>
+          <h1>Diagnostics for approximate likelihood ratios</h1>
 <p>Kyle Cranmer, Juan Pavez, Gilles Louppe, March 2016.</p>
 <p>This is an extension of the example in <a href="./Parameterized%20inference%20from%20multidimensional%20data.ipynb">Parameterized inference from multidimensional data</a>. 
 To aid in visualization, we restrict to a 1-dimensional slice of
@@ -1096,7 +1096,6 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 \theta_0, \theta_1)$. </p>
 <div class="codehilite"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="c1">#plt.set_cmap(&quot;viridis&quot;)</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">theano</span>
@@ -1107,19 +1106,13 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="n">Couldn</span><span class="s1">&#39;t import dot_parser, loading of dot files will not be possible.</span>
-</pre></div>
-
-
-<p>Create model and generate artificial dataset</p>
+<h2>Create model and generate artificial data</h2>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">Join</span>
 <span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">Mixture</span>
 <span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">Normal</span>
 <span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">Exponential</span>
 <span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">LinearTransform</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_sparse_spd_matrix</span>
-
-<span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="c1"># Parameters</span>
 <span class="n">true_A</span> <span class="o">=</span> <span class="mf">1.</span>
@@ -1148,15 +1141,18 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
         <span class="n">Exponential</span><span class="p">(</span><span class="n">inverse_scale</span><span class="o">=</span><span class="mf">3.0</span><span class="p">),</span>
         <span class="n">Exponential</span><span class="p">(</span><span class="n">inverse_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)]),</span> <span class="n">R</span><span class="p">))</span>
 <span class="n">p1</span> <span class="o">=</span> <span class="n">p1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
 <span class="c1"># Draw data</span>
 <span class="n">X_true</span> <span class="o">=</span> <span class="n">p0</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">314</span><span class="p">)</span> 
 </pre></div>
 
 
-<h1>Known likelihood setup</h1>
+<h2>Known likelihood setup</h2>
 <div class="codehilite"><pre><span></span><span class="c1"># Minimize the exact LR</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+
 <span class="n">p1</span> <span class="o">=</span> <span class="n">p1s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
 <span class="k">def</span> <span class="nf">nll_exact</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
     <span class="n">A</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">p0</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">p1</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">X</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1192,18 +1188,16 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 
 
 <p><img alt="png" src="Diagnostics%20for%20approximate%20likelihood%20ratios_files/Diagnostics%20for%20approximate%20likelihood%20ratios_7_0.png" /></p>
-<h1>Likelihood-free setup</h1>
+<h2>Likelihood-free setup</h2>
 <p>Here we create the data to train a parametrized classifier</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Build classification data</span>
 <span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">make_parameterized_classification</span>
 
 <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
 
-<span class="n">clf_parameters</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">100000</span><span class="p">),(</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">500</span><span class="p">),(</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">100000</span><span class="p">)]</span>
+<span class="n">clf_parameters</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">),</span> <span class="p">(</span><span class="mi">1000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="p">(</span><span class="mi">1000000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)]</span>
 <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="mi">3</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="mi">3</span>
-
-
 
 <span class="k">for</span> <span class="n">k</span><span class="p">,(</span><span class="n">param</span><span class="p">,</span><span class="n">p1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
     <span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_parameterized_classification</span><span class="p">(</span>
@@ -1221,9 +1215,10 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 <span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPRegressor</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span>
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">RandomizedSearchCV</span>
+
 <span class="n">clfs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
     <span class="n">clfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ParameterizedClassifier</span><span class="p">(</span>
         <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> 
                   <span class="n">as_classifier</span><span class="p">(</span><span class="n">MLPRegressor</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="s2">&quot;adaptive&quot;</span><span class="p">,</span> 
@@ -1232,11 +1227,6 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
                                              <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">))),</span>
         <span class="p">[</span><span class="n">A</span><span class="p">]))</span>
     <span class="n">clfs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-</pre></div>
-
-
-<div class="codehilite"><pre><span></span>/Users/juanpavez/Library/Python/2.7/lib/python/site-packages/sklearn/cross_validation.py:43: DeprecationWarning: This module has been deprecated in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
-  &quot;This module will be removed in 0.20.&quot;, DeprecationWarning)
 </pre></div>
 
 
@@ -1255,9 +1245,9 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
     <span class="k">return</span> <span class="n">wrapper</span>
 
 <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">clf</span><span class="o">=</span><span class="n">clfs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">p1</span><span class="o">=</span><span class="n">p1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>    
-
     <span class="c1"># Set parameter values   </span>
     <span class="n">A</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
     <span class="c1"># Fit ratio</span>
     <span class="n">ratio</span> <span class="o">=</span> <span class="n">ClassifierRatio</span><span class="p">(</span><span class="n">CalibratedClassifierCV</span><span class="p">(</span>
         <span class="n">base_estimator</span><span class="o">=</span><span class="n">clf</span><span class="p">,</span> 
@@ -1283,8 +1273,10 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 
 <p>Now we use a Bayesian optimization procedure to create a smooth surrogate of the approximate likelihood.</p>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">GPyOpt.methods</span> <span class="kn">import</span> <span class="n">BayesianOptimization</span>
+
 <span class="n">solvers</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,(</span><span class="n">param</span><span class="p">,</span><span class="n">p1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
     <span class="n">clf</span> <span class="o">=</span> <span class="n">clfs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
     <span class="n">n_samples</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
@@ -1293,29 +1285,9 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-*Optimization completed:
-   -Maximum number of iterations reached.
-</pre></div>
-
-
 <div class="codehilite"><pre><span></span><span class="n">approx_MLEs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
     <span class="n">solver</span> <span class="o">=</span> <span class="n">solvers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
     <span class="n">approx_MLE</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">x_opt</span>
     <span class="n">approx_MLEs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">approx_MLE</span><span class="p">)</span>
@@ -1349,7 +1321,7 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
 <span class="n">rs</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">solver</span> <span class="o">=</span> <span class="n">solvers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">,</span><span class="n">p1s</span><span class="p">)):</span>
     <span class="k">def</span> <span class="nf">gp_objective</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">solvers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">theta</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -1391,33 +1363,25 @@ samples from $p(\mathbf{x}|\theta_1)$ weighted according to $r(\mathbf{x};
     <span class="n">nll_gp</span><span class="p">,</span> <span class="n">var_gp</span> <span class="o">=</span> <span class="n">solvers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">As</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">nll_gp</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">nll_gp</span> <span class="o">-</span> <span class="n">rs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fun</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_true</span><span class="p">)</span>
     <span class="n">gp_ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nll_gp</span><span class="p">)</span>
+
     <span class="c1"># STD</span>
     <span class="n">std_gp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">var_gp</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">X_true</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">X_true</span><span class="p">))</span>
     <span class="n">std_gp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">std_gp</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">gp_std</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">std_gp</span><span class="p">)</span>
+
     <span class="c1"># 95% CI</span>
     <span class="n">q1_gp</span><span class="p">,</span> <span class="n">q2_gp</span> <span class="o">=</span> <span class="n">solvers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_quantiles</span><span class="p">(</span><span class="n">As</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">q1_gp</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">q1_gp</span> <span class="o">-</span> <span class="n">rs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fun</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_true</span><span class="p">)</span>
     <span class="n">q2_gp</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">q2_gp</span> <span class="o">-</span> <span class="n">rs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">fun</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_true</span><span class="p">)</span>
     <span class="n">gp_q1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q1_gp</span><span class="p">)</span>
     <span class="n">gp_q2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q2_gp</span><span class="p">)</span>
-
-    <span class="c1">#nll_approx = np.zeros(n_points)</span>
-
-    <span class="c1">#approx = [objective([a]) for a in np.linspace(*bounds[0], n_points)]</span>
-    <span class="c1">#approx = [objective([a],n_samples=n_samples,clf=clf,p1=p1) for a </span>
-    <span class="c1">#          in np.linspace(bounds[0][0],bounds[0][1], n_points)]</span>
-
-    <span class="c1">#approx = np.array(approx)</span>
-    <span class="c1">#approx = 2. * (approx - approx.min()) * len(X_true)</span>
-    <span class="c1">#nll_approx = approx</span>
-    <span class="c1">#approx_ratios.append(nll_approx)</span>
 </pre></div>
 
 
 <h2>Plots for the first diagonstic: $\theta_1$-independence</h2>
 <div class="codehilite"><pre><span></span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">true_A</span> <span class="o">-</span> <span class="mf">0.30</span><span class="p">,</span> <span class="n">true_A</span> <span class="o">+</span> <span class="mf">0.30</span><span class="p">)]</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">):</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clf_parameters</span><span class="p">):</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">As</span><span class="p">,</span> <span class="n">nll</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
@@ -1464,16 +1428,16 @@ that the likelihood curves are all consistent with the exact likelihood within
 the estimated uncertainty band of the Gaussian process. </p>
 <h2>The second diagnostic - ROC curves for a discriminator</h2>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
-<span class="k">def</span> <span class="nf">makeROC</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span><span class="n">targetdata</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">makeROC</span><span class="p">(</span><span class="n">predictions</span> <span class="p">,</span><span class="n">targetdata</span><span class="p">):</span>
     <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span>  <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">targetdata</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">predictions</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
     <span class="n">roc_auc</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">fpr</span><span class="p">,</span><span class="n">tpr</span><span class="p">,</span><span class="n">roc_auc</span>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="c1">#fig = plt.figure(figsize=(15,15))</span>
-
-<span class="c1"># I obtain data from r*p1 by resampling data from p1 using r as weights</span>
+<div class="codehilite"><pre><span></span><span class="c1"># I obtain data from r*p1 by resampling data from p1 using r as weights</span>
 <span class="k">def</span> <span class="nf">weight_data</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">weights</span><span class="p">):</span>
     <span class="n">x1_len</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1566,8 +1530,6 @@ approximate likelihood ratio  $\hat{r}(\hat{s}(\mathbf{x}; \theta_0,
 \theta_1))$. Finally, third example shows that the ROC curve in the well
 trained, well calibrated case is almost identical with the exact likelihood
 ratio, confirming the quality of the approximation.</p>
-<div class="codehilite"><pre><span></span>
-</pre></div>
     </article>
   <div class="clear"> </div>
   <footer id="footer">

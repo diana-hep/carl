@@ -28,10 +28,6 @@ from scipy.stats import chi2
 ```
 
 
-    <matplotlib.figure.Figure at 0x1064e0ef0>
-
-
-
 ```python
 from carl.distributions import Join
 from carl.distributions import Mixture

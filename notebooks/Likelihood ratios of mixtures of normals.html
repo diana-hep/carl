@@ -1047,6 +1047,8 @@ table {
   
   <div id="sidebar">
     <ul id="index">
+    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
+    
 
 
 
@@ -1074,8 +1076,6 @@ table {
         <li><a href="http://diana-hep.org/carl/notebooks/Parameterized inference with nuisance parameters.html">Parameterized inference with nuisance parameters</a></li>
       </ul>
     </li>
-
-    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
     </ul>
   </div>
 
@@ -1133,22 +1133,17 @@ table {
 <p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_6_0.png" /></p>
 <h2>Density ratio estimation</h2>
 <p>The density ratio $r(x)$ can be approximated using calibrated classifiers, either directly by learning to classify $x \sim p_0$ from $x \sim p_1$, calibrating the resulting classifier, or by decomposing the ratio of the two mixtures as pairs of simpler density ratios and calibrating each corresponding pair-wise classifier.</p>
-<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">ExtraTreesRegressor</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedShuffleSplit</span>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedShuffleSplit</span>
 <span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPRegressor</span>
-<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">ElasticNetCV</span>
 <span class="kn">from</span> <span class="nn">carl.ratios</span> <span class="kn">import</span> <span class="n">ClassifierRatio</span>
 <span class="kn">from</span> <span class="nn">carl.ratios</span> <span class="kn">import</span> <span class="n">DecomposedRatio</span>
 <span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">CalibratedClassifierCV</span>
 
-<span class="c1"># clf = ElasticNetCV()  # use 100 and 50 bins</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">200000</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">MLPRegressor</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;logistic&quot;</span><span class="p">,</span> 
                    <span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">learning_rate_init</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> 
                    <span class="n">learning_rate</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;l-bfgs&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
-                   <span class="n">max_iter</span><span class="o">=</span><span class="mi">75</span><span class="p">)</span>  <span class="c1"># use 15 and 12 bins</span>
-<span class="c1"># clf = ExtraTreesRegressor(n_estimators=250, max_leaf_nodes=15)  # use 15 and 15 bins</span>
-
-<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">200000</span>
+                   <span class="n">max_iter</span><span class="o">=</span><span class="mi">75</span><span class="p">)</span>  
 
 <span class="c1"># No calibration</span>
 <span class="n">cc_none</span> <span class="o">=</span> <span class="n">ClassifierRatio</span><span class="p">(</span><span class="n">base_estimator</span><span class="o">=</span><span class="n">clf</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1169,10 +1164,12 @@ table {
 </pre></div>
 
 
-<p>Note: <code>CalibratedClassifierRatio</code> takes three arguments for controlling its execution:
-- <code>base_estimator</code> specifying the classifier to be used (note commented <code>ExtraTreesRegressor</code>),
-- <code>calibration</code> specifying the calibration algorithm (<code>"kde"</code>, <code>"histogram"</code>, or a user-defined distribution-like object),
-- <code>cv</code> specifying how to allocate data for training and calibration.</p>
+<p>Note: <code>CalibratedClassifierRatio</code> takes three arguments for controlling its execution:</p>
+<ul>
+<li><code>base_estimator</code> specifying the classifier to be used (note commented <code>ExtraTreesRegressor</code>),</li>
+<li><code>calibration</code> specifying the calibration algorithm (<code>"kde"</code>, <code>"histogram"</code>, or a user-defined distribution-like object),</li>
+<li><code>cv</code> specifying how to allocate data for training and calibration.</li>
+</ul>
 <p>Next we plot $\log r(x)$ vs. $x$ for the different cases.</p>
 <div class="codehilite"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="o">-</span><span class="n">p0</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">reals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  
                 <span class="o">+</span><span class="n">p1</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">reals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact ratio&quot;</span><span class="p">)</span>
@@ -1195,53 +1192,12 @@ table {
             <span class="n">cc_none</span><span class="o">.</span><span class="n">classifier_</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">reals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;r(x)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;s(x)&quot;</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="codehilite"><pre><span></span>&lt;matplotlib.text.Text at 0x113c9bcc0&gt;
-</pre></div>
-
-
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_12_1.png" /></p>
-<p>Let us inspect the individual pair-wise classifiers, their calibrating distributions, and the resulting estimate of $(1+r(x))^{-1}$ for the decomposed case.</p>
-<div class="codehilite"><pre><span></span><span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">cc_decomposed</span><span class="o">.</span><span class="n">ratios_</span><span class="p">[(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span><span class="o">.</span><span class="n">classifier_</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">cc_decomposed</span><span class="o">.</span><span class="n">ratios_</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]</span><span class="o">.</span><span class="n">classifier_</span>
-
-    <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="n">h0</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">calibrators_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">h1</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">calibrators_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
-    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">h0</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="s2">r&quot;$p_{</span><span class="si">%d</span><span class="s2">}(s_{</span><span class="si">%d%d</span><span class="s2">}(x))$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">h1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="s2">r&quot;$p_{</span><span class="si">%d</span><span class="s2">}(s_{</span><span class="si">%d%d</span><span class="s2">}(x))$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>    
-
-    <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">h1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">h0</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">h1</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">r&quot;$1 / (1 + r(s_{</span><span class="si">%d%d</span><span class="s2">}(x)))$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span> 
-
-    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">r&quot;$\hat{p}(\hat{s}_{c,c&#39;}(x))$&quot;</span><span class="p">)</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">r&quot;$1 / (1 + r(\hat{s}_{c,c&#39;}(x)))$&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-<span class="c1">#plt.savefig(&quot;fig1b.pdf&quot;)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_14_0.png" /></p>
-<p>Now we inspect the distribution of the exact $\log {r}(x)$ and approximate $\log \hat{r}(x)$ </p>
+<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_12_0.png" /></p>
+<p>Now we inspect the distribution of the exact $\log {r}(x)$ and approximate $\log \hat{r}(x)$.</p>
 <div class="codehilite"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">bump_coefficient</span><span class="p">)</span>
 <span class="n">X0</span> <span class="o">=</span> <span class="n">p0</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">200000</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="o">-</span><span class="n">p0</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p1</span><span class="o">.</span><span class="n">nll</span><span class="p">(</span><span class="n">X0</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">histtype</span><span class="o">=</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1253,7 +1209,7 @@ table {
 </pre></div>
 
 
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_16_0.png" /></p>
+<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_14_0.png" /></p>
 <h2>Using density ratios for maximum likelihood fit</h2>
 <p>Next let us construct the log-likelihood curve for the artificial dataset. </p>
 <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">nll_true</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
@@ -1277,7 +1233,7 @@ table {
 </pre></div>
 
 
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_19_0.png" /></p>
+<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_17_0.png" /></p>
 <p>A nice approximation of the exact likelihood. </p>
 <h2>Ensemble tests</h2>
 <p>Now let us perform an ensemble test with 1000 repeated experiments. We will use this to check bias of the maximum likelihood estimator and the asymptotic distribution of $-2\log \Lambda(\gamma)$ (ie. Wilks's theorem).</p>
@@ -1322,7 +1278,7 @@ table {
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>(0.050114731288578115, 0.050111494213692112)
+<div class="codehilite"><pre><span></span>(0.050114731275088642, 0.050060529983498012)
 </pre></div>
 
 
@@ -1335,7 +1291,7 @@ table {
 </pre></div>
 
 
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_23_0.png" /></p>
+<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_21_0.png" /></p>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">chi2</span>
 
 <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
@@ -1349,7 +1305,7 @@ table {
 </pre></div>
 
 
-<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_24_0.png" /></p>
+<p><img alt="png" src="Likelihood%20ratios%20of%20mixtures%20of%20normals_files/Likelihood%20ratios%20of%20mixtures%20of%20normals_22_0.png" /></p>
     </article>
   <div class="clear"> </div>
   <footer id="footer">
