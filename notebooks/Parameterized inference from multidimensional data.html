@@ -1048,7 +1048,7 @@ table {
   <div id="sidebar">
     <ul id="index">
     <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
-    
+
 
 
 
@@ -1084,15 +1084,23 @@ table {
           <h1>Parameterized inference from multidimensional data</h1>
 <p>Kyle Cranmer, Juan Pavez, Gilles Louppe, March 2016.</p>
 <p>For the sake of the illustration, we will assume 5-dimensional feature $\mathbf{x}$ generated
-from the following process $p_0$:
- - $\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that
-   -        $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
-   -         $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
-   -         $z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,
-   -         $z_3 \sim {\text{Exponential}(\lambda=3)}$, and
-   -         $z_4 \sim {\text{Exponential}(\lambda=0.5)}$;</p>
+from the following process $p_0$:</p>
 <ul>
-<li>$\mathbf{x} := R  \mathbf{z}$, where $R$ is a fixed semi-positive definite $5 \times 5$ matrix defining a fixed projection of $\mathbf{z}$ into the observed space.</li>
+<li>
+<p>$\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that</p>
+</li>
+<li>
+<p>$z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,</p>
+</li>
+<li>$z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,</li>
+<li>$z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,</li>
+<li>$z_3 \sim {\text{Exponential}(\lambda=3)}$, and</li>
+<li>
+<p>$z_4 \sim {\text{Exponential}(\lambda=0.5)}$;</p>
+</li>
+<li>
+<p>$\mathbf{x} := R  \mathbf{z}$, where $R$ is a fixed semi-positive definite $5 \times 5$ matrix defining a fixed projection of $\mathbf{z}$ into the observed space.</p>
+</li>
 </ul>
 <div class="codehilite"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>

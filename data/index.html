@@ -1046,7 +1046,7 @@ table {
   <div id="sidebar">
     <ul id="index">
     <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
-    
+
 
 
     <li class="set"><h3><a href="#header-classes">Classes</a></h3>
@@ -1442,66 +1442,6 @@ log-likelihood of the data.</p>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Parameter fitting failed!&quot;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="carl.data.GK.get_params">
-    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
-    </div>
-    
-
-    
-  
-    <div class="desc"><p>Get parameters for this estimator.</p>
-<h2>Parameters</h2>
-<p>deep: boolean, optional
-    If True, will return the parameters for this estimator and
-    contained subobjects that are estimators.</p>
-<h2>Returns</h2>
-<p>params : mapping of string to any
-    Parameter names mapped to their values.</p></div>
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.GK.get_params', this);">Show source &equiv;</a></p>
-  <div id="source-carl.data.GK.get_params" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get parameters for this estimator.</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    deep: boolean, optional</span>
-<span class="sd">        If True, will return the parameters for this estimator and</span>
-<span class="sd">        contained subobjects that are estimators.</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    params : mapping of string to any</span>
-<span class="sd">        Parameter names mapped to their values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_param_names</span><span class="p">():</span>
-        <span class="c1"># We need deprecation warnings to always be on in order to</span>
-        <span class="c1"># catch deprecated param values.</span>
-        <span class="c1"># This is set in utils/__init__.py but it gets overwritten</span>
-        <span class="c1"># when running under python3 somehow.</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="ne">DeprecationWarning</span><span class="p">:</span>
-                <span class="c1"># if the parameter is deprecated, don&#39;t show it</span>
-                <span class="k">continue</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># XXX: should we rather test if instance of estimator?</span>
-        <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;get_params&#39;</span><span class="p">):</span>
-            <span class="n">deep_items</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">deep_items</span><span class="p">)</span>
-        <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 
   </div>
@@ -2096,66 +2036,6 @@ log-likelihood of the data.</p>
         <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Parameter fitting failed!&quot;</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-
-  </div>
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="carl.data.Ricker.get_params">
-    <p>def <span class="ident">get_params</span>(</p><p>self, deep=True)</p>
-    </div>
-    
-
-    
-  
-    <div class="desc"><p>Get parameters for this estimator.</p>
-<h2>Parameters</h2>
-<p>deep: boolean, optional
-    If True, will return the parameters for this estimator and
-    contained subobjects that are estimators.</p>
-<h2>Returns</h2>
-<p>params : mapping of string to any
-    Parameter names mapped to their values.</p></div>
-  <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.data.Ricker.get_params', this);">Show source &equiv;</a></p>
-  <div id="source-carl.data.Ricker.get_params" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get parameters for this estimator.</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    deep: boolean, optional</span>
-<span class="sd">        If True, will return the parameters for this estimator and</span>
-<span class="sd">        contained subobjects that are estimators.</span>
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    params : mapping of string to any</span>
-<span class="sd">        Parameter names mapped to their values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_param_names</span><span class="p">():</span>
-        <span class="c1"># We need deprecation warnings to always be on in order to</span>
-        <span class="c1"># catch deprecated param values.</span>
-        <span class="c1"># This is set in utils/__init__.py but it gets overwritten</span>
-        <span class="c1"># when running under python3 somehow.</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="ne">DeprecationWarning</span><span class="p">:</span>
-                <span class="c1"># if the parameter is deprecated, don&#39;t show it</span>
-                <span class="k">continue</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># XXX: should we rather test if instance of estimator?</span>
-        <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;get_params&#39;</span><span class="p">):</span>
-            <span class="n">deep_items</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">deep_items</span><span class="p">)</span>
-        <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 
   </div>

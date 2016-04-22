@@ -5,7 +5,9 @@ Kyle Cranmer, Juan Pavez, Gilles Louppe, March 2016.
 
 For the sake of the illustration, we will assume 5-dimensional feature $\mathbf{x}$ generated
 from the following process $p_0$:
+
  - $\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that
+ 
    -        $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
    -         $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
    -         $z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,
