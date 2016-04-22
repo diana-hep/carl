@@ -579,6 +579,7 @@ table {
     width: 25%;
     float: left;
     padding: 30px;
+    padding-top: 0px;
     overflow: hidden;
   }
   #nav {
@@ -656,7 +657,7 @@ table {
 
   code {
     background: #f9f9f9;
-  } 
+  }
 
   pre {
     background: #fefefe;
@@ -673,7 +674,7 @@ table {
     .codehilite pre {
       margin: 0;
     }
-    .codehilite .err { background: #ff3300; color: #fff !important; } 
+    .codehilite .err { background: #ff3300; color: #fff !important; }
 
   table#module-list {
     font-size: 110%;
@@ -784,7 +785,7 @@ table {
       text-transform: uppercase;
       color: #fff;
       text-shadow: 1px 1px 0 #f4b700;
-      
+
       padding: 3px 8px;
       border-radius: 2px;
       transition: background .3s ease-in-out;
@@ -1031,6 +1032,14 @@ table {
     }
   }
   </script>
+  <script type="text/javascript" async
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
 </head>
 <body>
 <a href="https://github.com/diana-hep/carl"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
@@ -1040,7 +1049,6 @@ table {
     
   
   <div id="sidebar">
-    <h1>API</h1>
     <ul id="index">
 
 
@@ -1086,13 +1094,16 @@ table {
     </li>
 
 
-    <li class="set"><h3><a href="../index.html">Top module</a></h3>
+    <li class="set"><h3><a href="http://diana-hep.org/carl/"></a></h3>
     </li>
+
+
+    <li class="set"><h3><a href="http://diana-hep.org/carl/">Index</a></h3></li>
     </ul>
   </div>
 
     <article id="content">
-      
+          
   
 
   
@@ -1157,6 +1168,8 @@ replacement of RooFit or alikes.</p>
   </div>
 
   </header>
+
+
 
   <section id="section-items">
 
@@ -2388,10 +2401,14 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Exponential.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
-    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -6439,10 +6456,14 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Normal.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
-    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -8377,10 +8398,14 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Uniform.ndim" class="name">var <span class="ident">ndim</span></p>
             
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
+    </p>
 
             
   
-    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
