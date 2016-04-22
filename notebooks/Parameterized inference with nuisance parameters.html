@@ -1052,10 +1052,10 @@ table {
 
     <li class="set"><h3><a href="#header-submodules">Sub-modules</a></h3>
       <ul>
-        <li class="mono"><a href="data/index.html">carl.data</a></li>
-        <li class="mono"><a href="distributions/index.html">carl.distributions</a></li>
-        <li class="mono"><a href="learning/index.html">carl.learning</a></li>
-        <li class="mono"><a href="ratios/index.html">carl.ratios</a></li>
+        <li class="mono"><a href="../data/index.html">carl.data</a></li>
+        <li class="mono"><a href="../distributions/index.html">carl.distributions</a></li>
+        <li class="mono"><a href="../learning/index.html">carl.learning</a></li>
+        <li class="mono"><a href="../ratios/index.html">carl.ratios</a></li>
       </ul>
     </li>
 
@@ -1081,154 +1081,133 @@ table {
 
     <article id="content">
           
-  
+          <h1>Parameterized inference with nuisance parameters</h1>
+<p>Gilles Louppe, March 2016.</p>
+<div class="codehilite"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
 
-  
-
-
-  <header id="section-intro">
-  <h1 class="title"><span class="name">carl</span> module</h1>
-  <p>Carl is a toolbox for likelihood-free inference in Python.</p>
-<p>This project is still in its early stage of development.
-<a href="https://github.com/diana-hep/carl">Join us on GitHub</a> if you feel like
-contributing!</p>
-<p><a href="https://travis-ci.org/diana-hep/carl"><img alt="Build Status" src="https://travis-ci.org/diana-hep/carl.svg" /></a>
-<a href="https://coveralls.io/github/diana-hep/carl?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&amp;service=github" /></a>
-<a href="http://dx.doi.org/10.5281/zenodo.47798"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg" /></a></p>
-<h2>Documentation</h2>
-<ul>
-<li>
-<p>Illustrative examples complementing the online reference
-  can be found under the
-  <a href="https://github.com/diana-hep/carl/tree/master/examples"><code>examples/</code></a>
-  directory.</p>
-</li>
-<li>
-<p>Extended details regarding likelihood-free inference with calibrated
-  classifiers can be found in the companion paper <em>"Approximating Likelihood
-  Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
-  Gilles Louppe.</em>
-  <a href="http://arxiv.org/abs/1506.02169">http://arxiv.org/abs/1506.02169</a></p>
-</li>
-</ul>
-<h2>Installation</h2>
-<p>The following dependencies are required:</p>
-<ul>
-<li>Numpy &gt;= 1.11</li>
-<li>Scipy &gt;= 0.17</li>
-<li>Scikit-Learn &gt;= 0.18-dev</li>
-<li>Theano &gt;= 0.8</li>
-</ul>
-<p>Once satisfied, Carl can be installed from source using the following
-commands:</p>
-<div class="codehilite"><pre><span></span>git clone https://github.com/diana-hep/carl.git
-cd carl
-python setup.py install
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 </pre></div>
 
 
-<h2>Citation</h2>
-<div class="codehilite"><pre><span></span>@misc{carl,
-  author       = {Gilles Louppe and Kyle Cranmer and Juan Pavez},
-  title        = {carl: a likelihood-free inference toolbox},
-  month        = mar,
-  year         = 2016,
-  doi          = {10.5281/zenodo.47798},
-  url          = {http://dx.doi.org/10.5281/zenodo.47798}
-}
-</pre></div>
-  
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl', this);">Show source &equiv;</a></p>
-  <div id="source-carl" class="source">
-    <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Carl is a toolbox for likelihood-free inference in Python.</span>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">carl.distributions</span> <span class="kn">import</span> <span class="n">Normal</span>
+<span class="kn">from</span> <span class="nn">carl.data</span> <span class="kn">import</span> <span class="n">GK</span>
 
-<span class="sd">This project is still in its early stage of development.</span>
-<span class="sd">[Join us on GitHub](https://github.com/diana-hep/carl) if you feel like</span>
-<span class="sd">contributing!</span>
+<span class="n">true_A</span> <span class="o">=</span> <span class="mf">3.</span>    <span class="c1"># Parameter</span>
+<span class="n">true_B</span> <span class="o">=</span> <span class="mf">1.5</span>   <span class="c1"># Parameter</span>
+<span class="n">true_g</span> <span class="o">=</span> <span class="mf">2.</span>    <span class="c1"># Nuisance parameter</span>
+<span class="n">true_k</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c1"># Constant</span>
 
-<span class="sd">[![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl)</span>
-<span class="sd">[![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&amp;service=github)](https://coveralls.io/github/diana-hep/carl?branch=master)</span>
-<span class="sd">[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)</span>
-
-
-<span class="sd">## Documentation</span>
-
-<span class="sd">* Illustrative examples complementing the online reference</span>
-<span class="sd">  can be found under the</span>
-<span class="sd">  [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)</span>
-<span class="sd">  directory.</span>
-
-<span class="sd">* Extended details regarding likelihood-free inference with calibrated</span>
-<span class="sd">  classifiers can be found in the companion paper _&quot;Approximating Likelihood</span>
-<span class="sd">  Ratios with Calibrated Discriminative Classifiers&quot;, Kyle Cranmer, Juan Pavez,</span>
-<span class="sd">  Gilles Louppe._</span>
-<span class="sd">  [http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)</span>
-
-
-<span class="sd">## Installation</span>
-
-<span class="sd">The following dependencies are required:</span>
-
-<span class="sd">- Numpy &gt;= 1.11</span>
-<span class="sd">- Scipy &gt;= 0.17</span>
-<span class="sd">- Scikit-Learn &gt;= 0.18-dev</span>
-<span class="sd">- Theano &gt;= 0.8</span>
-
-<span class="sd">Once satisfied, Carl can be installed from source using the following</span>
-<span class="sd">commands:</span>
-
-<span class="sd">    git clone https://github.com/diana-hep/carl.git</span>
-<span class="sd">    cd carl</span>
-<span class="sd">    python setup.py install</span>
-
-
-<span class="sd">## Citation</span>
-
-<span class="sd">    @misc{carl,</span>
-<span class="sd">      author       = {Gilles Louppe and Kyle Cranmer and Juan Pavez},</span>
-<span class="sd">      title        = {carl: a likelihood-free inference toolbox},</span>
-<span class="sd">      month        = mar,</span>
-<span class="sd">      year         = 2016,</span>
-<span class="sd">      doi          = {10.5281/zenodo.47798},</span>
-<span class="sd">      url          = {http://dx.doi.org/10.5281/zenodo.47798}</span>
-<span class="sd">    }</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="c1"># Carl is free software; you can redistribute it and/or modify it</span>
-<span class="c1"># under the terms of the Revised BSD License; see LICENSE file for</span>
-<span class="c1"># more details.</span>
-
-<span class="kn">import</span> <span class="nn">sklearn.base</span>
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">clone</span> <span class="k">as</span> <span class="n">sk_clone</span>
-
-<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0&quot;</span>
-
-
-<span class="k">def</span> <span class="nf">_clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">original</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="c1"># XXX: This is a monkey patch to allow cloning of</span>
-    <span class="c1">#      CalibratedClassifierCV(cv=&quot;prefit&quot;), while keeping the original</span>
-    <span class="c1">#      base_estimator. Do not reproduce at home!</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">&quot;_clone&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">original</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">estimator</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sk_clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="n">safe</span><span class="p">)</span>
-
-<span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">clone</span> <span class="o">=</span> <span class="n">_clone</span>
+<span class="n">gk</span> <span class="o">=</span> <span class="n">GK</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="n">true_A</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">true_B</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">true_g</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">true_k</span><span class="p">)</span>
+<span class="n">X_true</span> <span class="o">=</span> <span class="n">gk</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 
-  </div>
 
-  </header>
-
-
-
-  <section id="section-items">
+<div class="codehilite"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">X_true</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+</pre></div>
 
 
-  </section>
+<p><img alt="png" src="Parameterized%20inference%20with%20nuisance%20parameters_files/Parameterized%20inference%20with%20nuisance%20parameters_3_0.png" /></p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">as_classifier</span>
+<span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">make_parameterized_classification</span>
+<span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">ParameterizedClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
 
+<span class="c1"># Build classification data</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X_true</span><span class="p">),</span> 
+            <span class="n">sigma</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">X_true</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_parameterized_classification</span><span class="p">(</span>
+    <span class="n">gk</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">200000</span><span class="p">,</span> 
+    <span class="p">[(</span><span class="n">gk</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">20</span><span class="p">)),</span> 
+     <span class="p">(</span><span class="n">gk</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">20</span><span class="p">)),</span>
+     <span class="p">(</span><span class="n">gk</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">20</span><span class="p">))])</span>
+
+<span class="c1"># Train parameterized classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">ParameterizedClassifier</span><span class="p">(</span>
+    <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> 
+                  <span class="n">as_classifier</span><span class="p">(</span><span class="n">MLPRegressor</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="s2">&quot;adaptive&quot;</span><span class="p">,</span> 
+                                             <span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))),</span>
+    <span class="p">[</span><span class="n">gk</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">gk</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">gk</span><span class="o">.</span><span class="n">g</span><span class="p">])</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">GPyOpt.methods</span> <span class="kn">import</span> <span class="n">BayesianOptimization</span>
+
+<span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">CalibratedClassifierCV</span>
+<span class="kn">from</span> <span class="nn">carl.ratios</span> <span class="kn">import</span> <span class="n">ClassifierRatio</span>
+
+<span class="k">def</span> <span class="nf">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span> 
+    <span class="k">print</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="c1"># Set parameter values</span>
+    <span class="n">gk</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">gk</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Optimize over the nuisance parameter g, at fixed values A and B</span>
+    <span class="k">def</span> <span class="nf">objective_g</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+        <span class="n">gk</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Fit ratio</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">ClassifierRatio</span><span class="p">(</span><span class="n">CalibratedClassifierCV</span><span class="p">(</span>
+            <span class="n">base_estimator</span><span class="o">=</span><span class="n">clf</span><span class="p">,</span> 
+            <span class="n">cv</span><span class="o">=</span><span class="s2">&quot;prefit&quot;</span><span class="p">,</span>  <span class="c1"># keep the pre-trained classifier</span>
+            <span class="n">method</span><span class="o">=</span><span class="s2">&quot;isotonic&quot;</span><span class="p">))</span>
+        <span class="n">ratio</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">numerator</span><span class="o">=</span><span class="n">gk</span><span class="p">,</span> <span class="n">denominator</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+        <span class="c1"># Evaluate log-likelihood ratio</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ratio</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_true</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">r</span><span class="p">)])</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+
+    <span class="n">solver</span> <span class="o">=</span> <span class="n">BayesianOptimization</span><span class="p">(</span><span class="n">vectorize</span><span class="p">(</span><span class="n">objective_g</span><span class="p">),</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
+    <span class="n">solver</span><span class="o">.</span><span class="n">run_optimization</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">true_gradients</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">solver</span><span class="o">.</span><span class="n">fx_opt</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">BayesianOptimization</span><span class="p">(</span><span class="n">vectorize</span><span class="p">(</span><span class="n">objective</span><span class="p">),</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">run_optimization</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">true_gradients</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">x_opt</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">fx_opt</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>(array([ 2.92990723,  1.57714945]), array([-1.58365736]))
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">plot_acquisition</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="Parameterized%20inference%20with%20nuisance%20parameters_files/Parameterized%20inference%20with%20nuisance%20parameters_8_0.png" /></p>
+<div class="codehilite"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">plot_convergence</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="Parameterized%20inference%20with%20nuisance%20parameters_files/Parameterized%20inference%20with%20nuisance%20parameters_9_0.png" /></p>
     </article>
   <div class="clear"> </div>
   <footer id="footer">
