@@ -361,6 +361,8 @@
   %>
   <div id="sidebar">
     <ul id="index">
+    <li class="set"><h3><a href="${ root_url }">Index</a></h3></li>
+    
     % if len(variables) > 0:
     <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
       ${show_column_list(map(lambda v: link(v.refname), variables))}
@@ -412,8 +414,6 @@
       </ul>
     </li>
     % endif
-
-    <li class="set"><h3><a href="${ root_url }">Index</a></h3></li>
     </ul>
   </div>
 </%def>

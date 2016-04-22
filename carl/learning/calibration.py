@@ -32,7 +32,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     probabilities for each of the folds are then averaged for prediction.
     """
 
-    def __init__(self, base_estimator, method="histogram", cv=1):
+    def __init__(self, base_estimator, method="histogram", bins="auto", cv=1):
         """Constructor.
 
         Parameters
@@ -46,6 +46,9 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             The method to use for calibration. Supported methods include
             `"histogram"`, `"kde"`, `"isotonic"`, `"interpolated-isotonic"` and
             `"sigmoid"`.
+
+        * `bins` [int, default="auto"]:
+            The number of bins, if `method` is `"histogram"`.
 
         * `cv` [integer, cross-validation generator, iterable or `"prefit"`]:
             Determines the cross-validation splitting strategy.
@@ -61,6 +64,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         """
         self.base_estimator = base_estimator
         self.method = method
+        self.bins = bins
         self.cv = cv
 
     def fit(self, X, y):
@@ -93,7 +97,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
         # Calibrator
         if self.method == "histogram":
-            base_calibrator = HistogramCalibrator()
+            base_calibrator = HistogramCalibrator(bins=self.bins)
         elif self.method == "kde":
             base_calibrator = KernelDensityCalibrator()
         elif self.method == "isotonic":

@@ -10,18 +10,13 @@ contributing!
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
 
 
-## Documentation
+## Likelihood-free inference with classifiers
 
-* Illustrative examples complementing the online reference
-  can be found under the
-  [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
-  directory.
-
-* Extended details regarding likelihood-free inference with calibrated
-  classifiers can be found in the companion paper _"Approximating Likelihood
-  Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
-  Gilles Louppe._
-  [http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)
+Extended details regarding likelihood-free inference with calibrated
+classifiers can be found in the companion paper _"Approximating Likelihood
+Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
+Gilles Louppe._
+[http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)
 
 
 ## Installation
