@@ -1,10 +1,18 @@
 #!/bin/bash
 echo "Running deployment script..."
+conda install jupyter
+pip install pdoc==0.3.2
 
 # Generating documentation
 cd ~
-pip install pdoc==0.3.2
-pdoc --html --html-dir ./doc --template-dir ${TRAVIS_BUILD_DIR}/ci/templates carl
+mkdir -p ./doc/notebooks
+cd ./doc/notebooks
+for nb in ${TRAVIS_BUILD_DIR}/examples/*ipynb; do
+    jupyter nbconvert $nb --to markdown
+done
+
+cd ~
+python ${TRAVIS_BUILD_DIR}/ci/make_doc.py --overwrite --html --html-dir ./doc --template-dir ${TRAVIS_BUILD_DIR}/ci/templates --notebook-dir ./doc/notebooks carl
 
 # Copying to github pages
 echo "Copying built files"
