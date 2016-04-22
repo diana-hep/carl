@@ -12,7 +12,7 @@ contributing!
 
 ## Likelihood-free inference with classifiers
 
-Extended details regarding likelihood-free inference with calibrated
+Extensive details regarding likelihood-free inference with calibrated
 classifiers can be found in the companion paper _"Approximating Likelihood
 Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
 Gilles Louppe._

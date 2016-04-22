@@ -20,11 +20,7 @@ Supported features currently include:
 
 * [Static documentation](http://diana-hep.org/carl).
 
-* Illustrative examples complementing the online reference can be found under
-  the [`examples/`](https://github.com/diana-hep/carl/tree/master/examples)
-  directory.
-
-* Extended details regarding likelihood-free inference with calibrated
+* Extensive details regarding likelihood-free inference with calibrated
   classifiers can be found in the companion paper _"Approximating Likelihood
   Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
   Gilles Louppe._
