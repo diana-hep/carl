@@ -1087,16 +1087,12 @@ table {
 from the following process $p_0$:</p>
 <ul>
 <li>
-<p>$\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that</p>
-</li>
-<li>
-<p>$z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,</p>
-</li>
-<li>$z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,</li>
-<li>$z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,</li>
-<li>$z_3 \sim {\text{Exponential}(\lambda=3)}$, and</li>
-<li>
-<p>$z_4 \sim {\text{Exponential}(\lambda=0.5)}$;</p>
+<p>$\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that 
+     $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
+     $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
+     $z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,
+     $z_3 \sim {\text{Exponential}(\lambda=3)}$, and
+     $z_4 \sim {\text{Exponential}(\lambda=0.5)}$;</p>
 </li>
 <li>
 <p>$\mathbf{x} := R  \mathbf{z}$, where $R$ is a fixed semi-positive definite $5 \times 5$ matrix defining a fixed projection of $\mathbf{z}$ into the observed space.</p>
@@ -1163,7 +1159,7 @@ from the following process $p_0$:</p>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="c1">#plot the data</span>
+<div class="codehilite"><pre><span></span><span class="c1"># Plot the data</span>
 <span class="kn">import</span> <span class="nn">corner</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">corner</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="n">X_true</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X0&quot;</span><span class="p">,</span> <span class="s2">&quot;X1&quot;</span><span class="p">,</span> <span class="s2">&quot;X2&quot;</span><span class="p">,</span> <span class="s2">&quot;X3&quot;</span><span class="p">,</span> <span class="s2">&quot;X4&quot;</span><span class="p">])</span>
 <span class="c1">#plt.savefig(&quot;fig3.pdf&quot;)</span>
@@ -1171,7 +1167,7 @@ from the following process $p_0$:</p>
 
 
 <p><img alt="png" src="Parameterized%20inference%20from%20multidimensional%20data_files/Parameterized%20inference%20from%20multidimensional%20data_4_0.png" /></p>
-<h1>Exact likelihood setup</h1>
+<h2>Exact likelihood setup</h2>
 <div class="codehilite"><pre><span></span><span class="c1"># Minimize the exact LR</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 
@@ -1236,7 +1232,7 @@ from the following process $p_0$:</p>
 
 
 <p><img alt="png" src="Parameterized%20inference%20from%20multidimensional%20data_files/Parameterized%20inference%20from%20multidimensional%20data_8_0.png" /></p>
-<h1>Likelihood-free setup</h1>
+<h2>Likelihood-free setup</h2>
 <p>In this example we will build a parametrized classifier $s(x; \theta_0, \theta_1)$ with $\theta_1$ fixed to $(\alpha=0, \beta=0)$.</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Build classification data</span>
 <span class="kn">from</span> <span class="nn">carl.learning</span> <span class="kn">import</span> <span class="n">make_parameterized_classification</span>

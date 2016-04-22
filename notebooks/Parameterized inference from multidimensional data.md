@@ -6,14 +6,12 @@ Kyle Cranmer, Juan Pavez, Gilles Louppe, March 2016.
 For the sake of the illustration, we will assume 5-dimensional feature $\mathbf{x}$ generated
 from the following process $p_0$:
 
- - $\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that
- 
-   -        $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
-   -         $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
-   -         $z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,
-   -         $z_3 \sim {\text{Exponential}(\lambda=3)}$, and
-   -         $z_4 \sim {\text{Exponential}(\lambda=0.5)}$;
-   
+ - $\mathbf{z} := (z_0, z_1, z_2, z_3, z_4)$, such that 
+     $z_0 \sim {\cal N}(\mu=\alpha, \sigma=1)$,
+     $z_1 \sim {\cal N}(\mu=\beta, \sigma=3)$,
+     $z_2 \sim {\text{Mixture}}(\frac{1}{2}\,{\cal N}(\mu=-2, \sigma=1), \frac{1}{2}\,{\cal N}(\mu=2, \sigma=0.5))$,
+     $z_3 \sim {\text{Exponential}(\lambda=3)}$, and
+     $z_4 \sim {\text{Exponential}(\lambda=0.5)}$;
    
  - $\mathbf{x} := R  \mathbf{z}$, where $R$ is a fixed semi-positive definite $5 \times 5$ matrix defining a fixed projection of $\mathbf{z}$ into the observed space.
   
@@ -83,7 +81,7 @@ print(R)
 
 
 ```python
-#plot the data
+# Plot the data
 import corner
 fig = corner.corner(X_true, bins=20, smooth=0.85, labels=["X0", "X1", "X2", "X3", "X4"])
 #plt.savefig("fig3.pdf")
@@ -93,7 +91,7 @@ fig = corner.corner(X_true, bins=20, smooth=0.85, labels=["X0", "X1", "X2", "X3"
 ![png](Parameterized%20inference%20from%20multidimensional%20data_files/Parameterized%20inference%20from%20multidimensional%20data_4_0.png)
 
 
-# Exact likelihood setup
+## Exact likelihood setup
 
 
 ```python
@@ -164,7 +162,7 @@ plt.show()
 ![png](Parameterized%20inference%20from%20multidimensional%20data_files/Parameterized%20inference%20from%20multidimensional%20data_8_0.png)
 
 
-# Likelihood-free setup
+## Likelihood-free setup
 
 In this example we will build a parametrized classifier $s(x; \theta_0, \theta_1)$ with $\theta_1$ fixed to $(\alpha=0, \beta=0)$.
 
