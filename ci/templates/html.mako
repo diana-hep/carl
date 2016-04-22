@@ -1,6 +1,7 @@
 <%
   import re
   import sys
+  import inspect
 
   import markdown
   try:
@@ -296,6 +297,7 @@
       <%
       class_vars = c.class_variables()
       smethods = c.functions()
+      smethods = [f for f in smethods if inspect.getmodule(f.func).__name__.startswith("carl")]
       inst_vars = c.instance_variables()
       methods = c.methods()
       mro = c.module.mro(c)
@@ -362,7 +364,7 @@
   <div id="sidebar">
     <ul id="index">
     <li class="set"><h3><a href="${ root_url }">Index</a></h3></li>
-    
+
     % if len(variables) > 0:
     <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
       ${show_column_list(map(lambda v: link(v.refname), variables))}
