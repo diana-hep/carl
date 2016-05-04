@@ -56,7 +56,7 @@ commands:
 import sklearn.base
 from sklearn.base import clone as sk_clone
 
-__version__ = "0.0"
+__version__ = "0.2"
 
 
 def _clone(estimator, safe=True, original=False):
