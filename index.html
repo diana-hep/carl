@@ -6,7 +6,7 @@
     <title>carl API documentation</title>
     <meta name="description" content="Carl is a toolbox for likelihood-free inference in Python.
 
-This project is still in its early stage..." />
+The likelihood function is the central o..." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -1089,9 +1089,22 @@ table {
   <header id="section-intro">
   <h1 class="title"><span class="name">carl</span> module</h1>
   <p>Carl is a toolbox for likelihood-free inference in Python.</p>
-<p>This project is still in its early stage of development.
+<p>The likelihood function is the central object that summarizes the information
+from an experiment needed for inference of model parameters. It is key to many
+areas of science that report the results of classical hypothesis tests or
+confidence intervals using the (generalized or profile) likelihood ratio as a
+test statistic. At the same time, with the advance of computing technology, it
+has become increasingly common that a simulator (or generative model) is used to
+describe complex processes that tie parameters of an underlying theory and
+measurement apparatus to high-dimensional observations. However, directly
+evaluating the likelihood function in these cases is often impossible or is
+computationally impractical.</p>
+<p>In this context, the goal of this package is to provide tools for the
+likelihood-free setup, including likelihood (or density) ratio estimation
+algorithms, along with helpers to carry out inference on top of these.</p>
+<p><em>This project is still in its early stage of development.
 <a href="https://github.com/diana-hep/carl">Join us on GitHub</a> if you feel like
-contributing!</p>
+contributing!</em></p>
 <p><a href="https://travis-ci.org/diana-hep/carl"><img alt="Build Status" src="https://travis-ci.org/diana-hep/carl.svg" /></a>
 <a href="https://coveralls.io/github/diana-hep/carl?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&amp;service=github" /></a>
 <a href="http://dx.doi.org/10.5281/zenodo.47798"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg" /></a></p>
@@ -1133,9 +1146,24 @@ python setup.py install
     <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Carl is a toolbox for likelihood-free inference in Python.</span>
 
-<span class="sd">This project is still in its early stage of development.</span>
+<span class="sd">The likelihood function is the central object that summarizes the information</span>
+<span class="sd">from an experiment needed for inference of model parameters. It is key to many</span>
+<span class="sd">areas of science that report the results of classical hypothesis tests or</span>
+<span class="sd">confidence intervals using the (generalized or profile) likelihood ratio as a</span>
+<span class="sd">test statistic. At the same time, with the advance of computing technology, it</span>
+<span class="sd">has become increasingly common that a simulator (or generative model) is used to</span>
+<span class="sd">describe complex processes that tie parameters of an underlying theory and</span>
+<span class="sd">measurement apparatus to high-dimensional observations. However, directly</span>
+<span class="sd">evaluating the likelihood function in these cases is often impossible or is</span>
+<span class="sd">computationally impractical.</span>
+
+<span class="sd">In this context, the goal of this package is to provide tools for the</span>
+<span class="sd">likelihood-free setup, including likelihood (or density) ratio estimation</span>
+<span class="sd">algorithms, along with helpers to carry out inference on top of these.</span>
+
+<span class="sd">_This project is still in its early stage of development.</span>
 <span class="sd">[Join us on GitHub](https://github.com/diana-hep/carl) if you feel like</span>
-<span class="sd">contributing!</span>
+<span class="sd">contributing!_</span>
 
 <span class="sd">[![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl)</span>
 <span class="sd">[![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&amp;service=github)](https://coveralls.io/github/diana-hep/carl?branch=master)</span>
