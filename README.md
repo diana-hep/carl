@@ -54,13 +54,16 @@ The following dependencies are required:
 - Theano >= 0.8
 
 Once satisfied, `carl` can be installed from source using the following
- commands:
+commands:
 
 ```
 git clone https://github.com/diana-hep/carl.git
 cd carl
 python setup.py install
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions to start
+developing and contributing to `carl`.
 
 
 ## Citation
