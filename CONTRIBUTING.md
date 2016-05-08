@@ -26,7 +26,8 @@ dependencies:
 * pytest-cov >= 2.2.1
 * nose >= 1.3.7
 
-Install `carl` with `python setup.py develop`.
+Install `carl` with `python setup.py develop`. Run the unittests with
+`py.test tests`.
 
 _Note: If you are using `conda` and run into problems with loading shared
 libraries when running the tests, try installing the `nomkl` versions of
