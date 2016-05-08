@@ -13,3 +13,22 @@ Code contributions should follow these guidelines:
 * no merging if travis is red.
 
 These are not hard rules to be enforced, but guidelines.
+
+
+# Developer Install
+
+To start working on `carl` you need to install the following additional
+dependencies:
+
+* pytest >= 2.9.1
+* pytest-pep8 >= 1.0.6
+* coverage >= 4.0.3
+* pytest-cov >= 2.2.1
+* nose >= 1.3.7
+
+Install `carl` with `python setup.py develop`. Run the unittests with
+`py.test tests`.
+
+_Note: If you are using `conda` and run into problems with loading shared
+libraries when running the tests, try installing the `nomkl` versions of
+`numpy` and `scipy`._
