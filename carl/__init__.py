@@ -1,5 +1,5 @@
 """
-Carl is a toolbox for likelihood-free inference in Python.
+`carl` is a toolbox for likelihood-free inference in Python.
 
 The likelihood function is the central object that summarizes the information
 from an experiment needed for inference of model parameters. It is key to many
@@ -25,7 +25,7 @@ contributing!_
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
 
 
-## Likelihood-free inference with classifiers
+## Likelihood-free inference with calibrated classifiers
 
 Extensive details regarding likelihood-free inference with calibrated
 classifiers can be found in the companion paper _"Approximating Likelihood

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/diana-hep/carl.svg)](https://travis-ci.org/diana-hep/carl) [![Coverage Status](https://coveralls.io/repos/diana-hep/carl/badge.svg?branch=master&service=github)](https://coveralls.io/github/diana-hep/carl?branch=master) [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47798.svg)](http://dx.doi.org/10.5281/zenodo.47798)
 
-Carl is a toolbox for likelihood-free inference in Python.
+`carl` is a toolbox for likelihood-free inference in Python.
 
 The likelihood function is the central object that summarizes the information
 from an experiment needed for inference of model parameters. It is key to many
@@ -18,18 +18,15 @@ computationally impractical.
 In this context, the goal of this package is to provide tools for the
 likelihood-free setup, including likelihood (or density) ratio estimation
 algorithms, along with helpers to carry out inference on top of these.
-
-_This project is still in its early stage of development. Join us if you feel
-like contributing!_
-
-## Supported features
-
-This package currently includes tools for:
+It currently supports:
 
 - Composition and fitting of distributions;
 - Likelihood-free inference from classifiers;
 - Parameterized supervised learning;
 - Calibration tools.
+
+_This project is still in its early stage of development. Join us if you feel
+like contributing!_
 
 
 ## Documentation
@@ -41,7 +38,6 @@ This package currently includes tools for:
   Ratios with Calibrated Discriminative Classifiers", Kyle Cranmer, Juan Pavez,
   Gilles Louppe._
   [http://arxiv.org/abs/1506.02169](http://arxiv.org/abs/1506.02169)
-
 
 
 ## Installation
