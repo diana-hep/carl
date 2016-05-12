@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
 import numpy as np
 import scipy.stats as st
-import theano
-import theano.tensor as T
 
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
@@ -28,7 +24,7 @@ def check_normal(mu, sigma):
     assert_array_almost_equal(p_carl.cdf(X),
                               p_scipy.cdf(X.ravel()))
     assert_array_almost_equal(-np.log(p_carl.pdf(X)),
-                              p_carl.nnlf(X))
+                              p_carl.nll(X))
 
 
 def test_normal():
@@ -56,7 +52,7 @@ def check_fit(mu, sigma):
     p.fit(X)
     assert np.abs(p.mu.get_value() - mu) <= 0.1
     assert np.abs(p.sigma.get_value() - sigma) <= 0.1
-    assert p.score(X) <= s0
+    assert p.score(X) >= s0
 
 
 def test_fit():
@@ -67,7 +63,6 @@ def test_fit():
 def test_fit_with_constraints():
     p = Normal()
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
-    s0 = p.score(X)
     p.fit(X, constraints=[
         {"param": p.mu, "type": "ineq", "fun": lambda mu: mu},
         {"param": p.mu, "type": "ineq", "fun": lambda mu: 0.1 - mu},
@@ -84,7 +79,6 @@ def test_fit_with_constraints():
 def test_fit_with_bounds():
     p = Normal()
     X = st.norm(loc=0.05, scale=1.0).rvs(5000, random_state=0).reshape(-1, 1)
-    s0 = p.score(X)
     p.fit(X, bounds=[{"param": p.sigma, "bounds": (0, None)}])
     assert p.sigma.get_value() >= 0.0
 

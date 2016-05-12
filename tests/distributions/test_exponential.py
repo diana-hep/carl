@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
 import numpy as np
 import scipy.stats as st
-import theano
-import theano.tensor as T
 
 from numpy.testing import assert_array_almost_equal
 from sklearn.utils import check_random_state
@@ -27,7 +23,7 @@ def check_exponential(inverse_scale):
     assert_array_almost_equal(p_carl.cdf(X),
                               p_scipy.cdf(X.ravel()))
     assert_array_almost_equal(-np.log(p_carl.pdf(X)),
-                              p_carl.nnlf(X))
+                              p_carl.nll(X))
 
 
 def test_exponential():

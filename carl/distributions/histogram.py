@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -10,13 +8,29 @@ from itertools import product
 from sklearn.utils import check_random_state
 from sklearn.utils import check_array
 from scipy.interpolate import interp1d
-from scipy.signal import medfilt
 
 from .base import DistributionMixin
 
 
 class Histogram(DistributionMixin):
+    """N-dimensional histogram."""
+
     def __init__(self, bins=10, range=None, interpolation=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `bins` [int]:
+            The number of bins.
+
+        * `range` [list of bounds (low, high)]:
+            The boundaries. If `None`, bounds are inferred from data.
+
+        * `interpolation` [string, optional]
+            Specifies the kind of interpolation between bins as a string
+            (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
+            `"cubic"`).
+        """
         self.bins = bins
         self.range = range
         self.interpolation = interpolation
@@ -40,7 +54,7 @@ class Histogram(DistributionMixin):
 
         return self.histogram_[all_indices]
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
 
     def rvs(self, n_samples, random_state=None, **kwargs):
@@ -99,7 +113,12 @@ class Histogram(DistributionMixin):
 
         return self
 
-    def score(self, X, **kwargs):
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
         raise NotImplementedError
 
     @property

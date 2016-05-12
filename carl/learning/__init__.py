@@ -1,15 +1,15 @@
-# -*- coding: utf-8 -*-
-#
+"""
+This module implements machine learning algorithms and utilities,
+complementary to Scikit-Learn.
+"""
+
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-"""Machine learning helpers."""
-
 from .base import as_classifier
 from .base import check_cv
 from .calibration import CalibratedClassifierCV
-from .calibration import InterpolatedIsotonicRegression
 from .parameterize import make_parameterized_classification
 from .parameterize import ParameterStacker
 from .parameterize import ParameterizedClassifier
@@ -22,5 +22,4 @@ __all__ = ("as_classifier",
            "make_parameterized_classification",
            "ParameterStacker",
            "ParameterizedClassifier",
-           "ParameterizedRegressor",
-           "InterpolatedIsotonicRegression",)
+           "ParameterizedRegressor",)

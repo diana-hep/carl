@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -7,7 +5,6 @@
 import numpy as np
 
 from numpy.testing import assert_raises
-from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
 from carl.distributions import Histogram
@@ -23,7 +20,7 @@ def test_histogram():
         [0.1, 0.1, 0.1, 0., 0.])
 
     assert_array_almost_equal(
-        h.nnlf([[0.0], [1.0], [10.0], [-0.5], [10.5]]),
+        h.nll([[0.0], [1.0], [10.0], [-0.5], [10.5]]),
         -np.log(h.pdf([[0.0], [1.0], [10.0], [-0.5], [10.5]])))
 
     X = h.rvs(10000, random_state=1)

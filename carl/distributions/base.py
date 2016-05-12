@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-#
+"""This module implements commons for distributions."""
+
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
-import collections
 import numpy as np
 import theano
 import theano.tensor as T
@@ -19,6 +18,33 @@ from theano.tensor.sharedvar import SharedVariable
 
 
 def check_parameter(name, value):
+    """Check, convert and extract inputs of a parameter value.
+
+    This function wraps scalar or lists into a Theano shared variable, then
+    acting as a parameter. Theano expressions are left unchanged.
+
+    Parameters
+    ----------
+    * `name` [string]:
+        The parameter name.
+
+    * `value` [theano expression, list or scalar]:
+        The parameter value.
+
+    Returns
+    -------
+    * `value` [theano expression]:
+        The parameter expression.
+
+    * `parameters` [set of theano shared variables]:
+        Set of base shared variables on which `value` depends.
+
+    * `constants` [set of theano constants]:
+        Set of base constants on which `value` depends.
+
+    * `observeds` [set of theano tensor variables]:
+        Set of base unset variables on which `value` depends.
+    """
     parameters = set()
     constants = set()
     observeds = set()
@@ -40,7 +66,8 @@ def check_parameter(name, value):
                     raise ValueError("Observed variables must be named.")
                 observeds.add(var)
     else:
-        # XXX allow for lists and convert them to ndarray
+        if isinstance(value, list):
+            value = np.ndarray(value)
 
         if isinstance(value, np.ndarray):
             value = theano.shared(value, name=name)
@@ -53,6 +80,24 @@ def check_parameter(name, value):
 
 
 def bound(expression, out, *predicates):
+    """Bound a theano expression.
+
+    Parameters
+    ----------
+    * `expression` [theano expression]:
+        The expression to bound.
+
+    * `out` [theano expression]:
+        The out-of-bounds value.
+
+    * `*predicates` [list of theano expressions]:
+        The list of predicates defining the boundaries of `expression`.
+
+    Returns
+    -------
+    * `value` [theano expression]:
+         The bounded expression.
+    """
     guard = 1
 
     for p in predicates:
@@ -62,39 +107,162 @@ def bound(expression, out, *predicates):
 
 
 class DistributionMixin(BaseEstimator):
-    # Mixin interface
+    """Distribution mixin.
+
+    This class defines the common API for distribution objects.
+    """
+
     def pdf(self, X, **kwargs):
+        """Probability density function.
+
+        This function returns the value of the probability density function
+        `p(x_i)`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `pdf` [array, shape=(n_samples,)]:
+            `p(x_i)` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
+        """Negative log-likelihood.
+
+        This function returns the value of the negative log-likelihood
+        `- log(p(x_i))`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `nll` [array, shape=(n_samples,)]:
+            `-log(p(x_i))` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def cdf(self, X, **kwargs):
+        """Cumulative distribution function.
+
+        This function returns the value of the cumulative distribution function
+        `F(x_i) = p(x <= x_i)`, at all `x_i` in `X`.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `cdf` [array, shape=(n_samples,)]:
+            `cdf(x_i)` for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def ppf(self, X, **kwargs):
+        """Percent point function (inverse of cdf).
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `ppf` [array, shape=(n_samples,)]:
+            Percent point function for all `x_i` in `X`.
+        """
         raise NotImplementedError
 
     def rvs(self, n_samples, random_state=None, **kwargs):
+        """Draw samples.
+
+        Parameters
+        ----------
+        * `n_samples` [int]:
+            The number of samples to draw.
+
+        * `random_state` [integer or RandomState object]:
+            The random seed.
+
+        Returns
+        -------
+        * `X` [array, shape=(n_samples, n_features)]:
+            The generated samples.
+        """
         raise NotImplementedError
 
     def fit(self, X, **kwargs):
+        """Fit the distribution parameters to data.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         return self
 
     def score(self, X, **kwargs):
+        """Evaluate the goodness of fit of the distribution w.r.t. `X`.
+
+        The higher, the better.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `score` [float]:
+            The goodness of fit.
+        """
         return NotImplementedError
 
     @property
     def ndim(self):
+        """The number of dimensions (or features) of the data."""
         return 1
 
 
 class TheanoDistribution(DistributionMixin):
+    """Base class for Theano-based distributions.
+
+    Exposed attributes include:
+
+    - `parameters_`: the set of parameters on which the distribution depends.
+
+    - `constants_`: the set of constants on which the distribution depends.
+
+    - `observeds_`: the set of unset variables on which the distribution
+      depends. Values for these variables are required to be set using the
+      `**kwargs` argument.
+    """
+
     # Mixin interface
     X = T.dmatrix(name="X")  # Input expression is shared by all distributions
     p = T.dmatrix(name="p")
 
     def __init__(self, **parameters):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `**parameters` [pairs of name/value]:
+            The list of parameter names with their values.
+        """
         # Validate parameters of the distribution
         self.parameters_ = set()        # base parameters
         self.constants_ = set()         # base constants
@@ -113,7 +281,7 @@ class TheanoDistribution(DistributionMixin):
             for o_i in o:
                 self.observeds_.add(o_i)
 
-    def make_(self, expression, name, args=None, kwargs=None):
+    def _make(self, expression, name, args=None, kwargs=None):
         if args is None:
             args = [self.X]
 
@@ -135,9 +303,6 @@ class TheanoDistribution(DistributionMixin):
         return self.ppf(p, **kwargs)
 
     # Scikit-Learn estimator interface
-    def get_params(self, deep=True):
-        return super(DistributionMixin, self).get_params(deep=deep)
-
     def set_params(self, **params):
         for name, value in params.items():
             var = getattr(self, name, None)
@@ -155,6 +320,32 @@ class TheanoDistribution(DistributionMixin):
 
     def fit(self, X, bounds=None, constraints=None, use_gradient=True,
             optimizer=None, **kwargs):
+        """Fit the distribution parameters to data by minimizing the negative
+        log-likelihood of the data.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        * `bounds` [list of (parameter, (low, high))]:
+            The parameter bounds.
+
+        * `constraints`:
+            The constraints on the parameters.
+
+        * `use_gradient` [boolean, default=True]:
+            Whether to use exact gradients (if `True`) or numerical gradients
+            (if `False`).
+
+        * `optimizer` [string]:
+            The optimization method.
+
+        Returns
+        -------
+        * `self` [object]:
+            `self`.
+        """
         # Map parameters to placeholders
         param_to_placeholder = []
         param_to_index = {}
@@ -200,7 +391,7 @@ class TheanoDistribution(DistributionMixin):
         objective_ = theano.function(
             [self.X] + [w for _, w in param_to_placeholder] +
             [theano.In(v, name=v.name) for v in self.observeds_],
-            T.sum(self.nnlf_),
+            T.sum(self.nll_),
             givens=param_to_placeholder,
             allow_input_downcast=True)
 
@@ -211,7 +402,7 @@ class TheanoDistribution(DistributionMixin):
             gradient_ = theano.function(
                 [self.X] + [w for _, w in param_to_placeholder] +
                 [theano.In(v, name=v.name) for v in self.observeds_],
-                theano.grad(T.sum(self.nnlf_),
+                theano.grad(T.sum(self.nll_),
                             [v for v, _ in param_to_placeholder]),
                 givens=param_to_placeholder,
                 allow_input_downcast=True)
@@ -240,4 +431,18 @@ class TheanoDistribution(DistributionMixin):
         return self
 
     def score(self, X, **kwargs):
-        return self.nnlf(X, **kwargs).sum()
+        """Evaluate the log-likelihood `-self.nll(X).sum()` of `X`.
+
+        The higher, the better.
+
+        Parameters
+        ----------
+        * `X` [array-like, shape=(n_samples, n_features)]:
+            The samples.
+
+        Returns
+        -------
+        * `score` [float]:
+            The log-likelihood of `X`.
+        """
+        return -self.nll(X, **kwargs).sum()

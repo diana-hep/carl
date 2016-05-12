@@ -1,21 +1,31 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
 import numpy as np
 import theano
-import theano.tensor as T
 
 from sklearn.utils import check_random_state
 
 from . import TheanoDistribution
-from .base import check_parameter
 
 
 class Join(TheanoDistribution):
+    """Joint distribution.
+
+    This class can be used to define a joint distribution
+    `p(x, y, z, ...) = p_0(x) * p_1(y) * p_2(z) * ...`, where `p_i` are
+    themselves distributions.
+    """
+
     def __init__(self, components):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `components` [list of `DistributionMixin`]:
+            The components to join together.
+        """
         super(Join, self).__init__()
         self.components = components
 
@@ -29,7 +39,7 @@ class Join(TheanoDistribution):
                 for o_i in component.observeds_:
                     self.observeds_.add(o_i)
 
-        # Derive and overide pdf and nnlf analytically if possible
+        # Derive and overide pdf and nll analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
             # pdf
             c0 = self.components[0]
@@ -41,20 +51,20 @@ class Join(TheanoDistribution):
                     c.pdf_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
-        if all([hasattr(c, "nnlf_") for c in self.components]):
-            # nnlf
+        if all([hasattr(c, "nll_") for c in self.components]):
+            # nll
             c0 = self.components[0]
-            self.nnlf_ = theano.clone(c0.nnlf_, {c0.X: self.X[:, 0:c0.ndim]})
+            self.nll_ = theano.clone(c0.nll_, {c0.X: self.X[:, 0:c0.ndim]})
             start = c0.ndim
 
             for c in self.components[1:]:
-                self.nnlf_ += theano.clone(
-                    c.nnlf_, {c.X: self.X[:, start:start+c.ndim]})
+                self.nll_ += theano.clone(
+                    c.nll_, {c.X: self.X[:, start:start+c.ndim]})
                 start += c.ndim
 
-            self.make_(self.nnlf_, "nnlf")
+            self._make(self.nll_, "nll")
 
     def pdf(self, X, **kwargs):
         out = np.ones(len(X))
@@ -66,12 +76,12 @@ class Join(TheanoDistribution):
 
         return out
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         out = np.zeros(len(X))
         start = 0
 
         for i, component in enumerate(self.components):
-            out += component.nnlf(X[:, start:start+component.ndim], **kwargs)
+            out += component.nll(X[:, start:start+component.ndim], **kwargs)
             start += component.ndim
 
         return out
@@ -89,10 +99,18 @@ class Join(TheanoDistribution):
         return out
 
     def fit(self, X, **kwargs):
-        if hasattr(self, "nnlf_"):
+        if hasattr(self, "nll_"):
             return super(Join, self).fit(X, **kwargs)
         else:
             raise NotImplementedError
+
+    def cdf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     @property
     def ndim(self):

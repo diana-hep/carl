@@ -34,8 +34,7 @@ conda create -n testenv --yes python=$PYTHON_VERSION pip \
     pytest pytest-pep8 nose coverage
 source activate testenv
 
-pip install coveralls pep257 pytest-cov six
-pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+pip install coveralls pep257 pytest-cov six Theano
 
 python --version
 python -c "import numpy; print('numpy %s' % numpy.__version__)"

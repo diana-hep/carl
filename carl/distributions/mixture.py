@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
 
 import numpy as np
-import theano
 import theano.tensor as T
 
 from sklearn.utils import check_random_state
@@ -15,7 +12,25 @@ from .base import check_parameter
 
 
 class Mixture(TheanoDistribution):
+    """Mix components into a mixture distribution.
+
+    This class can be used to model a mixture distribution
+    `p(x) = \sum_i w_i p_i(x)`, where `p_i` are themselves
+    distributions and where `w_i` are the component weights.
+    """
+
     def __init__(self, components, weights=None):
+        """Constructor.
+
+        Parameters
+        ----------
+        * `components` [list of `DistributionMixin`]:
+            The components to mix together.
+
+        * `weights` [list of floats or list of theano expressions]:
+            The component weights.
+        """
+
         super(Mixture, self).__init__()
         self.components = components
         self.weights = []
@@ -69,36 +84,30 @@ class Mixture(TheanoDistribution):
 
                 self.weights.append(w_last)
 
-        # # Normalize weights
-        # normalizer = self.weights[0]
-        # for w in self.weights[1:]:
-        #     normalizer += w
-        # self.weights = [w / normalizer for w in self.weights]
-
-        # Derive and overide pdf, nnlf and cdf analytically if possible
+        # Derive and overide pdf, nll and cdf analytically if possible
         if all([hasattr(c, "pdf_") for c in self.components]):
             # pdf
             self.pdf_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
                 self.pdf_ += self.weights[i] * self.components[i].pdf_
-            self.make_(self.pdf_, "pdf")
+            self._make(self.pdf_, "pdf")
 
             # -log pdf
-            self.nnlf_ = self.weights[0] * self.components[0].pdf_
+            self.nll_ = self.weights[0] * self.components[0].pdf_
             for i in range(1, len(self.components)):
-                self.nnlf_ += self.weights[i] * self.components[i].pdf_
-            self.nnlf_ = -T.log(self.nnlf_)
-            self.make_(self.nnlf_, "nnlf")
+                self.nll_ += self.weights[i] * self.components[i].pdf_
+            self.nll_ = -T.log(self.nll_)
+            self._make(self.nll_, "nll")
 
         if all([hasattr(c, "cdf_") for c in self.components]):
             # cdf
             self.cdf_ = self.weights[0] * self.components[0].cdf_
             for i in range(1, len(self.components)):
                 self.cdf_ += self.weights[i] * self.components[i].cdf_
-            self.make_(self.cdf_, "cdf")
+            self._make(self.cdf_, "cdf")
 
         # Weight evaluation function
-        self.make_(T.stack(self.weights, axis=0), "compute_weights", args=[])
+        self._make(T.stack(self.weights, axis=0), "compute_weights", args=[])
 
     def pdf(self, X, **kwargs):
         weights = self.compute_weights(**kwargs)
@@ -109,7 +118,7 @@ class Mixture(TheanoDistribution):
 
         return p
 
-    def nnlf(self, X, **kwargs):
+    def nll(self, X, **kwargs):
         return -np.log(self.pdf(X, **kwargs))
 
     def cdf(self, X, **kwargs):
@@ -120,6 +129,10 @@ class Mixture(TheanoDistribution):
             c += weights[i] * self.components[i].cdf(X, **kwargs)
 
         return c
+
+    def ppf(self, X, **kwargs):
+        """Not supported."""
+        raise NotImplementedError
 
     def rvs(self, n_samples, random_state=None, **kwargs):
         rng = check_random_state(random_state)
@@ -138,7 +151,7 @@ class Mixture(TheanoDistribution):
         return out
 
     def fit(self, X, **kwargs):
-        if hasattr(self, "nnlf_"):
+        if hasattr(self, "nll_"):
             return super(Mixture, self).fit(X, **kwargs)
         else:
             raise NotImplementedError

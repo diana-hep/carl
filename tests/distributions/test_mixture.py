@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Carl is free software; you can redistribute it and/or modify it
 # under the terms of the Revised BSD License; see LICENSE file for
 # more details.
@@ -106,7 +104,7 @@ def test_fit():
 
     m.fit(X)
     assert np.abs(g.eval() - 1. / 3.) < 0.05
-    assert m.score(X) <= s0
+    assert m.score(X) >= s0
 
 
 def test_likelihood_free_mixture():
@@ -117,12 +115,12 @@ def test_likelihood_free_mixture():
     m1 = Mixture(components=[p1, p2])
     m2 = Mixture(components=[h1, h2])
 
-    # Check whether pdf, nnlf and cdf have been overriden
+    # Check whether pdf, nll and cdf have been overriden
     assert isinstance(m1.pdf, theano.compile.function_module.Function)
-    assert isinstance(m1.nnlf, theano.compile.function_module.Function)
+    assert isinstance(m1.nll, theano.compile.function_module.Function)
     assert isinstance(m1.cdf, theano.compile.function_module.Function)
     assert isinstance(m2.pdf, types.MethodType)
-    assert isinstance(m2.nnlf, types.MethodType)
+    assert isinstance(m2.nll, types.MethodType)
     assert isinstance(m2.cdf, types.MethodType)
 
     # Compare pdfs
