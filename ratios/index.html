@@ -1178,8 +1178,8 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
         <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">base_estimator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">numerator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">denominator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">n_samples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">numerator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">denominator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the density ratio estimator.</span>
 
 <span class="sd">        The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either</span>
@@ -1197,6 +1197,9 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 <span class="sd">            Labels. Samples labeled with `y=0` correspond to data from the</span>
 <span class="sd">            numerator distribution, while samples labeled with `y=1` correspond</span>
 <span class="sd">            data from the denominator distribution.</span>
+
+<span class="sd">        * `sample_weight` [array-like, shape=(n_samples,), optional]:</span>
+<span class="sd">            The sample weights.</span>
 
 <span class="sd">        * `numerator` [`DistributionMixin`, optional]:</span>
 <span class="sd">            The numerator distribution `p0`, if `X` and `y` are not provided.</span>
@@ -1235,9 +1238,18 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
                                  <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)))</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">y</span><span class="p">[</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">sample_weight</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">elif</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">pass</span>  <span class="c1"># Use given X and y</span>
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">n_num</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">n_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">n_num</span> <span class="o">!=</span> <span class="n">n_den</span><span class="p">:</span>
+                    <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+                    <span class="n">sample_weight</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n_num</span> <span class="o">/</span> <span class="n">n_den</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sample_weight</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span>
@@ -1248,7 +1260,10 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
             <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -1341,7 +1356,7 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
             
   <div class="item">
     <div class="name def" id="carl.ratios.ClassifierRatio.fit">
-    <p>def <span class="ident">fit</span>(</p><p>self, X=None, y=None, numerator=None, denominator=None, n_samples=None, **kwargs)</p>
+    <p>def <span class="ident">fit</span>(</p><p>self, X=None, y=None, sample_weight=None, numerator=None, denominator=None, n_samples=None, **kwargs)</p>
     </div>
     
 
@@ -1365,6 +1380,10 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
     Labels. Samples labeled with <code>y=0</code> correspond to data from the
     numerator distribution, while samples labeled with <code>y=1</code> correspond
     data from the denominator distribution.</p>
+</li>
+<li>
+<p><code>sample_weight</code> [array-like, shape=(n_samples,), optional]:
+    The sample weights.</p>
 </li>
 <li>
 <p><code>numerator</code> [<code>DistributionMixin</code>, optional]:
@@ -1392,8 +1411,8 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.ratios.ClassifierRatio.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.ratios.ClassifierRatio.fit" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">numerator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">denominator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-        <span class="n">n_samples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">numerator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">denominator</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fit the density ratio estimator.</span>
 <span class="sd">    The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either</span>
 <span class="sd">    - from data, using `fit(X, y)` or</span>
@@ -1407,6 +1426,8 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
 <span class="sd">        Labels. Samples labeled with `y=0` correspond to data from the</span>
 <span class="sd">        numerator distribution, while samples labeled with `y=1` correspond</span>
 <span class="sd">        data from the denominator distribution.</span>
+<span class="sd">    * `sample_weight` [array-like, shape=(n_samples,), optional]:</span>
+<span class="sd">        The sample weights.</span>
 <span class="sd">    * `numerator` [`DistributionMixin`, optional]:</span>
 <span class="sd">        The numerator distribution `p0`, if `X` and `y` are not provided.</span>
 <span class="sd">        This object is required to implement sampling through the `rvs`</span>
@@ -1438,15 +1459,26 @@ classifier approximate of the probability <code>p0(x) / (p0(x) + p1(x))</code>.<
                              <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)))</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
         <span class="n">y</span><span class="p">[</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">sample_weight</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">elif</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">pass</span>  <span class="c1"># Use given X and y</span>
+        <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">n_num</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">n_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">n_num</span> <span class="o">!=</span> <span class="n">n_den</span><span class="p">:</span>
+                <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+                <span class="n">sample_weight</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">n_num</span> <span class="o">/</span> <span class="n">n_den</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sample_weight</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="c1"># Fit base estimator</span>
     <span class="n">clf</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
         <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
 </pre></div>
 

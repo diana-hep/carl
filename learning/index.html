@@ -1528,7 +1528,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the calibrated model.</span>
 
 <span class="sd">        Parameters</span>
@@ -1579,7 +1579,10 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
                     <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
 
-                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span>
@@ -1589,7 +1592,12 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
             <span class="c1"># Calibrator</span>
             <span class="n">calibrator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">base_calibrator</span><span class="p">)</span>
             <span class="n">T</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">calibrators_</span> <span class="o">=</span> <span class="p">[</span><span class="n">calibrator</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -1605,13 +1613,24 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
                     <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
 
-                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">],</span>
+                            <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
 
                 <span class="c1"># Calibrator</span>
                 <span class="n">calibrator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">base_calibrator</span><span class="p">)</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])[:,</span> <span class="mi">1</span><span class="p">]</span>
-                <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">],</span>
+                                   <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">calibrators_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calibrator</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
@@ -1763,7 +1782,7 @@ the training data is used for both training and calibration.</p>
             
   <div class="item">
     <div class="name def" id="carl.learning.CalibratedClassifierCV.fit">
-    <p>def <span class="ident">fit</span>(</p><p>self, X, y)</p>
+    <p>def <span class="ident">fit</span>(</p><p>self, X, y, sample_weight=None)</p>
     </div>
     
 
@@ -1789,7 +1808,7 @@ the training data is used for both training and calibration.</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.fit" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fit the calibrated model.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1830,14 +1849,20 @@ the training data is used for both training and calibration.</p>
             <span class="n">clf</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
                 <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
-            <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">clf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span> <span class="o">=</span> <span class="p">[</span><span class="n">clf</span><span class="p">]</span>
         <span class="c1"># Calibrator</span>
         <span class="n">calibrator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">base_calibrator</span><span class="p">)</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calibrators_</span> <span class="o">=</span> <span class="p">[</span><span class="n">calibrator</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1848,12 +1873,20 @@ the training data is used for both training and calibration.</p>
             <span class="n">clf</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
                 <span class="n">clf</span> <span class="o">=</span> <span class="n">as_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
-            <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">],</span>
+                        <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
             <span class="c1"># Calibrator</span>
             <span class="n">calibrator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">base_calibrator</span><span class="p">)</span>
             <span class="n">T</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])[:,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">calibrator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">calibrate</span><span class="p">],</span>
+                               <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">[</span><span class="n">calibrate</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calibrators_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calibrator</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">self</span>
 </pre></div>
