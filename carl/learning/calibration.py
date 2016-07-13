@@ -67,7 +67,7 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         self.bins = bins
         self.cv = cv
 
-    def fit(self, X, y):
+    def fit(self, X, y, sample_weight=None):
         """Fit the calibrated model.
 
         Parameters
@@ -118,7 +118,10 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
                 if isinstance(clf, RegressorMixin):
                     clf = as_classifier(clf)
 
-                clf.fit(X, y)
+                if sample_weight is None:
+                    clf.fit(X, y)
+                else:
+                    clf.fit(X, y, sample_weight=sample_weight)
 
             else:
                 clf = self.base_estimator
@@ -128,7 +131,12 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             # Calibrator
             calibrator = clone(base_calibrator)
             T = clf.predict_proba(X)[:, 1]
-            calibrator.fit(T, y)
+
+            if sample_weight is None:
+                calibrator.fit(T, y)
+            else:
+                calibrator.fit(T, y, sample_weight=sample_weight)
+
             self.calibrators_ = [calibrator]
 
         else:
@@ -144,13 +152,24 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
                 if isinstance(clf, RegressorMixin):
                     clf = as_classifier(clf)
 
-                clf.fit(X[train], y[train])
+                if sample_weight is None:
+                    clf.fit(X[train], y[train])
+                else:
+                    clf.fit(X[train], y[train],
+                            sample_weight=sample_weight[train])
+
                 self.classifiers_.append(clf)
 
                 # Calibrator
                 calibrator = clone(base_calibrator)
                 T = clf.predict_proba(X[calibrate])[:, 1]
-                calibrator.fit(T, y[calibrate])
+
+                if sample_weight is None:
+                    calibrator.fit(T, y[calibrate])
+                else:
+                    calibrator.fit(T, y[calibrate],
+                                   sample_weight=sample_weight[calibrate])
+
                 self.calibrators_.append(calibrator)
 
         return self
@@ -325,7 +344,7 @@ class KernelDensityCalibrator(BaseEstimator, RegressorMixin):
         """
         self.bandwidth = bandwidth
 
-    def fit(self, T, y):
+    def fit(self, T, y, sample_weight=None):
         """Fit using `T`, `y` as training data.
 
         Parameters
@@ -343,6 +362,7 @@ class KernelDensityCalibrator(BaseEstimator, RegressorMixin):
         """
         # Check input
         T = column_or_1d(T)
+        assert sample_weight is None  # not supported by KernelDensity
 
         # Fit
         t0 = T[y == 0]

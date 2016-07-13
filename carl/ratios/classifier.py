@@ -43,8 +43,8 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
         self.base_estimator = base_estimator
         self.random_state = random_state
 
-    def fit(self, X=None, y=None, numerator=None, denominator=None,
-            n_samples=None, **kwargs):
+    def fit(self, X=None, y=None, sample_weight=None,
+            numerator=None, denominator=None, n_samples=None, **kwargs):
         """Fit the density ratio estimator.
 
         The density ratio estimator `r(x) = p0(x) / p1(x)` can be fit either
@@ -62,6 +62,9 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
             Labels. Samples labeled with `y=0` correspond to data from the
             numerator distribution, while samples labeled with `y=1` correspond
             data from the denominator distribution.
+
+        * `sample_weight` [array-like, shape=(n_samples,), optional]:
+            The sample weights.
 
         * `numerator` [`DistributionMixin`, optional]:
             The numerator distribution `p0`, if `X` and `y` are not provided.
@@ -100,9 +103,18 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
                                  random_state=rng, **kwargs)))
             y = np.zeros(n_samples, dtype=np.int)
             y[n_samples // 2:] = 1
+            sample_weight = None
 
         elif X is not None and y is not None:
-            pass  # Use given X and y
+            if sample_weight is None:
+                n_num = (y == 0).sum()
+                n_den = (y == 1).sum()
+
+                if n_num != n_den:
+                    sample_weight = np.ones(len(y), dtype=np.float)
+                    sample_weight[y == 1] *= 1.0 * n_num / n_den
+                else:
+                    sample_weight = None
 
         else:
             raise ValueError
@@ -113,7 +125,10 @@ class ClassifierRatio(BaseEstimator, DensityRatioMixin):
         if isinstance(clf, RegressorMixin):
             clf = as_classifier(clf)
 
-        self.classifier_ = clf.fit(X, y)
+        if sample_weight is None:
+            self.classifier_ = clf.fit(X, y)
+        else:
+            self.classifier_ = clf.fit(X, y, sample_weight=sample_weight)
 
         return self
 
