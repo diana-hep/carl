@@ -3,6 +3,8 @@
 # more details.
 
 import numpy as np
+import astropy.stats as astropy
+
 
 from itertools import product
 from sklearn.utils import check_random_state
@@ -85,11 +87,19 @@ class Histogram(DistributionMixin):
 
         if sample_weight is not None and len(sample_weight) != len(X):
             raise ValueError
-
         # Compute histogram and edges
-        h, e = np.histogramdd(X, bins=self.bins, range=self.range,
-                              weights=sample_weight, normed=True)
+        if self.bins == 'blocks':
+            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',p0=0.01)
+            #da, bins = astropy.scott_bin_width(X.ravel(), True)
+            h, e = np.histogram(X.ravel(), bins=bins, range=self.range[0],
+                                  weights=sample_weight,normed=True)
 
+            e = [e]
+        else:
+            bins = self.bins
+            h, e = np.histogramdd(X, bins=bins, range=self.range,
+                                  weights=sample_weight,normed=True) 
+        
         # Add empty bins for out of bound samples
         for j in range(X.shape[1]):
             h = np.insert(h, 0, 0., axis=j)
