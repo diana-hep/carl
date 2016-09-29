@@ -6,10 +6,10 @@
 
 import numpy as np
 
-import sklearn
 from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 from sklearn.base import clone
+from sklearn.model_selection import check_cv as sklearn_check_cv
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
@@ -77,20 +77,6 @@ def as_classifier(regressor):
     return Wrapper(regressor)
 
 
-if int(sklearn.__version__[2:4]) < 18:
-    class _CVIterableWrapper:
-        # Backport from sklearn.model_selection
-        def __init__(self, cv):
-            self.cv = cv
-
-        def get_n_splits(self, X=None, y=None, labels=None):
-            return len(self.cv)
-
-        def split(self, X=None, y=None, labels=None):
-            for train, test in self.cv:
-                yield train, test
-
-
 def check_cv(cv=3, X=None, y=None, classifier=False):
     """Input checker utility for building a cross-validator.
 
@@ -125,11 +111,4 @@ def check_cv(cv=3, X=None, y=None, classifier=False):
     ----
     This method is backported from scikit-learn 0.18.
     """
-    if int(sklearn.__version__[2:4]) >= 18:
-        from sklearn.model_selection import check_cv as sklearn_check_cv
-        return sklearn_check_cv(cv, y=y, classifier=classifier)
-
-    else:
-        from sklearn.cross_validation import check_cv as sklearn_check_cv
-        return _CVIterableWrapper(sklearn_check_cv(cv, X=X, y=y,
-                                                   classifier=classifier))
+    return sklearn_check_cv(cv, y=y, classifier=classifier)

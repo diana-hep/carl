@@ -40,7 +40,7 @@ The following dependencies are required:
 
 - Numpy >= 1.11
 - Scipy >= 0.17
-- Scikit-Learn >= 0.18-dev
+- Scikit-Learn >= 0.18
 - Theano >= 0.8
 
 Once satisfied, Carl can be installed from source using the following
