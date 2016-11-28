@@ -17,7 +17,7 @@ from .base import DistributionMixin
 class Histogram(DistributionMixin):
     """N-dimensional histogram."""
 
-    def __init__(self, bins=10, range=None, interpolation=None):
+    def __init__(self, bins=10, range=None, interpolation=None, var_width=False):
         """Constructor.
 
         Parameters
@@ -36,6 +36,7 @@ class Histogram(DistributionMixin):
         self.bins = bins
         self.range = range
         self.interpolation = interpolation
+        self.var_width = var_width
 
     def pdf(self, X, **kwargs):
         X = check_array(X)
@@ -81,24 +82,36 @@ class Histogram(DistributionMixin):
 
         return low + u * (high - low)
 
+    def variable_density(self, h, bins):
+        widths = bins[1:] - bins[:-1]
+        norm_h = h / widths / h.sum()
+        return norm_h
+    
     def fit(self, X, sample_weight=None, **kwargs):
         # Checks
         X = check_array(X)
-
         if sample_weight is not None and len(sample_weight) != len(X):
             raise ValueError
         # Compute histogram and edges
         if self.bins == 'blocks':
-            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',p0=0.01)
+            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',p0=0.0001)
             #da, bins = astropy.scott_bin_width(X.ravel(), True)
             h, e = np.histogram(X.ravel(), bins=bins, range=self.range[0],
-                                  weights=sample_weight,normed=True)
+                                  weights=sample_weight,normed=False)
 
             e = [e]
+        elif self.var_width:
+            splits = np.array_split(np.sort(X.ravel()), self.bins)
+            base = np.array([splits[0][0]] + [x[-1] for x in splits])
+            h, e = np.histogram(X.ravel(), bins=base, range=self.range[0],normed=False, 
+                                weights=sample_weight)
+            h = self.variable_density(h,e)
+            e = [e]
+           
         else:
             bins = self.bins
             h, e = np.histogramdd(X, bins=bins, range=self.range,
-                                  weights=sample_weight,normed=True) 
+                                  weights=sample_weight,normed=False) 
         
         # Add empty bins for out of bound samples
         for j in range(X.shape[1]):
