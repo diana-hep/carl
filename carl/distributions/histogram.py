@@ -17,7 +17,8 @@ from .base import DistributionMixin
 class Histogram(DistributionMixin):
     """N-dimensional histogram."""
 
-    def __init__(self, bins=10, range=None, interpolation=None, var_width=False):
+    def __init__(self, bins=10, range=None, interpolation=None, 
+                 var_width=False):
         """Constructor.
 
         Parameters
@@ -32,6 +33,9 @@ class Histogram(DistributionMixin):
             Specifies the kind of interpolation between bins as a string
             (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
             `"cubic"`).
+  
+        * `var_width` [boolean, optional]
+            If True use equal probability variable length bins.
         """
         self.bins = bins
         self.range = range
@@ -86,7 +90,7 @@ class Histogram(DistributionMixin):
         widths = bins[1:] - bins[:-1]
         norm_h = h / widths / h.sum()
         return norm_h
-    
+
     def fit(self, X, sample_weight=None, **kwargs):
         # Checks
         X = check_array(X)
@@ -94,25 +98,27 @@ class Histogram(DistributionMixin):
             raise ValueError
         # Compute histogram and edges
         if self.bins == 'blocks':
-            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',p0=0.0001)
-            #da, bins = astropy.scott_bin_width(X.ravel(), True)
-            h, e = np.histogram(X.ravel(), bins=bins, range=self.range[0],
-                                  weights=sample_weight,normed=False)
-
+            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',
+                                           p0=0.0001)
+            range_ = self.range[0] if self.range else None
+            h, e = np.histogram(X.ravel(), bins=bins, range=range_,
+                                weights=sample_weight, normed=False)
             e = [e]
         elif self.var_width:
-            splits = np.array_split(np.sort(X.ravel()), self.bins)
-            base = np.array([splits[0][0]] + [x[-1] for x in splits])
-            h, e = np.histogram(X.ravel(), bins=base, range=self.range[0],normed=False, 
-                                weights=sample_weight)
-            h = self.variable_density(h,e)
+            ticks = [np.percentile(X.ravel(), 100.*(float(k)/self.bins)) for k 
+                     in range(self.bins+1)]
+            ticks[-1] += 1e-5
+            range_ = self.range[0] if self.range else None
+            h, e = np.histogram(X.ravel(), bins=ticks, range=range_,
+                                normed=False, weights=sample_weight)
+            h, e = h.astype(float), e.astype(float)
+            h = self.variable_density(h, e)
             e = [e]
-           
         else:
             bins = self.bins
             h, e = np.histogramdd(X, bins=bins, range=self.range,
-                                  weights=sample_weight,normed=False) 
-        
+                                  weights=sample_weight, normed=True)
+
         # Add empty bins for out of bound samples
         for j in range(X.shape[1]):
             h = np.insert(h, 0, 0., axis=j)
@@ -133,7 +139,6 @@ class Histogram(DistributionMixin):
         self.histogram_ = h
         self.edges_ = e
         self.ndim_ = X.shape[1]
-
         return self
 
     def cdf(self, X, **kwargs):
