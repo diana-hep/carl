@@ -2133,6 +2133,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.rvs" class="source">
@@ -2200,6 +2217,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Exponential.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Exponential.set_params" class="source">
@@ -2234,14 +2258,10 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Exponential.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -2290,13 +2310,14 @@ log-likelihood of the data.</p>
     <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Histogram</span><span class="p">(</span><span class="n">DistributionMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;N-dimensional histogram.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">variable_width</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        * `bins` [int]:</span>
-<span class="sd">            The number of bins.</span>
+<span class="sd">        * `bins` [int or string]:</span>
+<span class="sd">            The number of bins or `&quot;blocks&quot;` for bayesian blocks.</span>
 
 <span class="sd">        * `range` [list of bounds (low, high)]:</span>
 <span class="sd">            The boundaries. If `None`, bounds are inferred from data.</span>
@@ -2305,10 +2326,14 @@ log-likelihood of the data.</p>
 <span class="sd">            Specifies the kind of interpolation between bins as a string</span>
 <span class="sd">            (`&quot;linear&quot;`, `&quot;nearest&quot;`, `&quot;zero&quot;`, `&quot;slinear&quot;`, `&quot;quadratic&quot;`,</span>
 <span class="sd">            `&quot;cubic&quot;`).</span>
+
+<span class="sd">        * `variable_width` [boolean, optional]</span>
+<span class="sd">            If True use equal probability variable length bins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="nb">range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span> <span class="o">=</span> <span class="n">variable_width</span>
 
     <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -2357,13 +2382,33 @@ log-likelihood of the data.</p>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Checks</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span>
 
         <span class="c1"># Compute histogram and edges</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
-                              <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">==</span> <span class="s2">&quot;blocks&quot;</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">bayesian_blocks</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">fitness</span><span class="o">=</span><span class="s2">&quot;events&quot;</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+            <span class="n">range_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="k">else</span> <span class="bp">None</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span>
+                                <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span><span class="p">:</span>
+            <span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">k</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span>
+                     <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">ticks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1e-5</span>
+            <span class="n">range_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="k">else</span> <span class="bp">None</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span>
+                                <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">e</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">widths</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="n">widths</span> <span class="o">/</span> <span class="n">h</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
+                                  <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="c1"># Add empty bins for out of bound samples</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -2385,7 +2430,6 @@ log-likelihood of the data.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">histogram_</span> <span class="o">=</span> <span class="n">h</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges_</span> <span class="o">=</span> <span class="n">e</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndim_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2417,7 +2461,7 @@ log-likelihood of the data.</p>
             
   <div class="item">
     <div class="name def" id="carl.distributions.Histogram.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, bins=10, range=None, interpolation=None)</p>
+    <p>def <span class="ident">__init__</span>(</p><p>self, bins=10, range=None, interpolation=None, variable_width=False)</p>
     </div>
     
 
@@ -2427,8 +2471,8 @@ log-likelihood of the data.</p>
 <h2>Parameters</h2>
 <ul>
 <li>
-<p><code>bins</code> [int]:
-    The number of bins.</p>
+<p><code>bins</code> [int or string]:
+    The number of bins or <code>"blocks"</code> for bayesian blocks.</p>
 </li>
 <li>
 <p><code>range</code> [list of bounds (low, high)]:
@@ -2440,26 +2484,34 @@ log-likelihood of the data.</p>
     (<code>"linear"</code>, <code>"nearest"</code>, <code>"zero"</code>, <code>"slinear"</code>, <code>"quadratic"</code>,
     <code>"cubic"</code>).</p>
 </li>
+<li>
+<p><code>variable_width</code> [boolean, optional]
+    If True use equal probability variable length bins.</p>
+</li>
 </ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.__init__" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+             <span class="n">variable_width</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Constructor.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    * `bins` [int]:</span>
-<span class="sd">        The number of bins.</span>
+<span class="sd">    * `bins` [int or string]:</span>
+<span class="sd">        The number of bins or `&quot;blocks&quot;` for bayesian blocks.</span>
 <span class="sd">    * `range` [list of bounds (low, high)]:</span>
 <span class="sd">        The boundaries. If `None`, bounds are inferred from data.</span>
 <span class="sd">    * `interpolation` [string, optional]</span>
 <span class="sd">        Specifies the kind of interpolation between bins as a string</span>
 <span class="sd">        (`&quot;linear&quot;`, `&quot;nearest&quot;`, `&quot;zero&quot;`, `&quot;slinear&quot;`, `&quot;quadratic&quot;`,</span>
 <span class="sd">        `&quot;cubic&quot;`).</span>
+<span class="sd">    * `variable_width` [boolean, optional]</span>
+<span class="sd">        If True use equal probability variable length bins.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="nb">range</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span> <span class="o">=</span> <span class="n">variable_width</span>
 </pre></div>
 
   </div>
@@ -2499,6 +2551,17 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.fit" class="source">
@@ -2508,8 +2571,27 @@ log-likelihood of the data.</p>
     <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="c1"># Compute histogram and edges</span>
-    <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
-                          <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">==</span> <span class="s2">&quot;blocks&quot;</span><span class="p">:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">bayesian_blocks</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">fitness</span><span class="o">=</span><span class="s2">&quot;events&quot;</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">)</span>
+        <span class="n">range_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="k">else</span> <span class="bp">None</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span>
+                            <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span><span class="p">:</span>
+        <span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">k</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span>
+                 <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">ticks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1e-5</span>
+        <span class="n">range_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="k">else</span> <span class="bp">None</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span>
+                            <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">e</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">widths</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="n">widths</span> <span class="o">/</span> <span class="n">h</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
+                              <span class="n">weights</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="c1"># Add empty bins for out of bound samples</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">j</span><span class="p">)</span>
@@ -2545,6 +2627,19 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.nll" class="source">
@@ -2566,6 +2661,19 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.pdf" class="source">
@@ -2621,6 +2729,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Histogram.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Histogram.rvs" class="source">
@@ -2716,20 +2841,25 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Histogram.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
             </div>
             <div class="item">
             <p id="carl.distributions.Histogram.range" class="name">var <span class="ident">range</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.distributions.Histogram.variable_width" class="name">var <span class="ident">variable_width</span></p>
             
 
             
@@ -2990,6 +3120,37 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.fit" class="source">
@@ -3014,6 +3175,19 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.nll" class="source">
@@ -3040,6 +3214,19 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.pdf" class="source">
@@ -3089,6 +3276,23 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.rvs" class="source">
@@ -3161,6 +3365,13 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Join.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Join.set_params" class="source">
@@ -3195,14 +3406,9 @@ themselves distributions.</p></div>
             <div class="item">
             <p id="carl.distributions.Join.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -3395,6 +3601,19 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.KernelDensity.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.KernelDensity.nll" class="source">
@@ -3417,6 +3636,19 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.KernelDensity.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.KernelDensity.pdf" class="source">
@@ -3462,6 +3694,23 @@ themselves distributions.</p></div>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.KernelDensity.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.KernelDensity.rvs" class="source">
@@ -3533,14 +3782,10 @@ themselves distributions.</p></div>
             <div class="item">
             <p id="carl.distributions.KernelDensity.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -3856,6 +4101,19 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.nll" class="source">
@@ -3877,6 +4135,19 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.pdf" class="source">
@@ -3921,6 +4192,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.rvs" class="source">
@@ -3988,6 +4276,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.LinearTransform.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.LinearTransform.set_params" class="source">
@@ -4032,14 +4327,9 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.LinearTransform.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -4364,6 +4654,19 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Cumulative distribution function.</p>
+<p>This function returns the value of the cumulative distribution function
+<code>F(x_i) = p(x &lt;= x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>cdf</code> [array, shape=(n_samples,)]:
+    <code>cdf(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.cdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.cdf" class="source">
@@ -4389,6 +4692,37 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Fit the distribution parameters to data by minimizing the negative
+log-likelihood of the data.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</p>
+</li>
+<li>
+<p><code>bounds</code> [list of (parameter, (low, high))]:
+    The parameter bounds.</p>
+</li>
+<li>
+<p><code>constraints</code>:
+    The constraints on the parameters.</p>
+</li>
+<li>
+<p><code>use_gradient</code> [boolean, default=True]:
+    Whether to use exact gradients (if <code>True</code>) or numerical gradients
+    (if <code>False</code>).</p>
+</li>
+<li>
+<p><code>optimizer</code> [string]:
+    The optimization method.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>self</code> [object]:
+    <code>self</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.fit', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.fit" class="source">
@@ -4413,6 +4747,19 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Negative log-likelihood.</p>
+<p>This function returns the value of the negative log-likelihood
+<code>- log(p(x_i))</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>nll</code> [array, shape=(n_samples,)]:
+    <code>-log(p(x_i))</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.nll', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.nll" class="source">
@@ -4434,6 +4781,19 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Probability density function.</p>
+<p>This function returns the value of the probability density function
+<code>p(x_i)</code>, at all <code>x_i</code> in <code>X</code>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>X</code> [array-like, shape=(n_samples, n_features)]:
+    The samples.</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>pdf</code> [array, shape=(n_samples,)]:
+    <code>p(x_i)</code> for all <code>x_i</code> in <code>X</code>.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.pdf', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.pdf" class="source">
@@ -4482,6 +4842,23 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.rvs" class="source">
@@ -4558,6 +4935,13 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Mixture.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Mixture.set_params" class="source">
@@ -4592,14 +4976,9 @@ distributions and where <code>w_i</code> are the component weights.</p></div>
             <div class="item">
             <p id="carl.distributions.Mixture.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -5064,6 +5443,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.rvs" class="source">
@@ -5131,6 +5527,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.MultivariateNormal.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.MultivariateNormal.set_params" class="source">
@@ -5155,14 +5558,9 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.MultivariateNormal.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -5675,6 +6073,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.rvs" class="source">
@@ -5742,6 +6157,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Normal.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Normal.set_params" class="source">
@@ -5776,14 +6198,10 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Normal.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -6061,6 +6479,23 @@ data <code>X</code>.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Sampler.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Sampler.rvs" class="source">
@@ -6761,6 +7196,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.rvs" class="source">
@@ -6828,6 +7280,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.TheanoDistribution.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.TheanoDistribution.set_params" class="source">
@@ -6862,14 +7321,10 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.TheanoDistribution.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.DistributionMixin">DistributionMixin</a></code>.<code><a href="#carl.distributions.DistributionMixin.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 
@@ -7380,6 +7835,23 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Draw samples.</p>
+<h2>Parameters</h2>
+<ul>
+<li>
+<p><code>n_samples</code> [int]:
+    The number of samples to draw.</p>
+</li>
+<li>
+<p><code>random_state</code> [integer or RandomState object]:
+    The random seed.</p>
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>X</code> [array, shape=(n_samples, n_features)]:
+    The generated samples.</li>
+</ul></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.rvs', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.rvs" class="source">
@@ -7447,6 +7919,13 @@ log-likelihood of the data.</p>
 
     
   
+    <div class="desc"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The latter have parameters of the form
+<code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's possible to update each
+component of a nested object.</p>
+<h2>Returns</h2>
+<p>self</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.distributions.Uniform.set_params', this);">Show source &equiv;</a></p>
   <div id="source-carl.distributions.Uniform.set_params" class="source">
@@ -7481,14 +7960,10 @@ log-likelihood of the data.</p>
             <div class="item">
             <p id="carl.distributions.Uniform.ndim" class="name">var <span class="ident">ndim</span></p>
             
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#carl.distributions.TheanoDistribution">TheanoDistribution</a></code>.<code><a href="#carl.distributions.TheanoDistribution.ndim">ndim</a></code>
-    </p>
 
             
   
-    <div class="desc inherited"><p>The number of dimensions (or features) of the data.</p></div>
+    <div class="desc"><p>The number of dimensions (or features) of the data.</p></div>
   <div class="source_cont">
 </div>
 

@@ -1486,7 +1486,8 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 <span class="sd">    probabilities for each of the folds are then averaged for prediction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">variable_width</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Parameters</span>
@@ -1504,6 +1505,15 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 <span class="sd">        * `bins` [int, default=&quot;auto&quot;]:</span>
 <span class="sd">            The number of bins, if `method` is `&quot;histogram&quot;`.</span>
 
+<span class="sd">        * `interpolation` [string, optional]</span>
+<span class="sd">            Specifies the kind of interpolation between bins as a string</span>
+<span class="sd">            (`&quot;linear&quot;`, `&quot;nearest&quot;`, `&quot;zero&quot;`, `&quot;slinear&quot;`, `&quot;quadratic&quot;`,</span>
+<span class="sd">            `&quot;cubic&quot;`), if `method` is `&quot;histogram&quot;`.</span>
+
+<span class="sd">        * `variable_dith_width` [boolean, optional]</span>
+<span class="sd">            If True use equal probability variable length bins, if</span>
+<span class="sd">            `method` is `&quot;histogram&quot;`.</span>
+
 <span class="sd">        * `cv` [integer, cross-validation generator, iterable or `&quot;prefit&quot;`]:</span>
 <span class="sd">            Determines the cross-validation splitting strategy.</span>
 <span class="sd">            Possible inputs for cv are:</span>
@@ -1519,6 +1529,8 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">base_estimator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span> <span class="o">=</span> <span class="n">variable_width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1548,10 +1560,11 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
             <span class="k">raise</span> <span class="ne">ValueError</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span>
-
         <span class="c1"># Calibrator</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
-            <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
+            <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span>
+                <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">,</span>
+                <span class="n">variable_width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
             <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">KernelDensityCalibrator</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;isotonic&quot;</span><span class="p">:</span>
@@ -1562,7 +1575,6 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
             <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">SigmoidCalibrator</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">base_calibrator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span>
-
         <span class="c1"># Fit</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">==</span> <span class="s2">&quot;prefit&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># Classifier</span>
@@ -1672,7 +1684,6 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
 
     <span class="k">def</span> <span class="nf">_clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">estimator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">==</span> <span class="s2">&quot;prefit&quot;</span><span class="p">:</span>
             <span class="n">estimator</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span>
 
@@ -1695,7 +1706,7 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
             
   <div class="item">
     <div class="name def" id="carl.learning.CalibratedClassifierCV.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, method=&#39;histogram&#39;, bins=&#39;auto&#39;, cv=1)</p>
+    <p>def <span class="ident">__init__</span>(</p><p>self, base_estimator, method=&#39;histogram&#39;, bins=&#39;auto&#39;, interpolation=None, variable_width=False, cv=1)</p>
     </div>
     
 
@@ -1721,6 +1732,17 @@ probabilities for each of the folds are then averaged for prediction.</p></div>
     The number of bins, if <code>method</code> is <code>"histogram"</code>.</p>
 </li>
 <li>
+<p><code>interpolation</code> [string, optional]
+    Specifies the kind of interpolation between bins as a string
+    (<code>"linear"</code>, <code>"nearest"</code>, <code>"zero"</code>, <code>"slinear"</code>, <code>"quadratic"</code>,
+    <code>"cubic"</code>), if <code>method</code> is <code>"histogram"</code>.</p>
+</li>
+<li>
+<p><code>variable_dith_width</code> [boolean, optional]
+    If True use equal probability variable length bins, if
+    <code>method</code> is <code>"histogram"</code>.</p>
+</li>
+<li>
 <p><code>cv</code> [integer, cross-validation generator, iterable or <code>"prefit"</code>]:
     Determines the cross-validation splitting strategy.
     Possible inputs for cv are:</p>
@@ -1737,7 +1759,8 @@ the training data is used for both training and calibration.</p>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-carl.learning.CalibratedClassifierCV.__init__', this);">Show source &equiv;</a></p>
   <div id="source-carl.learning.CalibratedClassifierCV.__init__" class="source">
-    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_estimator</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+             <span class="n">interpolation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">variable_width</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Constructor.</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1751,6 +1774,13 @@ the training data is used for both training and calibration.</p>
 <span class="sd">        `&quot;sigmoid&quot;`.</span>
 <span class="sd">    * `bins` [int, default=&quot;auto&quot;]:</span>
 <span class="sd">        The number of bins, if `method` is `&quot;histogram&quot;`.</span>
+<span class="sd">    * `interpolation` [string, optional]</span>
+<span class="sd">        Specifies the kind of interpolation between bins as a string</span>
+<span class="sd">        (`&quot;linear&quot;`, `&quot;nearest&quot;`, `&quot;zero&quot;`, `&quot;slinear&quot;`, `&quot;quadratic&quot;`,</span>
+<span class="sd">        `&quot;cubic&quot;`), if `method` is `&quot;histogram&quot;`.</span>
+<span class="sd">    * `variable_dith_width` [boolean, optional]</span>
+<span class="sd">        If True use equal probability variable length bins, if</span>
+<span class="sd">        `method` is `&quot;histogram&quot;`.</span>
 <span class="sd">    * `cv` [integer, cross-validation generator, iterable or `&quot;prefit&quot;`]:</span>
 <span class="sd">        Determines the cross-validation splitting strategy.</span>
 <span class="sd">        Possible inputs for cv are:</span>
@@ -1764,6 +1794,8 @@ the training data is used for both training and calibration.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">base_estimator</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span> <span class="o">=</span> <span class="n">variable_width</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
 </pre></div>
 
@@ -1824,7 +1856,9 @@ the training data is used for both training and calibration.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">label_encoder</span><span class="o">.</span><span class="n">classes_</span>
     <span class="c1"># Calibrator</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
-        <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">)</span>
+        <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">HistogramCalibrator</span><span class="p">(</span>
+            <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">,</span>
+            <span class="n">variable_width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_width</span><span class="p">)</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;kde&quot;</span><span class="p">:</span>
         <span class="n">base_calibrator</span> <span class="o">=</span> <span class="n">KernelDensityCalibrator</span><span class="p">()</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;isotonic&quot;</span><span class="p">:</span>
@@ -2014,7 +2048,27 @@ the training data is used for both training and calibration.</p>
 
             </div>
             <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.interpolation" class="name">var <span class="ident">interpolation</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
             <p id="carl.learning.CalibratedClassifierCV.method" class="name">var <span class="ident">method</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="carl.learning.CalibratedClassifierCV.variable_width" class="name">var <span class="ident">variable_width</span></p>
             
 
             
