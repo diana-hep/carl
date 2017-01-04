@@ -55,15 +55,13 @@ def test_histogram_2d():
     assert h.histogram_.shape[1] == 3+2
 
 
-def test_histogram_var_width():
+def test_histogram_variable_width():
     X = np.arange(11).reshape(-1, 1)
-    h = Histogram(bins=11, var_width=True)
+    h = Histogram(bins=11, variable_width=True)
     h.fit(X)
-    assert_array_almost_equal(
-        h.pdf([[1.0], [2.0], [8.0]]),
-        [0.1, 0.1, 0.1])
+    assert_array_almost_equal(h.pdf([[1.0], [2.0], [8.0]]), [0.1, 0.1, 0.1])
 
-    h = Histogram(bins=3, var_width=True)
+    h = Histogram(bins=3, variable_width=True)
     h.fit(X)
     integral = h.histogram_ * (h.edges_[0][1:] - h.edges_[0][:-1])
     integral = integral[1:-1].sum()

@@ -365,11 +365,6 @@ class DecomposedRatio(DensityRatioMixin, BaseEstimator):
 
         return self
 
-    def reset_values(self):
-        """ Reset the saved values when using keep_values option
-        """
-        self.saved_values_ = {}
-
     def predict(self, X, log=False, **kwargs):
         """Predict the density ratio `r(x_i)` for all `x_i` in `X`.
 
@@ -402,15 +397,7 @@ class DecomposedRatio(DensityRatioMixin, BaseEstimator):
                 s = np.zeros(len(X))
 
                 for j, w_j in enumerate(w_den):
-                    if 'keep_values' in kwargs:
-                        if not hasattr(self, 'saved_values_'):
-                            self.saved_values_ = {}
-                        if not (j, i) in self.saved_values_:
-                            self.saved_values_[(j, i)] =\
-                            self.ratios_[(j, i)].predict(X, **kwargs)
-                        s += w_j * self.saved_values_[(j, i)]
-                    else:
-                        s += w_j * self.ratios_[(j, i)].predict(X, **kwargs)
+                    s += w_j * self.ratios_[(j, i)].predict(X, **kwargs)
 
                 r += w_i / s
 

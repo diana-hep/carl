@@ -3,9 +3,8 @@
 # more details.
 
 import numpy as np
-import astropy.stats as astropy
 
-
+from astropy.stats import bayesian_blocks
 from itertools import product
 from sklearn.utils import check_random_state
 from sklearn.utils import check_array
@@ -17,14 +16,14 @@ from .base import DistributionMixin
 class Histogram(DistributionMixin):
     """N-dimensional histogram."""
 
-    def __init__(self, bins=10, range=None, interpolation=None, 
-                 var_width=False):
+    def __init__(self, bins=10, range=None, interpolation=None,
+                 variable_width=False):
         """Constructor.
 
         Parameters
         ----------
-        * `bins` [int]:
-            The number of bins.
+        * `bins` [int or string]:
+            The number of bins or `"blocks"` for bayesian blocks.
 
         * `range` [list of bounds (low, high)]:
             The boundaries. If `None`, bounds are inferred from data.
@@ -33,14 +32,14 @@ class Histogram(DistributionMixin):
             Specifies the kind of interpolation between bins as a string
             (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
             `"cubic"`).
-  
-        * `var_width` [boolean, optional]
+
+        * `variable_width` [boolean, optional]
             If True use equal probability variable length bins.
         """
         self.bins = bins
         self.range = range
         self.interpolation = interpolation
-        self.var_width = var_width
+        self.variable_width = variable_width
 
     def pdf(self, X, **kwargs):
         X = check_array(X)
@@ -86,34 +85,32 @@ class Histogram(DistributionMixin):
 
         return low + u * (high - low)
 
-    def variable_density(self, h, bins):
-        widths = bins[1:] - bins[:-1]
-        norm_h = h / widths / h.sum()
-        return norm_h
-
     def fit(self, X, sample_weight=None, **kwargs):
         # Checks
         X = check_array(X)
         if sample_weight is not None and len(sample_weight) != len(X):
             raise ValueError
+
         # Compute histogram and edges
-        if self.bins == 'blocks':
-            bins = astropy.bayesian_blocks(X.ravel(), fitness='events',
-                                           p0=0.0001)
+        if self.bins == "blocks":
+            bins = bayesian_blocks(X.ravel(), fitness="events", p0=0.0001)
             range_ = self.range[0] if self.range else None
             h, e = np.histogram(X.ravel(), bins=bins, range=range_,
                                 weights=sample_weight, normed=False)
             e = [e]
-        elif self.var_width:
-            ticks = [np.percentile(X.ravel(), 100.*(float(k)/self.bins)) for k 
-                     in range(self.bins+1)]
+
+        elif self.variable_width:
+            ticks = [np.percentile(X.ravel(), 100. * k / self.bins) for k
+                     in range(self.bins + 1)]
             ticks[-1] += 1e-5
             range_ = self.range[0] if self.range else None
             h, e = np.histogram(X.ravel(), bins=ticks, range=range_,
                                 normed=False, weights=sample_weight)
             h, e = h.astype(float), e.astype(float)
-            h = self.variable_density(h, e)
+            widths = e[1:] - e[:-1]
+            h = h / widths / h.sum()
             e = [e]
+
         else:
             bins = self.bins
             h, e = np.histogramdd(X, bins=bins, range=self.range,
