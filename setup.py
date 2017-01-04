@@ -53,8 +53,9 @@ with open(os.path.join("carl", "__init__.py"), "rt") as f:
 _install_requires = [
     "numpy>=1.11",
     "scipy>=0.17",
-    "scikit-learn>=0.17.1",
+    "scikit-learn>=0.18",
     "theano>=0.8",
+    "astropy>=1.3",
     "six"
 ]
 
