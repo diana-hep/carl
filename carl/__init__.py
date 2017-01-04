@@ -42,6 +42,7 @@ The following dependencies are required:
 - Scipy >= 0.17
 - Scikit-Learn >= 0.18
 - Theano >= 0.8
+- Astropy >= 1.3
 
 Once satisfied, Carl can be installed from source using the following
 commands:

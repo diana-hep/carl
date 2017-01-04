@@ -32,7 +32,8 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
     probabilities for each of the folds are then averaged for prediction.
     """
 
-    def __init__(self, base_estimator, method="histogram", bins="auto", cv=1):
+    def __init__(self, base_estimator, method="histogram", bins="auto",
+                 interpolation=None, variable_width=False, cv=1):
         """Constructor.
 
         Parameters
@@ -50,6 +51,15 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         * `bins` [int, default="auto"]:
             The number of bins, if `method` is `"histogram"`.
 
+        * `interpolation` [string, optional]
+            Specifies the kind of interpolation between bins as a string
+            (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
+            `"cubic"`), if `method` is `"histogram"`.
+
+        * `variable_dith_width` [boolean, optional]
+            If True use equal probability variable length bins, if
+            `method` is `"histogram"`.
+
         * `cv` [integer, cross-validation generator, iterable or `"prefit"`]:
             Determines the cross-validation splitting strategy.
             Possible inputs for cv are:
@@ -65,6 +75,8 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
         self.base_estimator = base_estimator
         self.method = method
         self.bins = bins
+        self.interpolation = interpolation
+        self.variable_width = variable_width
         self.cv = cv
 
     def fit(self, X, y, sample_weight=None):
@@ -94,10 +106,11 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             raise ValueError
 
         self.classes_ = label_encoder.classes_
-
         # Calibrator
         if self.method == "histogram":
-            base_calibrator = HistogramCalibrator(bins=self.bins)
+            base_calibrator = HistogramCalibrator(
+                bins=self.bins, interpolation=self.interpolation,
+                variable_width=self.variable_width)
         elif self.method == "kde":
             base_calibrator = KernelDensityCalibrator()
         elif self.method == "isotonic":
@@ -108,7 +121,6 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
             base_calibrator = SigmoidCalibrator()
         else:
             base_calibrator = self.method
-
         # Fit
         if self.cv == "prefit" or self.cv == 1:
             # Classifier
@@ -218,7 +230,6 @@ class CalibratedClassifierCV(BaseEstimator, ClassifierMixin):
 
     def _clone(self):
         estimator = clone(self, original=True)
-
         if self.cv == "prefit":
             estimator.base_estimator = self.base_estimator
 
@@ -229,7 +240,7 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
     """Probability calibration through density estimation with histograms."""
 
     def __init__(self, bins="auto", range=None, eps=0.1,
-                 interpolation="linear"):
+                 interpolation=None, variable_width=False):
         """Constructor.
 
         Parameters
@@ -249,11 +260,15 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
             Specifies the kind of interpolation between bins as a string
             (`"linear"`, `"nearest"`, `"zero"`, `"slinear"`, `"quadratic"`,
             `"cubic"`).
+
+        * `variable_width` [boolean, optional]
+            If True use equal probability variable length bins.
         """
         self.bins = bins
         self.range = range
-        self.interpolation = interpolation
         self.eps = eps
+        self.interpolation = interpolation
+        self.variable_width = variable_width
 
     def fit(self, T, y, sample_weight=None):
         """Fit using `T`, `y` as training data.
@@ -296,12 +311,13 @@ class HistogramCalibrator(BaseEstimator, RegressorMixin):
             t_min = max(0, min(np.min(t0), np.min(t1)) - self.eps)
             t_max = min(1, max(np.max(t0), np.max(t1)) + self.eps)
             range = [(t_min, t_max)]
-
         # Fit
         self.calibrator0 = Histogram(bins=bins, range=range,
-                                     interpolation=self.interpolation)
+                                     interpolation=self.interpolation,
+                                     variable_width=self.variable_width)
         self.calibrator1 = Histogram(bins=bins, range=range,
-                                     interpolation=self.interpolation)
+                                     interpolation=self.interpolation,
+                                     variable_width=self.variable_width)
 
         self.calibrator0.fit(t0.reshape(-1, 1), sample_weight=sw0)
         self.calibrator1.fit(t1.reshape(-1, 1), sample_weight=sw1)
